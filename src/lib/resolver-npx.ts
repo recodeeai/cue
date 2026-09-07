@@ -25,8 +25,10 @@
  *   CUE_REPO_ROOT              →  override repo root (legacy: SOUL_REPO_ROOT).
  *   CUE_NPX_ATTEMPTS           →  fetch attempts per repo (default 3, max 6).
  *   CUE_NPX_TIMEOUT_MS         →  per-attempt timeout (default 45000).
- *   CUE_NPX_RETRY_COOLDOWN_MS  →  negative-cache cooldown (default 6h, 0 = off).
+ *   CUE_NPX_RETRY_COOLDOWN_MS  →  base negative-cache cooldown (default 6h, 0 = off;
+ *                                 doubles per consecutive failure, capped at 7d).
  *   CUE_NPX_CACHE_MAX          →  cache slots kept before LRU eviction (default 200).
+ *   CUE_NPX_CONCURRENCY        →  repos fetched in parallel (default 4, max 8).
  *   CUE_NPX_FORCE=1            →  ignore the negative cache this run.
  *
  */
@@ -459,10 +461,17 @@ export async function resolveNpxDetailed(
   const activeKeys = new Set(entries.map((e) => cacheKey(e.repo, e.pin)));
 
   for (const entry of entries) {
-    const key = cacheKey(entry.repo, entry.pin);
-    keys[entryId(entry)] = key;
+    keys[entryId(entry)] = cacheKey(entry.repo, entry.pin);
+  }
 
+  /** Resolve one entry. Never throws under tolerateFetchFailure. */
+  const resolveEntry = async (
+    entry: NpxSkillRef,
+  ): Promise<{ plans: LinkPlan[]; failure?: NpxEntryFailure }> => {
+    const key = cacheKey(entry.repo, entry.pin);
     let usable = entry.skills;
+    let failure: NpxEntryFailure | undefined;
+
     try {
       const fetched = await ensureCacheForEntry(
         layout,
@@ -504,7 +513,7 @@ export async function resolveNpxDetailed(
       // slot means the offline/flaky launch is indistinguishable from a good
       // one; a cold slot means those skills are simply absent this run.
       usable = cachedSkills(layout, key, entry.skills);
-      failures.push({
+      failure = {
         repo: entry.repo,
         pin: entry.pin,
         skills: entry.skills.filter((s) => !usable.includes(s)),
@@ -513,16 +522,63 @@ export async function resolveNpxDetailed(
         ...(err instanceof NpxFetchSkipped
           ? { skipped: true, retryInMs: err.retryInMs }
           : {}),
-      });
+      };
     }
 
-    for (const skill of usable) {
-      plans.push({
+    return {
+      plans: usable.map((skill) => ({
         source: cacheSkillPath(layout, key, skill),
         target: `.claude/skills/${skill}`,
-        origin: "npx",
-      });
+        origin: "npx" as const,
+      })),
+      failure,
+    };
+  };
+
+  // Entries are independent network fetches, so they run concurrently — a cold
+  // profile is bounded by its slowest repo instead of the sum of all of them
+  // (the bundled ego-lite-stack has 41). The limit is small on purpose: each
+  // task is a full `npx skills add` with its own git clone, so an unbounded
+  // fan-out trades launch latency for disk and registry pressure.
+  //
+  // Results are collected by index and flattened afterwards, so plan order
+  // stays the profile's declaration order no matter how the tasks interleave.
+  const results = new Array<{ plans: LinkPlan[]; failure?: NpxEntryFailure }>(
+    entries.length,
+  );
+  let cursor = 0;
+  // Only the non-tolerating path (cue validate) throws out of resolveEntry, and
+  // there the first failure aborts the resolve. Letting that rejection escape
+  // Promise.all directly would leave the other lanes fetching and writing to
+  // the cache after the caller had already moved on to error handling — so the
+  // error is captured, the remaining lanes stop pulling work, and every lane is
+  // awaited before it propagates.
+  let aborted = false;
+  let firstError: unknown;
+  const worker = async (): Promise<void> => {
+    for (;;) {
+      if (aborted) return;
+      const i = cursor++;
+      const entry = entries[i];
+      if (entry === undefined) return;
+      try {
+        results[i] = await resolveEntry(entry);
+      } catch (err) {
+        if (!aborted) {
+          aborted = true;
+          firstError = err;
+        }
+        return;
+      }
     }
+  };
+  const lanes = Math.min(fetchConcurrency(), entries.length);
+  await Promise.all(Array.from({ length: lanes }, () => worker()));
+  if (aborted) throw firstError;
+
+  for (const result of results) {
+    plans.push(...result.plans);
+    if (result.failure) failures.push(result.failure);
   }
 
   return { plans, keys, failures };
@@ -590,11 +646,84 @@ interface SuppressOptions {
   cooldownMs: number;
 }
 
-/** Cooldown length. CUE_NPX_RETRY_COOLDOWN_MS overrides; 0 disables. */
+/** Concurrent repo fetches. CUE_NPX_CONCURRENCY overrides (1 = serial, max 8). */
+function fetchConcurrency(): number {
+  const raw = Number(process.env.CUE_NPX_CONCURRENCY);
+  if (Number.isFinite(raw) && raw >= 1) return Math.min(Math.floor(raw), 8);
+  return 4;
+}
+
+/** Base cooldown. CUE_NPX_RETRY_COOLDOWN_MS overrides; 0 disables entirely. */
 function failureCooldownMs(): number {
   const raw = Number(process.env.CUE_NPX_RETRY_COOLDOWN_MS);
   if (Number.isFinite(raw) && raw >= 0) return raw;
   return NPX_FAILURE_COOLDOWN_MS;
+}
+
+/** Ceiling for the escalated cooldown — a week without a retry is enough. */
+const MAX_FAILURE_COOLDOWN_MS = 7 * 24 * 60 * 60 * 1000;
+
+/**
+ * Cooldown after `strikes` consecutive failures: base, then double each time.
+ *
+ * A repo having a bad afternoon is retried within the base window; one that is
+ * permanently gone (renamed, deleted, or simply too large to ever clone inside
+ * the timeout) stops costing a stall every cooldown. The ceiling keeps a
+ * recovered repo from being written off forever, and any explicit retry —
+ * CUE_NPX_FORCE=1, or `cue validate`, which never consults the marker — is
+ * unaffected by how high the count has climbed.
+ */
+function escalatedCooldownMs(base: number, strikes: number): number {
+  if (base <= 0) return 0;
+  const factor = 2 ** Math.max(0, Math.min(strikes - 1, 20));
+  return Math.min(base * factor, MAX_FAILURE_COOLDOWN_MS);
+}
+
+/**
+ * How much longer `mark` suppresses a fetch — 0 when nothing is suppressed.
+ *
+ * The single source of truth for "is this repo still cooling down?". A marker
+ * outlives its own cooldown (nothing sweeps it until the next attempt), so its
+ * mere existence proves nothing; anything that reports a cooldown to a human
+ * must ask this instead, or it will claim a repo is suppressed when the next
+ * launch would in fact retry it.
+ *
+ * Returns 0 for an expired cooldown, for a disabled one (base 0), and for a
+ * future-dated marker — clock skew or a restored backup is not evidence.
+ */
+export function remainingCooldownMs(
+  mark: FetchFailureMark,
+  base: number = failureCooldownMs(),
+  now: number = Date.now(),
+): number {
+  // Note: skill coverage is NOT checked here — see suppressionRemainingMs,
+  // which is what callers reporting or enforcing suppression should use.
+
+  const cooldown = escalatedCooldownMs(base, mark.strikes);
+  if (cooldown <= 0) return 0;
+  const elapsed = now - mark.at;
+  if (elapsed < 0 || elapsed >= cooldown) return 0;
+  return cooldown - elapsed;
+}
+
+/**
+ * How much longer `mark` suppresses a request for `skills` — 0 if it does not.
+ *
+ * Two independent conditions, and both must hold: the cooldown has to still be
+ * running, AND the remembered failure has to actually cover what is being asked
+ * for. Kept in one place because the resolver enforces suppression while
+ * `cue doctor` reports it, and a reader told "cooling down" about a repo the
+ * next launch will happily retry is worse than not being told at all.
+ */
+export function suppressionRemainingMs(
+  mark: FetchFailureMark,
+  skills: readonly string[],
+  base: number = failureCooldownMs(),
+  now: number = Date.now(),
+): number {
+  const covered = new Set(mark.skills);
+  if (!skills.every((skill) => covered.has(skill))) return 0;
+  return remainingCooldownMs(mark, base, now);
 }
 
 /**
@@ -608,20 +737,12 @@ function assertNotCoolingDown(
   entry: NpxSkillRef,
   suppress: SuppressOptions,
 ): void {
-  if (!suppress.enabled || suppress.cooldownMs <= 0) return;
+  if (!suppress.enabled) return;
   const mark = readFetchFailure(layout, key);
   if (!mark) return;
-  // The key is (repo, pin), but the failure may have been about one skill —
-  // a name that does not exist in that repo. Suppress only a request the
-  // remembered failure already covers; a skill we have never seen fail is
-  // evidence we do not have, so fetch it and find out.
-  const covered = new Set(mark.skills);
-  if (!entry.skills.every((skill) => covered.has(skill))) return;
-  const elapsed = Date.now() - mark.at;
-  // A marker from the future (clock skew, restored backup) is not evidence of
-  // anything — attempt the fetch rather than suppressing it indefinitely.
-  if (elapsed < 0 || elapsed >= suppress.cooldownMs) return;
-  throw new NpxFetchSkipped(entry.repo, mark, suppress.cooldownMs - elapsed);
+  const remaining = suppressionRemainingMs(mark, entry.skills, suppress.cooldownMs);
+  if (remaining <= 0) return;
+  throw new NpxFetchSkipped(entry.repo, mark, remaining);
 }
 
 /** Compact reason string for a marker — the raw message minus our own prefix. */

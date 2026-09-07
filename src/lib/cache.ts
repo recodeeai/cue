@@ -233,6 +233,15 @@ export interface FetchFailureMark {
   /** Short human-readable reason, replayed in the degraded-launch message. */
   reason: string;
   /**
+   * Consecutive failed attempts, counting the one this mark records.
+   *
+   * Lets the caller back off further each time: a repo that is merely having a
+   * bad afternoon is retried soon, while one that is permanently gone (renamed,
+   * deleted, too big to ever clone in budget) stops costing a stall every
+   * cooldown. Reset by clearFetchFailure on the first success.
+   */
+  strikes: number;
+  /**
    * The skills that were being requested when it failed, unioned across
    * attempts.
    *
@@ -275,10 +284,19 @@ export function readFetchFailure(
     const raw = readFileSync(failurePath(layout, key), "utf8");
     const parsed = JSON.parse(raw) as Partial<FetchFailureMark>;
     if (typeof parsed?.at !== "number" || !Number.isFinite(parsed.at)) return null;
+    const strikes =
+      typeof parsed.strikes === "number" && Number.isFinite(parsed.strikes)
+        ? Math.max(1, Math.floor(parsed.strikes))
+        : 1; // marker written before strikes existed
     // A marker with no skill list carries no evidence about any specific
     // request, so it suppresses nothing — fail open, never open-ended.
     const skills = Array.isArray(parsed.skills) ? parsed.skills.map(String) : [];
-    return { at: parsed.at, reason: String(parsed.reason ?? "unknown"), skills };
+    return {
+      at: parsed.at,
+      reason: String(parsed.reason ?? "unknown"),
+      strikes,
+      skills,
+    };
   } catch {
     return null;
   }
@@ -286,6 +304,11 @@ export function readFetchFailure(
 
 /**
  * Remember that fetching `key` failed, so the next launch can skip it.
+ *
+ * Strikes accumulate across calls. Because the cooldown suppresses attempts in
+ * between, one strike means roughly one elapsed cooldown of continued failure —
+ * which is what makes escalating backoff meaningful rather than a count of how
+ * often the user happened to launch.
  *
  * `skills` is what was being requested. It is unioned with anything already
  * remembered, so repeated failures widen the set the marker can suppress
@@ -304,6 +327,7 @@ export function recordFetchFailure(
     const mark: FetchFailureMark = {
       at: Date.now(),
       reason,
+      strikes: (previous?.strikes ?? 0) + 1,
       skills: [...new Set([...(previous?.skills ?? []), ...skills])].sort(),
     };
     writeFileSync(path, JSON.stringify(mark), "utf8");

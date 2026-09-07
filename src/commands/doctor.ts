@@ -28,6 +28,8 @@ import { shimInstalled, runInstall } from "./shell";
 import { shimDir, shimDirPosition } from "../lib/shim-dir";
 import { findRealClaudeBin } from "../lib/claude-binary";
 import { repoRoot } from "../lib/repo-root";
+import { cacheKey, suppressionRemainingMs } from "../lib/resolver-npx";
+import { clearFetchFailure, readFetchFailure } from "../lib/cache";
 
 const PROFILES_DIR = process.env.CUE_PROFILES_DIR ?? join(repoRoot(), "profiles");
 const SKILLS_ROOT = join(repoRoot(), "resources", "skills", "skills");
@@ -44,6 +46,12 @@ export interface Issue {
   fix?: string;
   runtimeDir?: string;
   path?: string;
+  /**
+   * Cache slot this issue is about (D10). Carried rather than re-derived: a
+   * profile may reference the same repo at two pins, and those are different
+   * slots — looking the entry back up by repo alone would clear the wrong one.
+   */
+  cacheKey?: string;
 }
 
 function loadAllMcpIds(): Set<string> {
@@ -117,6 +125,36 @@ async function checkProfile(profileName: string, allSkillIds: Set<string>, allMc
   for (const id of profileMcpIds) {
     const issue = missingMcpIssue(profileName, id, allMcpIds);
     if (issue) issues.push(issue);
+  }
+
+  // D10: a remote skill repo whose fetch failed and is now cooling down. The
+  // launch path degrades silently-ish here — it prints one line and moves on —
+  // so without this check a skill can stay missing for days with no obvious
+  // reason. Reconstructing the cache key from the profile means the marker
+  // needs to store nothing but the failure itself.
+  for (const entry of profile.skills.npx) {
+    const key = cacheKey(entry.repo, entry.pin);
+    const mark = readFetchFailure({}, key);
+    if (!mark) continue;
+    // A marker outlives its own cooldown, and it may be about other skills
+    // entirely — so its existence alone would report a repo as suppressed when
+    // the very next launch is going to retry it. Ask the resolver's own
+    // predicate rather than re-deriving the rule here.
+    const remaining = suppressionRemainingMs(mark, entry.skills);
+    if (remaining <= 0) continue;
+    const ago = Math.max(0, Date.now() - mark.at);
+    issues.push({
+      code: "D10",
+      severity: "warning",
+      profile: profileName,
+      message:
+        `Remote skills from "${entry.repo}" are cooling down after ` +
+        `${mark.strikes} failed fetch${mark.strikes === 1 ? "" : "es"} ` +
+        `(last ${formatAgo(ago)}: ${mark.reason}); retries in ${formatAgo(remaining).replace(" ago", "")}`,
+      fix: "cue doctor --fix, or CUE_NPX_FORCE=1 cue launch, to retry now",
+      path: entry.repo,
+      cacheKey: key,
+    });
   }
 
   // D4: Skill requires MCP not in profile (explicit requires_mcps + implicit
@@ -297,6 +335,16 @@ export function checkActivation(
   return issues;
 }
 
+/** "3h ago" / "12m ago" — coarse; this is context, not a timestamp. */
+function formatAgo(ms: number): string {
+  const mins = Math.round(ms / 60000);
+  if (mins < 1) return "just now";
+  if (mins < 60) return `${mins}m ago`;
+  const hours = Math.round(mins / 60);
+  if (hours < 48) return `${hours}h ago`;
+  return `${Math.round(hours / 24)}d ago`;
+}
+
 export async function applyRuntimeFix(issue: Issue, runtimeRoot = RUNTIME_ROOT): Promise<boolean> {
   if (issue.code === "D5") {
     const hashPath = issue.path ?? join(runtimeRoot, issue.profile, "claude", ".cue-hash");
@@ -402,6 +450,15 @@ async function applyFix(issue: Issue): Promise<boolean> {
       });
       return fetched.length > 0;
     }
+    case "D10": {
+      // Forget the failure so the next launch fetches for real. The fix is
+      // deliberately not a fetch of its own: doctor should stay fast and
+      // offline-safe, and the retry belongs to the launch that needs the skill.
+      if (!issue.cacheKey) return false;
+      clearFetchFailure({}, issue.cacheKey);
+      return true;
+    }
+
     case "D9": {
       // Install/repair the shim. runInstall returns 1 (no throw) when PATH
       // ordering is wrong — that case can't be auto-fixed (user must reorder
@@ -435,6 +492,7 @@ Checks:
   D7  Incomplete skill (companions declared but missing)
   D8  Quality gate declared but the .sh under resources/quality-gates/ is missing
   D9  Activation: claude shim installed, real claude resolves, shim dir precedes it on PATH
+  D10 Remote skill repo cooling down after failed fetches
 
 Flags:
   --fix             Auto-repair issues
