@@ -489,15 +489,25 @@ export async function resolveNpxDetailed(
       // a slot could take turns paying the full failed-fetch delay.
       if (fetched) clearFetchFailure(layout, key);
     } catch (err) {
+      // Two failures are deliberately NOT remembered.
+      //
+      // Offline mode throws without attempting anything, so the marker would
+      // outlive the offline session and suppress real fetches for a whole
+      // cooldown after the network came back.
+      //
+      // PinNotFound is the opposite of a stall: the fetch COMPLETED, and one
+      // requested name simply is not in that repo. It is deterministic, fast,
+      // and the user's to fix, so suppressing it would only hide a broken
+      // profile entry behind six hours of silence — and since the marker is
+      // keyed by repo+pin, blaming either the whole batch or just the bad name
+      // gets one of the two realistic edits (correcting the name, or
+      // relaunching unchanged) wrong.
       if (err instanceof NpxFetchSkipped) {
         // Already remembered; re-recording would slide the cooldown forward
         // forever and the repo would never be retried.
-      } else if (!offline) {
-        recordFetchFailure(layout, key, failureReason(err), blamedSkills(err, entry.skills));
+      } else if (!offline && !(err instanceof PinNotFound)) {
+        recordFetchFailure(layout, key, failureReason(err), entry.skills);
       }
-      // Offline mode throws without attempting anything, so there is nothing to
-      // remember: the marker would outlive the offline session and suppress
-      // real fetches for a whole cooldown after the network came back.
       if (!opts.tolerateFetchFailure) throw err;
       // Degraded path: serve whatever this cache slot already holds. A warm
       // slot means the offline/flaky launch is indistinguishable from a good
@@ -733,20 +743,6 @@ function assertNotCoolingDown(
   const remaining = suppressionRemainingMs(mark, entry.skills, suppress.cooldownMs);
   if (remaining <= 0) return;
   throw new NpxFetchSkipped(entry.repo, mark, remaining);
-}
-
-/**
- * Which skills a failure is actually evidence about.
- *
- * PinNotFound means the fetch itself worked and one requested name simply is
- * not in that repo — the rest of the batch is not implicated. Blaming them too
- * would suppress the good names for a whole cooldown after the bad one was
- * removed from the profile. Anything else (timeout, non-zero exit, unreachable
- * host) tells us nothing skill-specific, so the whole request is implicated.
- */
-function blamedSkills(err: unknown, requested: readonly string[]): readonly string[] {
-  if (err instanceof PinNotFound) return [err.skill];
-  return requested;
 }
 
 /** Compact reason string for a marker — the raw message minus our own prefix. */

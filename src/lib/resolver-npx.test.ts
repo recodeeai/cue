@@ -1164,14 +1164,16 @@ describe("suppressionRemainingMs", () => {
   });
 });
 
-describe("a bad name in a batch does not blame the rest", () => {
+describe("a missing skill name is never remembered", () => {
   /**
-   * Regression: a batch failure recorded every requested skill, so a cold
-   * request for ["real", "typo"] blamed "real" too. Removing "typo" left a
-   * request the marker still covered, and the corrected profile was suppressed
-   * for a full cooldown instead of fetching.
+   * A PinNotFound is the opposite of the stall the marker exists to avoid: the
+   * fetch completed and one requested name simply is not in that repo. Blaming
+   * the whole batch suppressed the good names once the bad one was removed;
+   * blaming only the bad name meant an unchanged profile was never suppressed
+   * and refetched forever. Remembering nothing is right for both, and keeps a
+   * broken profile entry visible instead of silent for six hours.
    */
-  it("only the missing skill enters the marker", async () => {
+  it("neither the corrected nor the unchanged request is suppressed", async () => {
     let attempts = 0;
     // Produces "real" but never "typo", which is what PinNotFound reports.
     const fetch: NpxFetchFn = async (repo, pin, skill, destDir) => {
@@ -1187,14 +1189,24 @@ describe("a bad name in a batch does not blame the rest", () => {
       opts,
     );
     expect(bad.failures).toHaveLength(1);
-    const afterBad = attempts;
+    let seen = attempts;
 
-    // The profile is corrected: "real" alone must be fetched, not skipped.
+    // Relaunching the UNCHANGED profile must still attempt, not sit in a
+    // cooldown — the user has to keep seeing that the entry is broken.
+    const again = await resolveNpxDetailed(
+      profile([{ repo: "a/b", skills: ["real", "typo"] }]),
+      opts,
+    );
+    expect(attempts).toBeGreaterThan(seen);
+    expect(again.failures[0]?.skipped).toBeUndefined();
+    seen = attempts;
+
+    // And once corrected, "real" alone is fetched rather than skipped.
     const good = await resolveNpxDetailed(
       profile([{ repo: "a/b", skills: ["real"] }]),
       opts,
     );
-    expect(attempts).toBeGreaterThan(afterBad);
+    expect(attempts).toBeGreaterThan(seen);
     expect(good.failures).toEqual([]);
     expect(good.plans).toHaveLength(1);
   });
