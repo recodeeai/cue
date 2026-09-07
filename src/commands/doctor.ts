@@ -46,6 +46,12 @@ export interface Issue {
   fix?: string;
   runtimeDir?: string;
   path?: string;
+  /**
+   * Cache slot this issue is about (D10). Carried rather than re-derived: a
+   * profile may reference the same repo at two pins, and those are different
+   * slots — looking the entry back up by repo alone would clear the wrong one.
+   */
+  cacheKey?: string;
 }
 
 function loadAllMcpIds(): Set<string> {
@@ -127,7 +133,8 @@ async function checkProfile(profileName: string, allSkillIds: Set<string>, allMc
   // reason. Reconstructing the cache key from the profile means the marker
   // needs to store nothing but the failure itself.
   for (const entry of profile.skills.npx) {
-    const mark = readFetchFailure({}, cacheKey(entry.repo, entry.pin));
+    const key = cacheKey(entry.repo, entry.pin);
+    const mark = readFetchFailure({}, key);
     if (!mark) continue;
     // A marker outlives its own cooldown, and it may be about other skills
     // entirely — so its existence alone would report a repo as suppressed when
@@ -146,6 +153,7 @@ async function checkProfile(profileName: string, allSkillIds: Set<string>, allMc
         `(last ${formatAgo(ago)}: ${mark.reason}); retries in ${formatAgo(remaining).replace(" ago", "")}`,
       fix: "cue doctor --fix, or CUE_NPX_FORCE=1 cue launch, to retry now",
       path: entry.repo,
+      cacheKey: key,
     });
   }
 
@@ -446,11 +454,8 @@ async function applyFix(issue: Issue): Promise<boolean> {
       // Forget the failure so the next launch fetches for real. The fix is
       // deliberately not a fetch of its own: doctor should stay fast and
       // offline-safe, and the retry belongs to the launch that needs the skill.
-      if (!issue.path) return false;
-      const profile = await loadProfile(issue.profile);
-      const entry = profile.skills.npx.find((e) => e.repo === issue.path);
-      if (!entry) return false;
-      clearFetchFailure({}, cacheKey(entry.repo, entry.pin));
+      if (!issue.cacheKey) return false;
+      clearFetchFailure({}, issue.cacheKey);
       return true;
     }
 
