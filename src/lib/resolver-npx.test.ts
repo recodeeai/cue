@@ -737,3 +737,33 @@ describe("cache eviction during a resolve", () => {
     expect(existsSync(stale)).toBe(false);
   });
 });
+
+// --- offline mode ----------------------------------------------------------
+
+describe("offline mode and the negative cache", () => {
+  /**
+   * Regression: offline mode throws WITHOUT attempting a fetch. Recording that
+   * as a remote failure left a marker that outlived the offline session and
+   * suppressed real fetches for a whole cooldown after the network came back.
+   */
+  it("a cold offline miss leaves no marker", async () => {
+    const p = profile([{ repo: "a/b", skills: ["s"] }]);
+
+    const offlineRes = await resolveNpxDetailed(p, {
+      repoRoot,
+      fetch: explodingFetcher,
+      offline: true,
+      tolerateFetchFailure: true,
+    });
+    expect(offlineRes.failures).toHaveLength(1);
+
+    // Back online: the very next resolve must fetch for real, not skip.
+    const res = await resolveNpxDetailed(p, {
+      repoRoot,
+      fetch: fakeFetcher(),
+      tolerateFetchFailure: true,
+    });
+    expect(res.failures).toEqual([]);
+    expect(res.plans).toHaveLength(1);
+  });
+});
