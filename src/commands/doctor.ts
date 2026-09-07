@@ -28,7 +28,7 @@ import { shimInstalled, runInstall } from "./shell";
 import { shimDir, shimDirPosition } from "../lib/shim-dir";
 import { findRealClaudeBin } from "../lib/claude-binary";
 import { repoRoot } from "../lib/repo-root";
-import { cacheKey, remainingCooldownMs } from "../lib/resolver-npx";
+import { cacheKey, suppressionRemainingMs } from "../lib/resolver-npx";
 import { clearFetchFailure, readFetchFailure } from "../lib/cache";
 
 const PROFILES_DIR = process.env.CUE_PROFILES_DIR ?? join(repoRoot(), "profiles");
@@ -129,10 +129,11 @@ async function checkProfile(profileName: string, allSkillIds: Set<string>, allMc
   for (const entry of profile.skills.npx) {
     const mark = readFetchFailure({}, cacheKey(entry.repo, entry.pin));
     if (!mark) continue;
-    // A marker outlives its own cooldown — nothing sweeps it until the next
-    // attempt — so its existence alone would report a repo as suppressed when
-    // the very next launch is going to retry it.
-    const remaining = remainingCooldownMs(mark);
+    // A marker outlives its own cooldown, and it may be about other skills
+    // entirely — so its existence alone would report a repo as suppressed when
+    // the very next launch is going to retry it. Ask the resolver's own
+    // predicate rather than re-deriving the rule here.
+    const remaining = suppressionRemainingMs(mark, entry.skills);
     if (remaining <= 0) continue;
     const ago = Math.max(0, Date.now() - mark.at);
     issues.push({

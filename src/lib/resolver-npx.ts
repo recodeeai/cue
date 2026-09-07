@@ -686,11 +686,34 @@ export function remainingCooldownMs(
   base: number = failureCooldownMs(),
   now: number = Date.now(),
 ): number {
+  // Note: skill coverage is NOT checked here — see suppressionRemainingMs,
+  // which is what callers reporting or enforcing suppression should use.
+
   const cooldown = escalatedCooldownMs(base, mark.strikes);
   if (cooldown <= 0) return 0;
   const elapsed = now - mark.at;
   if (elapsed < 0 || elapsed >= cooldown) return 0;
   return cooldown - elapsed;
+}
+
+/**
+ * How much longer `mark` suppresses a request for `skills` — 0 if it does not.
+ *
+ * Two independent conditions, and both must hold: the cooldown has to still be
+ * running, AND the remembered failure has to actually cover what is being asked
+ * for. Kept in one place because the resolver enforces suppression while
+ * `cue doctor` reports it, and a reader told "cooling down" about a repo the
+ * next launch will happily retry is worse than not being told at all.
+ */
+export function suppressionRemainingMs(
+  mark: FetchFailureMark,
+  skills: readonly string[],
+  base: number = failureCooldownMs(),
+  now: number = Date.now(),
+): number {
+  const covered = new Set(mark.skills);
+  if (!skills.every((skill) => covered.has(skill))) return 0;
+  return remainingCooldownMs(mark, base, now);
 }
 
 /**
@@ -707,13 +730,7 @@ function assertNotCoolingDown(
   if (!suppress.enabled) return;
   const mark = readFetchFailure(layout, key);
   if (!mark) return;
-  // The key is (repo, pin), but the failure may have been about one skill —
-  // a name that does not exist in that repo. Suppress only a request the
-  // remembered failure already covers; a skill we have never seen fail is
-  // evidence we do not have, so fetch it and find out.
-  const covered = new Set(mark.skills);
-  if (!entry.skills.every((skill) => covered.has(skill))) return;
-  const remaining = remainingCooldownMs(mark, suppress.cooldownMs);
+  const remaining = suppressionRemainingMs(mark, entry.skills, suppress.cooldownMs);
   if (remaining <= 0) return;
   throw new NpxFetchSkipped(entry.repo, mark, remaining);
 }

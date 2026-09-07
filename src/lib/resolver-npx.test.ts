@@ -1129,3 +1129,37 @@ describe("clearing the marker", () => {
     expect(after.plans).toHaveLength(1);
   });
 });
+
+describe("suppressionRemainingMs", () => {
+  const mark = (over: Partial<FetchFailureMark> = {}): FetchFailureMark => ({
+    at: Date.now(),
+    reason: "boom",
+    strikes: 1,
+    skills: ["a", "b"],
+    ...over,
+  });
+
+  it("suppresses a request the marker covers", async () => {
+    const { suppressionRemainingMs } = await import("./resolver-npx");
+    expect(suppressionRemainingMs(mark(), ["a"], 60_000)).toBeGreaterThan(0);
+    expect(suppressionRemainingMs(mark(), ["a", "b"], 60_000)).toBeGreaterThan(0);
+  });
+
+  it("does not suppress a request with anything new in it", async () => {
+    const { suppressionRemainingMs } = await import("./resolver-npx");
+    expect(suppressionRemainingMs(mark(), ["c"], 60_000)).toBe(0);
+    expect(suppressionRemainingMs(mark(), ["a", "c"], 60_000)).toBe(0);
+  });
+
+  it("does not suppress on a legacy marker with no skill list", async () => {
+    const { suppressionRemainingMs } = await import("./resolver-npx");
+    expect(suppressionRemainingMs(mark({ skills: [] }), ["a"], 60_000)).toBe(0);
+  });
+
+  it("does not suppress once the cooldown has elapsed", async () => {
+    const { suppressionRemainingMs } = await import("./resolver-npx");
+    expect(
+      suppressionRemainingMs(mark({ at: Date.now() - 120_000 }), ["a"], 60_000),
+    ).toBe(0);
+  });
+});
