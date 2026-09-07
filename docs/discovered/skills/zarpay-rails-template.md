@@ -2,7 +2,7 @@
 title: "zarpay/rails-template — Claude Code skill discovered by cue"
 description: "Opinionated, agent-native Rails template — the production Rails starter ZAR uses internally, packaged with a CLAUDE.md operating manual, 32 Claude skills, and 1"
 layout: page
-updated: 2026-09-06
+updated: 2026-09-07
 tags: [claude-code, skill, core]
 ---
 

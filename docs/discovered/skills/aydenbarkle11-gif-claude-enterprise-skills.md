@@ -2,7 +2,7 @@
 title: "aydenbarkle11-gif/claude-enterprise-skills — Claude Code skill discovered by cue"
 description: "Build and test production-ready software from simple prompts using a reliable 9-stage pipeline with full verification and adversarial testing."
 layout: page
-updated: 2026-09-04
+updated: 2026-09-07
 tags: [claude-code, skill, core]
 ---
 
@@ -16,7 +16,7 @@ tags: [claude-code, skill, core]
 
 cue ran [GitHub Code Search](https://docs.github.com/en/search-github/searching-on-github/searching-code) for `filename:SKILL.md` and found this repo. It scored 10 based on:
 - ⭐ 0 stars
-- 🗓️ Last pushed: 2026-09-04
+- 🗓️ Last pushed: 2026-09-07
 - 🏷️ Tags: ai-agent, ai-coding, ai-tools, automation, claude, claude-code-skill, cli-tools, code-quality, developer-tools, enterprise, open-standard, productivity, security, slsa, software-engineering, tdd, test-automation, typescript, vibe-coding
 
 ## Best fit cue profiles

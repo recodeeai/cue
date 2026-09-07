@@ -1,42 +1,98 @@
 ---
 title: "Claude Code Skills for backend"
-description: "7 community Claude Code skills curated by cue for the backend profile. Hidden-gem repos with SKILL.md, MCP servers, and CLI integrations."
+description: "17 community Claude Code skills curated by cue for the backend profile. Hidden-gem repos with SKILL.md, MCP servers, and CLI integrations."
 layout: page
-updated: 2026-09-06
+updated: 2026-09-07
 tags: [claude-code, backend, skills, mcp, ai-agents]
 ---
 
 # Claude Code Skills for `backend`
 
-> 7 community-built skills curated by [cue](https://github.com/opencue/cuecards) for the **backend** profile.
+> 17 community-built skills curated by [cue](https://github.com/opencue/cuecards) for the **backend** profile.
 > Each one was discovered via GitHub Code Search, scored on signal quality, and mapped to this profile by keyword overlap.
 
 **[← back to all discovered skills](./index.md)**
 
 ---
 
-<a id="agentgamelab-mneme"></a>
-## 💎 [AgentGameLab/mneme](https://github.com/AgentGameLab/mneme)
+<a id="ruvnet-ruflo"></a>
+## 💎 [ruvnet/ruflo](https://github.com/ruvnet/ruflo)
 
-**★ 7** · exceptional (score 10.7) · JavaScript · tags: agent-memory, ai-agents, claude-code, claude-skills, claudecode
+**★ 71156** · exceptional (score 23.5) · TypeScript · tags: agentic-ai, agentic-framework, agentic-workflow, agents, ai-agents
 
-Persistent long-term memory for Claude Code agents — SQLite + FTS5 + sqlite-vec + RRF hybrid recall over MCP, with Chinese tokenization. Local-first, graceful degradation.
+🌊 The original agent meta-harness. Deploy intelligent multi-player swarms, coordinate autonomous workflows, and build conversational AI systems. Features adaptive memory, self-learning intelligence, RAG integration, and native Claude Code / Codex / Hermes and many more Integrated
+
+✅ SKILL.md
 
 ```bash
-cue skills add AgentGameLab/mneme --profile backend
+cue skills add ruvnet/ruflo --profile backend
 ```
 
 ---
 
-<a id="fastprod-contextengine"></a>
-## 💎 [FASTPROD/ContextEngine](https://github.com/FASTPROD/ContextEngine)
+<a id="vexa-ai-vexa"></a>
+## 💎 [Vexa-ai/vexa](https://github.com/Vexa-ai/vexa)
 
-**★ 3** · exceptional (score 8.2) · TypeScript · tags: ai-agents, claude-desktop, cursor, knowledge-base, local-first
+**★ 2755** · exceptional (score 19.5) · Python · tags: api, claude-code, codex, google-meet, mcp
 
-MCP server — AI agents that remember across sessions. Zero API keys, 100% local.
+Open-source meeting transcription API for Google Meet, Microsoft Teams & Zoom. Auto-join bots, real-time WebSocket transcripts, MCP server for AI agents. Self-host or use hosted SaaS.
 
 ```bash
-cue skills add FASTPROD/ContextEngine --profile backend
+cue skills add Vexa-ai/vexa --profile backend
+```
+
+---
+
+<a id="jakubs2623-notebooklm-skill"></a>
+## 💎 [jakubs2623/notebooklm-skill](https://github.com/jakubs2623/notebooklm-skill)
+
+**★ 7** · exceptional (score 17.3) · Python · tags: agentic-skill, ai-agents, ai-research, antigravity, api
+
+Connect NotebookLM research with Claude to generate structured content from URLs, PDFs, and trending topics for multi-platform publishing.
+
+✅ SKILL.md
+
+```bash
+cue skills add jakubs2623/notebooklm-skill --profile backend
+```
+
+---
+
+<a id="retyc-retyc-cli"></a>
+## 💎 [retyc/retyc-cli](https://github.com/retyc/retyc-cli)
+
+**★ 22** · exceptional (score 12) · Go · tags: claude-code, claude-desktop, cli, cursor-builtin, dataroom
+
+Official CLI client for Retyc with MCP server
+
+```bash
+cue skills add retyc/retyc-cli --profile backend
+```
+
+---
+
+<a id="daizedong-schedule-reminder"></a>
+## 💎 [DaizeDong/schedule-reminder](https://github.com/DaizeDong/schedule-reminder)
+
+**★ 0** · exceptional (score 10.5) · Python · tags: agent, ai, ai-agent, automation, claude
+
+Persistent store for todos, events, deadlines and progress with pending/doing/done states; fires due reminders via Discord; stable CLI/JSON API other skills call.
+
+```bash
+cue skills add DaizeDong/schedule-reminder --profile backend
+```
+
+---
+
+<a id="eirik-rune-runemap"></a>
+## 💎 [eirik-rune/runemap](https://github.com/eirik-rune/runemap)
+
+**★ 3** · exceptional (score 9.2) · Python · tags: agent-skills, agents, ascii-art, claude-skill, llm
+
+Weather radar MCP server and Agent Skill — live conditions and a text radar map for any place on earth, in one HTTP request. No image, no API key.
+
+```bash
+cue skills add eirik-rune/runemap --profile backend
 ```
 
 ---
@@ -54,6 +110,19 @@ cue skills add renefichtmueller/adaptive-llm-gateway --profile backend
 
 ---
 
+<a id="gordonkjlee-facthouse"></a>
+## 💎 [gordonkjlee/facthouse](https://github.com/gordonkjlee/facthouse)
+
+**★ 2** · exceptional (score 8) · TypeScript · tags: ai-memory, knowledge-engine, mcp, mcp-server, memory-system
+
+A local memory engine any AI tool can use.
+
+```bash
+cue skills add gordonkjlee/facthouse --profile backend
+```
+
+---
+
 <a id="xuantinhnbs-rgb-autocad-trimble-mcp"></a>
 ## ✨ [xuantinhnbs-rgb/autocad-trimble-mcp](https://github.com/xuantinhnbs-rgb/autocad-trimble-mcp)
 
@@ -67,6 +136,84 @@ cue skills add xuantinhnbs-rgb/autocad-trimble-mcp --profile backend
 
 ---
 
+<a id="hproxy-com-free-proxy-list"></a>
+## ✨ [hproxy-com/free-proxy-list](https://github.com/hproxy-com/free-proxy-list)
+
+**★ 49** · strong (score 7.3) · tags: ai-agents, anonymous-proxy, free-proxies, free-proxy, free-proxy-api
+
+Free proxy list, verified around the clock: HTTP, HTTPS, SOCKS4 and SOCKS5 proxies with country, anonymity, latency and uptime on every row, updated several times a day. Live list, proxy checker, keyless API and MCP server at hproxy.com.
+
+```bash
+cue skills add hproxy-com/free-proxy-list --profile backend
+```
+
+---
+
+<a id="alexfp28-huginndb"></a>
+## ✨ [Alexfp28/huginnDB](https://github.com/Alexfp28/huginnDB)
+
+**★ 2** · strong (score 7) · TypeScript · tags: ai-tools, database-client, database-gui, dbeaver-alternative, desktop-database
+
+Desktop database manager for PostgreSQL, MySQL, SQLite, MongoDB and SQL Server, built with Tauri + React. Minimal, keyboard-first UI with Monaco-everywhere editing, inspired by HeidiSQL. Includes a MongoDB aggregation editor, an index manager, and huginndb-mcp, a connector letting AI clients query your databases. MIT licensed.
+
+```bash
+cue skills add Alexfp28/huginnDB --profile backend
+```
+
+---
+
+<a id="iksnerd-hopper-recon"></a>
+## ✨ [iksnerd/hopper-recon](https://github.com/iksnerd/hopper-recon)
+
+**★ 1** · strong (score 6.8) · TypeScript · tags: attack-surface, attack-surface-management, bug-bounty, docker, golang
+
+Self-hosted attack-surface recon — point it at a domain you own and map subdomains, DNS, TLS, HTTP, CDN, and historical URLs in one dashboard. The same tools run over MCP, so AI agents (Claude Code, Cline) can drive recon too.
+
+```bash
+cue skills add iksnerd/hopper-recon --profile backend
+```
+
+---
+
+<a id="shimon-ks-tasklite-mcp"></a>
+## ✨ [shimon-ks/tasklite-mcp](https://github.com/shimon-ks/tasklite-mcp)
+
+**★ 0** · strong (score 6) · TypeScript · tags: ai-agents, backend-as-a-service, chatgpt, claude, gemini
+
+TaskLite MCP server — build a real backend from Claude, ChatGPT, Gemini, Cursor or VS Code: boards, data, automations, REST API and a ready-made admin
+
+```bash
+cue skills add shimon-ks/tasklite-mcp --profile backend
+```
+
+---
+
+<a id="balaianu-cogz"></a>
+## ✨ [balaianu/CogZ](https://github.com/balaianu/CogZ)
+
+**★ 0** · strong (score 6) · Rust · tags: agent-memory, ai-coding-agent, code-awareness, code-indexing, context-engine
+
+Local-first engineering cognition runtime for AI coding agents — persistent memory, contextual retrieval, and continuous cognition about your codebase.
+
+```bash
+cue skills add balaianu/CogZ --profile backend
+```
+
+---
+
+<a id="hammotime-eve-online-mcp"></a>
+## ✨ [HammoTime/eve-online-mcp](https://github.com/HammoTime/eve-online-mcp)
+
+**★ 0** · strong (score 6) · TypeScript · tags: ai-tools, api-client, ccp-games, developer-tools, esi
+
+A secure, read-only MCP server that gives AI assistants comprehensive access to EVE Online’s ESI API, including authenticated character data and schema-aware tools.
+
+```bash
+cue skills add HammoTime/eve-online-mcp --profile backend
+```
+
+---
+
 <a id="anirudhlath-alfred"></a>
 ## ✨ [anirudhlath/alfred](https://github.com/anirudhlath/alfred)
 
@@ -76,19 +223,6 @@ Local-first multi-agent voice assistant — dual-process architecture (local Oll
 
 ```bash
 cue skills add anirudhlath/alfred --profile backend
-```
-
----
-
-<a id="namht4devlop-provenlens"></a>
-## ✨ [NamHT4Devlop/provenlens](https://github.com/NamHT4Devlop/provenlens)
-
-**★ 0** · strong (score 5) · JavaScript · tags: blast-radius, call-graph, cli, code-analysis, code-search
-
-Personal pre-indexed code knowledge graph for Java, Ruby, TypeScript and JavaScript — a call graph plus nine string-binding plugins for the wiring a call graph structurally cannot see: MyBatis, Camel, SQS, Kafka, HTTP routes, Spring events, GraphQL, gRPC, Flyway. Runs entirely offline.
-
-```bash
-cue skills add NamHT4Devlop/provenlens --profile backend
 ```
 
 ---

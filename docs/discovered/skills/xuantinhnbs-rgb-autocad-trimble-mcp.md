@@ -2,7 +2,7 @@
 title: "xuantinhnbs-rgb/autocad-trimble-mcp — Claude Code skill discovered by cue"
 description: "MCP servers that let Claude and other AI tools drive AutoCAD 2022+ (49 tools, via COM) and Trimble Connect for Desktop (34 tools, via .NET API) on Windows. One "
 layout: page
-updated: 2026-09-06
+updated: 2026-09-07
 tags: [claude-code, skill, backend]
 ---
 

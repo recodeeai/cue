@@ -1,31 +1,55 @@
 ---
 title: "Claude Code Skills for docs-writer"
-description: "1 community Claude Code skills curated by cue for the docs-writer profile. Hidden-gem repos with SKILL.md, MCP servers, and CLI integrations."
+description: "3 community Claude Code skills curated by cue for the docs-writer profile. Hidden-gem repos with SKILL.md, MCP servers, and CLI integrations."
 layout: page
-updated: 2026-09-06
+updated: 2026-09-07
 tags: [claude-code, docs-writer, skills, mcp, ai-agents]
 ---
 
 # Claude Code Skills for `docs-writer`
 
-> 1 community-built skills curated by [cue](https://github.com/opencue/cuecards) for the **docs-writer** profile.
+> 3 community-built skills curated by [cue](https://github.com/opencue/cuecards) for the **docs-writer** profile.
 > Each one was discovered via GitHub Code Search, scored on signal quality, and mapped to this profile by keyword overlap.
 
 **[← back to all discovered skills](./index.md)**
 
 ---
 
-<a id="chaosx-space-god-of-the-void"></a>
-## 💎 [CHAOSX-SPACE/god-of-the-void](https://github.com/CHAOSX-SPACE/god-of-the-void)
+<a id="onourimpram-mneme"></a>
+## 💎 [OnourImpram/mneme](https://github.com/OnourImpram/mneme)
 
-**★ 1** · exceptional (score 14.8) · Python · tags: agent-memory, ai-agent, anthropic, claude, claude-code
+**★ 2** · exceptional (score 10.5) · Python · tags: agent-memory, anthropic, claude, claude-code, codex
 
-A Claude Code skill with a BODY: persistent memory across sessions, ~0-token semantic search, an errarium that ambushes you before you repeat a bug, caged autonomy, and a local dashboard. 16 organs · 54 commands · 1,650 tests · zero dependencies.
-
-✅ SKILL.md
+Plain-Markdown memory for Claude Code and MCP. Local retrieval, redaction before indexing, no model on the Stop path.
 
 ```bash
-cue skills add CHAOSX-SPACE/god-of-the-void --profile docs-writer
+cue skills add OnourImpram/mneme --profile docs-writer
+```
+
+---
+
+<a id="howdow698-ui-llm-wiki"></a>
+## 💎 [howdow698-ui/llm-wiki](https://github.com/howdow698-ui/llm-wiki)
+
+**★ 0** · exceptional (score 10) · tags: agent-skill, claude-code-skill, cli, codex, gemini
+
+Build a structured knowledge base with LLM agents to automate documentation, link concepts, and maintain long-term information retention in Markdown.
+
+```bash
+cue skills add howdow698-ui/llm-wiki --profile docs-writer
+```
+
+---
+
+<a id="mindgameolympiangames78-llm-knowledge-base"></a>
+## 💎 [mindgameolympiangames78/llm-knowledge-base](https://github.com/mindgameolympiangames78/llm-knowledge-base)
+
+**★ 0** · exceptional (score 9.5) · tags: bert-models, biomedical-informatics, claude-code, claude-code-skill, gpt
+
+Automate your personal knowledge base in Obsidian using Claude. Feed raw content and let the LLM organize, link, and synthesize your notes.
+
+```bash
+cue skills add mindgameolympiangames78/llm-knowledge-base --profile docs-writer
 ```
 
 ---

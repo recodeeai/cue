@@ -2,7 +2,7 @@
 title: "Sfedfcv/redesigned-pancake — Claude Code skill discovered by cue"
 description: "Skip to content github / docs Code Issues 80 Pull requests 35 Discussions Actions Projects 2 Security Insights Merge branch 'main' into 1862-Add-Travis-CI-migra"
 layout: page
-updated: 2026-09-06
+updated: 2026-09-07
 tags: [claude-code, skill, backend, creative-media]
 ---
 

@@ -1,42 +1,31 @@
 ---
 title: "Claude Code Skills for fleet-control"
-description: "4 community Claude Code skills curated by cue for the fleet-control profile. Hidden-gem repos with SKILL.md, MCP servers, and CLI integrations."
+description: "2 community Claude Code skills curated by cue for the fleet-control profile. Hidden-gem repos with SKILL.md, MCP servers, and CLI integrations."
 layout: page
-updated: 2026-09-06
+updated: 2026-09-07
 tags: [claude-code, fleet-control, skills, mcp, ai-agents]
 ---
 
 # Claude Code Skills for `fleet-control`
 
-> 4 community-built skills curated by [cue](https://github.com/opencue/cuecards) for the **fleet-control** profile.
+> 2 community-built skills curated by [cue](https://github.com/opencue/cuecards) for the **fleet-control** profile.
 > Each one was discovered via GitHub Code Search, scored on signal quality, and mapped to this profile by keyword overlap.
 
 **[← back to all discovered skills](./index.md)**
 
 ---
 
-<a id="vikashjeyaraman-opencouncil-contract-inspector"></a>
-## 💎 [vikashjeyaraman/opencouncil-contract-inspector](https://github.com/vikashjeyaraman/opencouncil-contract-inspector)
+<a id="ruvnet-ruflo"></a>
+## 💎 [ruvnet/ruflo](https://github.com/ruvnet/ruflo)
 
-**★ 120** · exceptional (score 13.4) · HTML · tags: agent-orchestration, ai-agents, ai-hallucination, ai-quality, anthropic
+**★ 71156** · exceptional (score 23.5) · TypeScript · tags: agentic-ai, agentic-framework, agentic-workflow, agents, ai-agents
 
-Proven 2026 Multi-Agent AI Review System – Verdict-Driven Quality Control
+🌊 The original agent meta-harness. Deploy intelligent multi-player swarms, coordinate autonomous workflows, and build conversational AI systems. Features adaptive memory, self-learning intelligence, RAG integration, and native Claude Code / Codex / Hermes and many more Integrated
 
-```bash
-cue skills add vikashjeyaraman/opencouncil-contract-inspector --profile fleet-control
-```
-
----
-
-<a id="aadiieee-multi-agent-revenue-orchestrator"></a>
-## 💎 [aadiieee/multi-agent-revenue-orchestrator](https://github.com/aadiieee/multi-agent-revenue-orchestrator)
-
-**★ 1** · exceptional (score 9.3) · HTML · tags: agents, ai-agents, ai-sdr, apollo-io, business-development
-
-2026 Multi-Agent BD Orchestrator – Apollo, Notion, Gmail & Slack Integration
+✅ SKILL.md
 
 ```bash
-cue skills add aadiieee/multi-agent-revenue-orchestrator --profile fleet-control
+cue skills add ruvnet/ruflo --profile fleet-control
 ```
 
 ---
@@ -50,19 +39,6 @@ Universal AI dev-team workflow for 6 CLIs (Claude Code, Codex, Gemini, Cursor, A
 
 ```bash
 cue skills add nuttaruj/rolepod --profile fleet-control
-```
-
----
-
-<a id="eduardo-salvador-agent-harness-kit"></a>
-## ✨ [Eduardo-Salvador/Agent-Harness-Kit](https://github.com/Eduardo-Salvador/Agent-Harness-Kit)
-
-**★ 6** · strong (score 7.9) · Python · tags: agent-harness, agent-orchestration, agentic-workflows, ai-agents, claude-code
-
-An installable harness for Codex and Claude Code that gives coding agents durable context, scoped task graphs, bounded execution, and a clear path from idea to verified delivery.
-
-```bash
-cue skills add Eduardo-Salvador/Agent-Harness-Kit --profile fleet-control
 ```
 
 ---

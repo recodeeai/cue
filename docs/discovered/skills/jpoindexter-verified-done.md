@@ -2,19 +2,19 @@
 title: "jpoindexter/verified-done — Claude Code skill discovered by cue"
 description: "Always-on skill pack that stops AI coding agents from claiming work is done when only the code path (not the real behavior) was verified. Portable SKILL.md for "
 layout: page
-updated: 2026-09-06
+updated: 2026-09-07
 tags: [claude-code, skill, core]
 ---
 
 # 🔹 [jpoindexter/verified-done](https://github.com/jpoindexter/verified-done)
 
-**★ 1** · potential (score 3.6) · Shell · agent-skills, ai-agents, always-on, claude-code, codex
+**★ 1** · potential (score 3.5) · Shell · agent-skills, ai-agents, always-on, claude-code, codex
 
 > Always-on skill pack that stops AI coding agents from claiming work is done when only the code path (not the real behavior) was verified. Portable SKILL.md for Claude Code, Codex, Cursor, and any agent.
 
 ## Why cue indexed it
 
-cue ran [GitHub Code Search](https://docs.github.com/en/search-github/searching-on-github/searching-code) for `filename:SKILL.md` and found this repo. It scored 3.6 based on:
+cue ran [GitHub Code Search](https://docs.github.com/en/search-github/searching-on-github/searching-code) for `filename:SKILL.md` and found this repo. It scored 3.5 based on:
 - ⭐ 1 stars
 - 🗓️ Last pushed: 2026-07-13
 - 🏷️ Tags: agent-skills, ai-agents, always-on, claude-code, codex, cursor, honesty, llm, prompt-engineering, skills, testing, verification

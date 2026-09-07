@@ -2,7 +2,7 @@
 title: "davzpogi01/claude-security-research-skill — Claude Code skill discovered by cue"
 description: "Automate security research workflows with structured tool-driven assessments for Claude via MCP."
 layout: page
-updated: 2026-09-05
+updated: 2026-09-07
 tags: [claude-code, skill, cybersecurity]
 ---
 
@@ -16,7 +16,7 @@ tags: [claude-code, skill, cybersecurity]
 
 cue ran [GitHub Code Search](https://docs.github.com/en/search-github/searching-on-github/searching-code) for `filename:SKILL.md` and found this repo. It scored 11.5 based on:
 - ⭐ 0 stars
-- 🗓️ Last pushed: 2026-09-05
+- 🗓️ Last pushed: 2026-09-07
 - 🏷️ Tags: agent-skills, bounty-hunters, claude-code, claude-code-skill, claude-skill, developer-tools, hackerone, mcp, pentest, perplexity-super-skill, product-management, productivity, promt-engineering, security-research, skill, skills, toolkit
 
 ## Best fit cue profiles

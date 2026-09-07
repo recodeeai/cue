@@ -2,21 +2,21 @@
 title: "Storybloq/storybloq — Claude Code skill discovered by cue"
 description: "Cross-session context for Claude Code. CLI + MCP server + /story skill that tracks tickets, issues, handovers, and roadmap in a .story/ directory."
 layout: page
-updated: 2026-09-06
+updated: 2026-09-07
 tags: [claude-code, skill, core]
 ---
 
 # 💎 [Storybloq/storybloq](https://github.com/Storybloq/storybloq)
 
-**★ 721** · exceptional (score 20.3) · TypeScript · agentic-development, ai-development, anthropic, claude-code, claude-skill
+**★ 725** · exceptional (score 20.3) · TypeScript · agentic-development, ai-development, anthropic, claude-code, claude-skill
 
 > Cross-session context for Claude Code. CLI + MCP server + /story skill that tracks tickets, issues, handovers, and roadmap in a .story/ directory.
 
 ## Why cue indexed it
 
 cue ran [GitHub Code Search](https://docs.github.com/en/search-github/searching-on-github/searching-code) for `filename:SKILL.md` and found this repo. It scored 20.3 based on:
-- ⭐ 721 stars
-- 🗓️ Last pushed: 2026-09-06
+- ⭐ 725 stars
+- 🗓️ Last pushed: 2026-09-07
 - 🏷️ Tags: agentic-development, ai-development, anthropic, claude-code, claude-skill, cli, context-management, developer-tools, handover, mac-app, macos, mcp, mcp-server, project-management, session-continuity, typescript, workflow
 
 ## Best fit cue profiles

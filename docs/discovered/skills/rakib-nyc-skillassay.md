@@ -2,19 +2,19 @@
 title: "rakib-nyc/skillassay — Claude Code skill discovered by cue"
 description: "Static analyzer for AI coding-agent context — and an Agent Skill your agent can run. Measures always-on context cost of CLAUDE.md, AGENTS.md and Agent Skills; f"
 layout: page
-updated: 2026-09-06
+updated: 2026-09-07
 tags: [claude-code, skill, research]
 ---
 
 # 🔹 [rakib-nyc/skillassay](https://github.com/rakib-nyc/skillassay)
 
-**★ 2** · potential (score 4.7) · TypeScript · agent-skills, agents-md, ai-agents, claude, claude-code
+**★ 2** · potential (score 4.6) · TypeScript · agent-skills, agents-md, ai-agents, claude, claude-code
 
 > Static analyzer for AI coding-agent context — and an Agent Skill your agent can run. Measures always-on context cost of CLAUDE.md, AGENTS.md and Agent Skills; finds skills that won't load, redundant instructions, stale paths and duplicate names. Claude Code, Codex, Cursor, Gemini CLI. Research project.
 
 ## Why cue indexed it
 
-cue ran [GitHub Code Search](https://docs.github.com/en/search-github/searching-on-github/searching-code) for `filename:SKILL.md` and found this repo. It scored 4.7 based on:
+cue ran [GitHub Code Search](https://docs.github.com/en/search-github/searching-on-github/searching-code) for `filename:SKILL.md` and found this repo. It scored 4.6 based on:
 - ⭐ 2 stars
 - 🗓️ Last pushed: 2026-08-16
 - 🏷️ Tags: agent-skills, agents-md, ai-agents, claude, claude-code, claude-md, claude-skills, cli, codex, coding-agent, context-engineering, context-window, cursor, developer-tools, gemini-cli, linter, llm, mcp, static-analysis, token-counter

@@ -2,7 +2,7 @@
 title: "HmERro3/indian-trading-skills — Claude Code skill discovered by cue"
 description: "Enable Claude to analyze Indian equity markets with modules covering NSE/BSE stocks, derivatives, flows, news, and trade planning."
 layout: page
-updated: 2026-09-04
+updated: 2026-09-07
 tags: [claude-code, skill, core]
 ---
 
@@ -16,7 +16,7 @@ tags: [claude-code, skill, core]
 
 cue ran [GitHub Code Search](https://docs.github.com/en/search-github/searching-on-github/searching-code) for `filename:SKILL.md` and found this repo. It scored 12.3 based on:
 - ⭐ 1 stars
-- 🗓️ Last pushed: 2026-09-04
+- 🗓️ Last pushed: 2026-09-07
 - 🏷️ Tags: agent-skills, ai-agent, ai-trading, algorithmic-trading, claude, claude-code, claude-skill, mcp, monte-carlo, nifty, optimization, position-sizing, rsi-divergence, stock-market, tearsheets, trading, walk-forward
 
 ## Best fit cue profiles

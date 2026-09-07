@@ -2,7 +2,7 @@
 title: "chadnewbry/nyc-restaurant-week-mcp — Claude Code skill discovered by cue"
 description: "Unofficial map, search, and MCP server for NYC Restaurant Week Summer 2026 — 636 restaurants, real MTA subway routing, and a pixel rat named Rick."
 layout: page
-updated: 2026-09-01
+updated: 2026-09-07
 tags: [claude-code, skill, core]
 ---
 
@@ -16,7 +16,7 @@ tags: [claude-code, skill, core]
 
 cue ran [GitHub Code Search](https://docs.github.com/en/search-github/searching-on-github/searching-code) for `filename:SKILL.md` and found this repo. It scored 5.5 based on:
 - ⭐ 0 stars
-- 🗓️ Last pushed: 2026-09-01
+- 🗓️ Last pushed: 2026-09-07
 - 🏷️ Tags: claude, maplibre, mcp, mcp-server, model-context-protocol, nextjs, nyc, restaurant-week
 
 ## Best fit cue profiles

@@ -2,7 +2,7 @@
 title: "rolling-codes/-the-better-skill-creator-skill- — Claude Code skill discovered by cue"
 description: "A fork of Anthropic's skill-creator that fixes what the original got wrong: scripts Claude couldn't see, thin trigger tests, and a grader with no path to the te"
 layout: page
-updated: 2026-09-06
+updated: 2026-09-07
 tags: [claude-code, skill, core]
 ---
 

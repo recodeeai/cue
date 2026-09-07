@@ -2,21 +2,21 @@
 title: "micheam/ai-assistant-console — Claude Code skill discovered by cue"
 description: "A Unix-friendly CLI for LLM chat and text generation. One interface for Anthropic Claude, OpenAI, Groq, and Cerebras — pipe stdin, reference files with `@path`,"
 layout: page
-updated: 2026-09-06
+updated: 2026-09-07
 tags: [claude-code, skill, core]
 ---
 
 # ✨ [micheam/ai-assistant-console](https://github.com/micheam/ai-assistant-console)
 
-**★ 6** · strong (score 5.8) · Go · ai, ai-assistant, anthropic, claude, cli-app
+**★ 6** · strong (score 5.9) · Go · ai, ai-assistant, anthropic, claude, cli-app
 
 > A Unix-friendly CLI for LLM chat and text generation. One interface for Anthropic Claude, OpenAI, Groq, and Cerebras — pipe stdin, reference files with `@path`, and stream responses right in your terminal.
 
 ## Why cue indexed it
 
-cue ran [GitHub Code Search](https://docs.github.com/en/search-github/searching-on-github/searching-code) for `filename:SKILL.md` and found this repo. It scored 5.8 based on:
+cue ran [GitHub Code Search](https://docs.github.com/en/search-github/searching-on-github/searching-code) for `filename:SKILL.md` and found this repo. It scored 5.9 based on:
 - ⭐ 6 stars
-- 🗓️ Last pushed: 2026-09-04
+- 🗓️ Last pushed: 2026-09-07
 - 🏷️ Tags: ai, ai-assistant, anthropic, claude, cli-app, command-line-tool, go, gpt, llm, openai, terminal
 
 ## Best fit cue profiles

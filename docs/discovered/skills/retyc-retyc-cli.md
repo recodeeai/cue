@@ -2,7 +2,7 @@
 title: "retyc/retyc-cli — Claude Code skill discovered by cue"
 description: "Official CLI client for Retyc with MCP server"
 layout: page
-updated: 2026-09-05
+updated: 2026-09-07
 tags: [claude-code, skill, backend]
 ---
 
@@ -16,7 +16,7 @@ tags: [claude-code, skill, backend]
 
 cue ran [GitHub Code Search](https://docs.github.com/en/search-github/searching-on-github/searching-code) for `filename:SKILL.md` and found this repo. It scored 12 based on:
 - ⭐ 22 stars
-- 🗓️ Last pushed: 2026-09-05
+- 🗓️ Last pushed: 2026-09-07
 - 🏷️ Tags: claude-code, claude-desktop, cli, cursor-builtin, dataroom, docker, encryption, end-to-end-encryption, file-sharing, file-transfer, mcp-server, retyc, webdav, webdav-server
 
 ## Best fit cue profiles

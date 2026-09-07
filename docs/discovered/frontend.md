@@ -2,7 +2,7 @@
 title: "Claude Code Skills for frontend"
 description: "4 community Claude Code skills curated by cue for the frontend profile. Hidden-gem repos with SKILL.md, MCP servers, and CLI integrations."
 layout: page
-updated: 2026-09-06
+updated: 2026-09-07
 tags: [claude-code, frontend, skills, mcp, ai-agents]
 ---
 
@@ -12,6 +12,21 @@ tags: [claude-code, frontend, skills, mcp, ai-agents]
 > Each one was discovered via GitHub Code Search, scored on signal quality, and mapped to this profile by keyword overlap.
 
 **[← back to all discovered skills](./index.md)**
+
+---
+
+<a id="amohavarshansankar-google-fonts-skill"></a>
+## 💎 [amohavarshansankar/google-fonts-skill](https://github.com/amohavarshansankar/google-fonts-skill)
+
+**★ 1** · exceptional (score 12.8) · HTML · tags: claude-code-skill, css, css-grid, css-grid-layout, design-system
+
+Generate Google Fonts typography systems with font search, pair suggestions, and CSS/Tailwind output from 1,923 curated fonts
+
+✅ SKILL.md
+
+```bash
+cue skills add amohavarshansankar/google-fonts-skill --profile frontend
+```
 
 ---
 
@@ -28,41 +43,28 @@ cue skills add ezra-y/awesome-claude-ui-armory --profile frontend
 
 ---
 
-<a id="cs32dasdasd-ionik-capacitor-flux-patterns"></a>
-## 💎 [cs32dasdasd/ionik-capacitor-flux-patterns](https://github.com/cs32dasdasd/ionik-capacitor-flux-patterns)
+<a id="wahmoh-claude-react-kit"></a>
+## 💎 [wahmoh/claude-react-kit](https://github.com/wahmoh/claude-react-kit)
 
-**★ 0** · exceptional (score 9) · HTML · tags: agent, agents, ai, ai-coding, android
+**★ 2** · exceptional (score 10) · tags: agentic-ai, ai, ai-coding-assistant, anthropic, architecture
 
-Ionic Capacitor Pro 2026: AI-Powered Hybrid App Builder for React, Angular & Vue
+Enforce clean architecture and prevent technical debt in React projects with a drop-in Claude Code configuration that manages context and imports.
 
 ```bash
-cue skills add cs32dasdasd/ionik-capacitor-flux-patterns --profile frontend
+cue skills add wahmoh/claude-react-kit --profile frontend
 ```
 
 ---
 
-<a id="pepinorancio1-sticky-switcher-funnel-playbook"></a>
-## 💎 [PepinoRancio1/sticky-switcher-funnel-playbook](https://github.com/PepinoRancio1/sticky-switcher-funnel-playbook)
+<a id="alexfp28-huginndb"></a>
+## ✨ [Alexfp28/huginnDB](https://github.com/Alexfp28/huginnDB)
 
-**★ 0** · exceptional (score 9) · HTML · tags: agency-toolkit, ai-coding-agent, claude-code, claude-code-skill, conversion-optimization
+**★ 2** · strong (score 7) · TypeScript · tags: ai-tools, database-client, database-gui, dbeaver-alternative, desktop-database
 
-Modern Web Design Playbook 2026 – Niche Tokens, Sticky Switcher & Conversion Funnel
-
-```bash
-cue skills add PepinoRancio1/sticky-switcher-funnel-playbook --profile frontend
-```
-
----
-
-<a id="bluestarsystem-aura-ui"></a>
-## 💎 [BlueStarSystem/aura-ui](https://github.com/BlueStarSystem/aura-ui)
-
-**★ 3** · exceptional (score 8.2) · Blade · tags: alpine-js, blade-components, dark-mode, laravel, laravel-components
-
-127 free MIT Blade components for Laravel + Livewire + Alpine + Tailwind 4. Own-the-code CLI, tested accessibility, and docs built for AI assistants.
+Desktop database manager for PostgreSQL, MySQL, SQLite, MongoDB and SQL Server, built with Tauri + React. Minimal, keyboard-first UI with Monaco-everywhere editing, inspired by HeidiSQL. Includes a MongoDB aggregation editor, an index manager, and huginndb-mcp, a connector letting AI clients query your databases. MIT licensed.
 
 ```bash
-cue skills add BlueStarSystem/aura-ui --profile frontend
+cue skills add Alexfp28/huginnDB --profile frontend
 ```
 
 ---

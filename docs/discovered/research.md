@@ -1,17 +1,47 @@
 ---
 title: "Claude Code Skills for research"
-description: "2 community Claude Code skills curated by cue for the research profile. Hidden-gem repos with SKILL.md, MCP servers, and CLI integrations."
+description: "6 community Claude Code skills curated by cue for the research profile. Hidden-gem repos with SKILL.md, MCP servers, and CLI integrations."
 layout: page
-updated: 2026-09-06
+updated: 2026-09-07
 tags: [claude-code, research, skills, mcp, ai-agents]
 ---
 
 # Claude Code Skills for `research`
 
-> 2 community-built skills curated by [cue](https://github.com/opencue/cuecards) for the **research** profile.
+> 6 community-built skills curated by [cue](https://github.com/opencue/cuecards) for the **research** profile.
 > Each one was discovered via GitHub Code Search, scored on signal quality, and mapped to this profile by keyword overlap.
 
 **[← back to all discovered skills](./index.md)**
+
+---
+
+<a id="jakubs2623-notebooklm-skill"></a>
+## 💎 [jakubs2623/notebooklm-skill](https://github.com/jakubs2623/notebooklm-skill)
+
+**★ 7** · exceptional (score 17.3) · Python · tags: agentic-skill, ai-agents, ai-research, antigravity, api
+
+Connect NotebookLM research with Claude to generate structured content from URLs, PDFs, and trending topics for multi-platform publishing.
+
+✅ SKILL.md
+
+```bash
+cue skills add jakubs2623/notebooklm-skill --profile research
+```
+
+---
+
+<a id="wuaishare-boyue"></a>
+## 💎 [wuaishare/boyue](https://github.com/wuaishare/boyue)
+
+**★ 0** · exceptional (score 11) · tags: agent-skills, ai-agents, ai-coding, claude-code-skill, claude-skills
+
+BoYue · 博约 | AI编程开发方法论 | methodology paper + Agent Skill for AI development decisions and complexity governance
+
+✅ SKILL.md
+
+```bash
+cue skills add wuaishare/boyue --profile research
+```
 
 ---
 
@@ -28,10 +58,36 @@ cue skills add aemro-motors/popper-scope --profile research
 
 ---
 
+<a id="ljx-chase-research-field-onboarding"></a>
+## 💎 [ljx-chase/research-field-onboarding](https://github.com/ljx-chase/research-field-onboarding)
+
+**★ 2** · exceptional (score 9) · Python · tags: academic-research, agent-skill, agent-skills, chatgpt-skills, claude-code-skill
+
+A reusable research-onboarding skill for **Claude, ChatGPT, Codex, and other instruction-following agents**.
+
+```bash
+cue skills add ljx-chase/research-field-onboarding --profile research
+```
+
+---
+
+<a id="neverbiasu-awesome-research-skills"></a>
+## ✨ [neverbiasu/awesome-research-skills](https://github.com/neverbiasu/awesome-research-skills)
+
+**★ 1** · strong (score 5.3) · tags: academic-research, agent-skills, ai-agents, ai-for-research, awesome
+
+137 Agent Skills (SKILL.md) for academic and scientific research, curated one directory at a time — literature, study design, experiments, statistics, figures, writing, peer review. Each entry links to one exact path, with its own license, freshness, and capability flags.
+
+```bash
+cue skills add neverbiasu/awesome-research-skills --profile research
+```
+
+---
+
 <a id="rakib-nyc-skillassay"></a>
 ## 🔹 [rakib-nyc/skillassay](https://github.com/rakib-nyc/skillassay)
 
-**★ 2** · potential (score 4.7) · TypeScript · tags: agent-skills, agents-md, ai-agents, claude, claude-code
+**★ 2** · potential (score 4.6) · TypeScript · tags: agent-skills, agents-md, ai-agents, claude, claude-code
 
 Static analyzer for AI coding-agent context — and an Agent Skill your agent can run. Measures always-on context cost of CLAUDE.md, AGENTS.md and Agent Skills; finds skills that won't load, redundant instructions, stale paths and duplicate names. Claude Code, Codex, Cursor, Gemini CLI. Research project.
 

@@ -2,7 +2,7 @@
 title: "linny006/trending-claude-skills — Claude Code skill discovered by cue"
 description: "Auto-updated leaderboard of trending claude-skills and AI agent repos, refreshed every 15 minutes"
 layout: page
-updated: 2026-09-04
+updated: 2026-09-07
 tags: [claude-code, skill, core]
 ---
 
@@ -16,7 +16,7 @@ tags: [claude-code, skill, core]
 
 cue ran [GitHub Code Search](https://docs.github.com/en/search-github/searching-on-github/searching-code) for `filename:SKILL.md` and found this repo. It scored 12.2 based on:
 - ⭐ 36 stars
-- 🗓️ Last pushed: 2026-09-04
+- 🗓️ Last pushed: 2026-09-07
 - 🏷️ Tags: ai-agents, ai-coding, ai-development, ai-tools, ai-workflow, anthropic, auto-updated, awesome, awesome-list, claude-code, claude-skills, codex, coding-agent, developer-tools, generative-ai, live-data, llm-ecosystem, llm-tools, machine-learning, mcp-server
 
 ## Best fit cue profiles
