@@ -19,7 +19,7 @@ import {
   filterUnavailableMcpServers,
   type CommandAvailabilityOptions,
 } from "./mcp-availability";
-import { listAllSkillIds, resolveLocalSkill } from "./resolver-local";
+import { listAllSkillIds, createLocalSkillResolver } from "./resolver-local";
 import {
   materializeRuntime,
   runtimePathKey,
@@ -298,7 +298,7 @@ export async function prepareRuntime(
     agent: options.agent,
     runtimeRoot: join(configDir(), "runtime"),
     runtimeKey: options.runtimeKey,
-    skillSourceLookup: (id) => resolveLocalSkill(id),
+    skillSourceLookup: createLocalSkillResolver(),
     mcpRegistry: await loadMcpRegistry(options.agent),
     userClaudeMd:
       options.userMemory ?? (await readUserAgentMemory(options.agent)),

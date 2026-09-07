@@ -41,7 +41,9 @@ export default defineConfig({
           proxy.on("error", (err, _req, res) => {
             const message = `dashboard-server-unreachable: ${err.message}`;
             try {
-              res.writeHead(503, { "Content-Type": "application/json" });
+              if ("writeHead" in res) {
+                res.writeHead(503, { "Content-Type": "application/json" });
+              }
             } catch { /* headers already sent */ }
             res.end(JSON.stringify({ ok: false, error: message }));
           });

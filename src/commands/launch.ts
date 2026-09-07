@@ -48,6 +48,8 @@ import {
   parseProfileSelector,
 } from "../lib/profile-loader";
 import { resolveProfileForCwd } from "../lib/cwd-resolver";
+import { getDefaultSelector } from "../lib/default-profile";
+export { getDefaultSelector } from "../lib/default-profile";
 import { withCodexPonytail } from "../lib/codex-ponytail";
 import {
   DIVIDER_PREFIX,
@@ -67,7 +69,7 @@ import {
   startLoader,
 } from "../lib/launch-loader";
 import { ensureClaudeLogoPath } from "../lib/claude-logo";
-import { resolveLocalSkill } from "../lib/resolver-local";
+import { createLocalSkillResolver } from "../lib/resolver-local";
 import {
   resolveNpxDetailed,
   type NpxEntryFailure,
@@ -1339,48 +1341,6 @@ export function buildPickerSections(
   }
 
   return result;
-}
-
-/**
- * Read the user's Default-profile composition from
- * `<configDir>/default-profile`. Format: one profile name per line; `#`
- * comments and blank lines ignored. `core` is always included even if the
- * user removed it from the file. Missing file → just `core`.
- *
- * Returns the composite selector (e.g. `"core"` or `"core+skill-writer+ecc"`).
- */
-export function getDefaultSelector(
-  configDirPath: string = configDir(),
-  readFile: (p: string) => string = (p) => {
-    // eslint-disable-next-line @typescript-eslint/no-require-imports
-    return (require("node:fs") as typeof import("node:fs")).readFileSync(
-      p,
-      "utf8",
-    );
-  },
-): string {
-  const path = join(configDirPath, "default-profile");
-  let extras: string[] = [];
-  try {
-    const raw = readFile(path);
-    extras = raw
-      .split(/[\n+]/)
-      .map((s) => s.trim())
-      .map((s) => s.replace(/#.*$/, "").trim())
-      .filter((s) => s.length > 0 && s !== "core");
-  } catch (err) {
-    debug("launch:default-profile", err); /* missing → core only */
-  }
-  // Dedupe while preserving order.
-  const seen = new Set<string>(["core"]);
-  const parts = ["core"];
-  for (const e of extras) {
-    if (!seen.has(e)) {
-      seen.add(e);
-      parts.push(e);
-    }
-  }
-  return parts.join("+");
 }
 
 /**
@@ -3063,6 +3023,7 @@ export async function run(args: string[]): Promise<number> {
     }
 
     progress("Preparing runtime…", "");
+    const resolveLocalSkill = createLocalSkillResolver();
     runtime = await materializeRuntime({
       profile,
       agent: agentKind,

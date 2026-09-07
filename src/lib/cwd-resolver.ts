@@ -15,6 +15,7 @@
 import { readFile, stat } from "node:fs/promises";
 import { homedir } from "node:os";
 import { dirname, join, resolve } from "node:path";
+import { parseDefaultSelector } from "./default-profile";
 
 export type ResolveResult =
   | { source: "flag"; profile: string }
@@ -32,25 +33,6 @@ export interface ResolveOptions {
 
 async function exists(path: string): Promise<boolean> {
   try { await stat(path); return true; } catch { return false; }
-}
-
-/**
- * Parse a `default-profile` composition list into a `core+...` selector.
- * Format: one profile name per line and/or `+`-joined; `#` comments and blank
- * lines ignored. `core` is always the first part. Mirrors
- * `getDefaultSelector` in launch.ts so both readers agree.
- */
-function parseDefaultSelector(raw: string): string {
-  const extras = raw
-    .split(/[\n+]/)
-    .map((s) => s.replace(/#.*$/, "").trim())
-    .filter((s) => s.length > 0 && s !== "core");
-  const seen = new Set<string>(["core"]);
-  const parts = ["core"];
-  for (const e of extras) {
-    if (!seen.has(e)) { seen.add(e); parts.push(e); }
-  }
-  return parts.join("+");
 }
 
 async function findUpward(startDir: string, fileName: string, stopAt: string): Promise<string | null> {
@@ -81,20 +63,24 @@ async function findGitRoot(startDir: string, stopAt: string): Promise<string | n
 export async function resolveProfileForCwd(opts: ResolveOptions): Promise<ResolveResult> {
   if (opts.override) return { source: "flag", profile: opts.override };
 
-  const pinPath = await findUpward(opts.cwd, ".cue.profile", opts.homeDir);
+  const repoRoot = await findGitRoot(opts.cwd, opts.homeDir);
+  const pinPath = await findUpward(opts.cwd, ".cue.profile", repoRoot ?? opts.homeDir);
   if (pinPath) {
     const profile = (await readFile(pinPath, "utf8")).trim();
     if (profile) return { source: "pin-file", profile, pinPath };
   }
 
-  const repoRoot = await findGitRoot(opts.cwd, opts.homeDir);
   if (repoRoot) {
     const repoDefaultsPath = join(opts.configDir, "repo-defaults.json");
     if (await exists(repoDefaultsPath)) {
       try {
-        const map = JSON.parse(await readFile(repoDefaultsPath, "utf8")) as Record<string, string>;
-        const profile = map[repoRoot];
-        if (profile) return { source: "repo-default", profile };
+        const map: unknown = JSON.parse(await readFile(repoDefaultsPath, "utf8"));
+        if (map !== null && typeof map === "object" && !Array.isArray(map)) {
+          const value = (map as Record<string, unknown>)[repoRoot];
+          if (typeof value === "string" && value.trim()) {
+            return { source: "repo-default", profile: value.trim() };
+          }
+        }
       } catch { /* malformed repo-defaults.json — skip to the next resolution step */ }
     }
   }

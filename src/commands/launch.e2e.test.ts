@@ -150,6 +150,20 @@ describe.skipIf(!BUN_SPAWNABLE || !SKILLS_PRESENT)("cue launch e2e", () => {
     expect(claudeMd).toContain("Active Profile:");
   });
 
+  test("launch respects the Git boundary and ignores malformed repository defaults", async () => {
+    const repo = join(tmpDir, "repo");
+    const config = join(tmpDir, "xdg", "cue");
+    await mkdir(join(repo, ".git"), { recursive: true });
+    await mkdir(config, { recursive: true });
+    await writeFile(join(tmpDir, ".cue.profile"), "does-not-exist\n");
+    await writeFile(join(config, "repo-defaults.json"), JSON.stringify({ [repo]: {} }));
+    await writeFile(join(config, "default-profile"), "core\n");
+    const result = cue(["launch", "claude", "--dry-run"], { cwd: repo });
+    expect(result.status).toBe(0);
+    const output = JSON.parse(result.stdout.match(/\{[\s\S]*\}/)![0]);
+    expect(output.profile).toBe("core");
+  });
+
   test("launch produces settings.json with MCPs and plugins", async () => {
     await writeFile(join(tmpDir, ".cue.profile"), "backend\n");
 

@@ -74,6 +74,33 @@ describe("resolveProfileForCwd", () => {
     expect(out).toEqual({ source: "repo-default", profile: "research" });
   });
 
+  test.each(["directory", "worktree-file"])("does not inherit a pin above a Git %s", async (kind) => {
+    const repo = join(root, "repo");
+    const cwd = join(repo, "src");
+    const configDir = join(root, "config");
+    await mkdir(cwd, { recursive: true });
+    await mkdir(configDir);
+    if (kind === "directory") await mkdir(join(repo, ".git"));
+    else await writeFile(join(repo, ".git"), "gitdir: /unused/worktree\n");
+    await writeFile(join(root, ".cue.profile"), "wrong-parent");
+    await writeFile(join(configDir, "repo-defaults.json"), JSON.stringify({ [repo]: "research" }));
+    expect(await resolveProfileForCwd({ cwd, homeDir: root, configDir }))
+      .toEqual({ source: "repo-default", profile: "research" });
+    await writeFile(join(repo, ".cue.profile"), "backend\n");
+    expect(await resolveProfileForCwd({ cwd, homeDir: root, configDir }))
+      .toEqual({ source: "pin-file", profile: "backend", pinPath: join(repo, ".cue.profile") });
+  });
+
+  test.each([null, true, 42, {}, [], "", "   "].map((value) => ({ value })))("ignores invalid repo-default value %j", async ({ value }) => {
+    const configDir = join(root, "config");
+    await mkdir(join(root, ".git"));
+    await mkdir(configDir);
+    await writeFile(join(configDir, "repo-defaults.json"), JSON.stringify({ [root]: value }));
+    await writeFile(join(configDir, "default-profile"), "core\n");
+    expect(await resolveProfileForCwd({ cwd: root, homeDir: root, configDir }))
+      .toEqual({ source: "global-default", profile: "core" });
+  });
+
   test("falls back to default-profile file", async () => {
     await mkdir(join(root, ".config", "cue"), { recursive: true });
     await writeFile(join(root, ".config", "cue", "default-profile"), "core\n");
