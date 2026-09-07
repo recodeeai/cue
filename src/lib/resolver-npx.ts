@@ -534,18 +534,34 @@ export async function resolveNpxDetailed(
     entries.length,
   );
   let cursor = 0;
+  // Only the non-tolerating path (cue validate) throws out of resolveEntry, and
+  // there the first failure aborts the resolve. Letting that rejection escape
+  // Promise.all directly would leave the other lanes fetching and writing to
+  // the cache after the caller had already moved on to error handling — so the
+  // error is captured, the remaining lanes stop pulling work, and every lane is
+  // awaited before it propagates.
+  let aborted = false;
+  let firstError: unknown;
   const worker = async (): Promise<void> => {
     for (;;) {
+      if (aborted) return;
       const i = cursor++;
       const entry = entries[i];
       if (entry === undefined) return;
-      results[i] = await resolveEntry(entry);
+      try {
+        results[i] = await resolveEntry(entry);
+      } catch (err) {
+        if (!aborted) {
+          aborted = true;
+          firstError = err;
+        }
+        return;
+      }
     }
   };
   const lanes = Math.min(fetchConcurrency(), entries.length);
-  // A rejection here can only come from the non-tolerating path, where the
-  // first failure is meant to abort the resolve.
   await Promise.all(Array.from({ length: lanes }, () => worker()));
+  if (aborted) throw firstError;
 
   for (const result of results) {
     plans.push(...result.plans);
@@ -649,6 +665,30 @@ function escalatedCooldownMs(base: number, strikes: number): number {
 }
 
 /**
+ * How much longer `mark` suppresses a fetch — 0 when nothing is suppressed.
+ *
+ * The single source of truth for "is this repo still cooling down?". A marker
+ * outlives its own cooldown (nothing sweeps it until the next attempt), so its
+ * mere existence proves nothing; anything that reports a cooldown to a human
+ * must ask this instead, or it will claim a repo is suppressed when the next
+ * launch would in fact retry it.
+ *
+ * Returns 0 for an expired cooldown, for a disabled one (base 0), and for a
+ * future-dated marker — clock skew or a restored backup is not evidence.
+ */
+export function remainingCooldownMs(
+  mark: FetchFailureMark,
+  base: number = failureCooldownMs(),
+  now: number = Date.now(),
+): number {
+  const cooldown = escalatedCooldownMs(base, mark.strikes);
+  if (cooldown <= 0) return 0;
+  const elapsed = now - mark.at;
+  if (elapsed < 0 || elapsed >= cooldown) return 0;
+  return cooldown - elapsed;
+}
+
+/**
  * Throw NpxFetchSkipped when a recent attempt for this cache key already
  * failed. Called only where a network fetch is genuinely about to happen, so a
  * warm cache slot is never withheld because of an old marker.
@@ -659,15 +699,12 @@ function assertNotCoolingDown(
   entry: NpxSkillRef,
   suppress: SuppressOptions,
 ): void {
-  if (!suppress.enabled || suppress.cooldownMs <= 0) return;
+  if (!suppress.enabled) return;
   const mark = readFetchFailure(layout, key);
   if (!mark) return;
-  const cooldown = escalatedCooldownMs(suppress.cooldownMs, mark.strikes);
-  const elapsed = Date.now() - mark.at;
-  // A marker from the future (clock skew, restored backup) is not evidence of
-  // anything — attempt the fetch rather than suppressing it indefinitely.
-  if (elapsed < 0 || elapsed >= cooldown) return;
-  throw new NpxFetchSkipped(entry.repo, mark, cooldown - elapsed);
+  const remaining = remainingCooldownMs(mark, suppress.cooldownMs);
+  if (remaining <= 0) return;
+  throw new NpxFetchSkipped(entry.repo, mark, remaining);
 }
 
 /** Compact reason string for a marker — the raw message minus our own prefix. */

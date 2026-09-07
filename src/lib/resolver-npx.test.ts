@@ -23,7 +23,7 @@ import {
   type NpxBatchFetchFn,
   type NpxFetchFn,
 } from "./resolver-npx";
-import { cachePath, cacheSkillPath } from "./cache";
+import { cachePath, cacheSkillPath, type FetchFailureMark } from "./cache";
 
 // --- helpers ---------------------------------------------------------------
 
@@ -926,5 +926,74 @@ describe("offline mode and the negative cache", () => {
     });
     expect(res.failures).toEqual([]);
     expect(res.plans).toHaveLength(1);
+  });
+});
+
+// --- cooldown expiry and fatal-error fan-out -------------------------------
+
+describe("remainingCooldownMs", () => {
+  const mark = (over: Partial<FetchFailureMark> = {}): FetchFailureMark => ({
+    at: Date.now(),
+    reason: "boom",
+    strikes: 1,
+    ...over,
+  });
+
+  it("is zero once the cooldown has elapsed", async () => {
+    const { remainingCooldownMs } = await import("./resolver-npx");
+    expect(remainingCooldownMs(mark({ at: Date.now() - 5000 }), 1000)).toBe(0);
+  });
+
+  it("is zero when the cooldown is disabled", async () => {
+    const { remainingCooldownMs } = await import("./resolver-npx");
+    expect(remainingCooldownMs(mark(), 0)).toBe(0);
+  });
+
+  it("is zero for a future-dated marker", async () => {
+    const { remainingCooldownMs } = await import("./resolver-npx");
+    expect(remainingCooldownMs(mark({ at: Date.now() + 60_000 }), 1000)).toBe(0);
+  });
+
+  it("counts down inside the window, scaled by strikes", async () => {
+    const { remainingCooldownMs } = await import("./resolver-npx");
+    const now = 1_000_000;
+    expect(remainingCooldownMs({ at: now, reason: "b", strikes: 1 }, 1000, now)).toBe(1000);
+    expect(remainingCooldownMs({ at: now, reason: "b", strikes: 3 }, 1000, now)).toBe(4000);
+  });
+});
+
+describe("a fatal error stops the whole fan-out", () => {
+  /**
+   * Regression: Promise.all rejects on the first failure, but the other lanes
+   * kept pulling entries and writing to the cache after the caller had already
+   * moved on to error handling.
+   */
+  it("stops scheduling and awaits every lane before throwing", async () => {
+    let started = 0;
+    let running = 0;
+    const fetch: NpxFetchFn = async (repo, pin, skill, destDir) => {
+      started++;
+      running++;
+      try {
+        await new Promise((r) => setTimeout(r, 10));
+        if (repo === "o/r0") throw new NpxFetchFailed(repo, "boom");
+        mkdirSync(join(destDir, skill), { recursive: true });
+        writeFileSync(join(destDir, skill, "SKILL.md"), "# x\n");
+      } finally {
+        running--;
+      }
+    };
+    const p = profile(
+      Array.from({ length: 40 }, (_, i) => ({ repo: `o/r${i}`, skills: ["s"] })),
+    );
+
+    // No tolerateFetchFailure: the first failure must abort the resolve.
+    await expect(resolveNpxDetailed(p, { repoRoot, fetch })).rejects.toThrow(
+      NpxFetchFailed,
+    );
+    // Nothing left in flight once the rejection surfaces.
+    expect(running).toBe(0);
+    // And the remaining entries were never scheduled.
+    expect(started).toBeLessThan(40);
   });
 });

@@ -28,7 +28,7 @@ import { shimInstalled, runInstall } from "./shell";
 import { shimDir, shimDirPosition } from "../lib/shim-dir";
 import { findRealClaudeBin } from "../lib/claude-binary";
 import { repoRoot } from "../lib/repo-root";
-import { cacheKey } from "../lib/resolver-npx";
+import { cacheKey, remainingCooldownMs } from "../lib/resolver-npx";
 import { clearFetchFailure, readFetchFailure } from "../lib/cache";
 
 const PROFILES_DIR = process.env.CUE_PROFILES_DIR ?? join(repoRoot(), "profiles");
@@ -129,6 +129,11 @@ async function checkProfile(profileName: string, allSkillIds: Set<string>, allMc
   for (const entry of profile.skills.npx) {
     const mark = readFetchFailure({}, cacheKey(entry.repo, entry.pin));
     if (!mark) continue;
+    // A marker outlives its own cooldown — nothing sweeps it until the next
+    // attempt — so its existence alone would report a repo as suppressed when
+    // the very next launch is going to retry it.
+    const remaining = remainingCooldownMs(mark);
+    if (remaining <= 0) continue;
     const ago = Math.max(0, Date.now() - mark.at);
     issues.push({
       code: "D10",
@@ -137,7 +142,7 @@ async function checkProfile(profileName: string, allSkillIds: Set<string>, allMc
       message:
         `Remote skills from "${entry.repo}" are cooling down after ` +
         `${mark.strikes} failed fetch${mark.strikes === 1 ? "" : "es"} ` +
-        `(last ${formatAgo(ago)}: ${mark.reason})`,
+        `(last ${formatAgo(ago)}: ${mark.reason}); retries in ${formatAgo(remaining).replace(" ago", "")}`,
       fix: "cue doctor --fix, or CUE_NPX_FORCE=1 cue launch, to retry now",
       path: entry.repo,
     });
