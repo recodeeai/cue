@@ -834,3 +834,67 @@ describe("skill-scoped suppression", () => {
     expect(f.count()).toBe(2);
   });
 });
+
+// --- a cache hit is not evidence the network recovered ---------------------
+
+describe("clearing the marker", () => {
+  /**
+   * Regression: any successful ensureCacheForEntry cleared the marker, and a
+   * pure cache hit counts as successful. Two profiles sharing one repo+pin slot
+   * could therefore take turns dropping each other's marker and paying the full
+   * failed-fetch delay, which is exactly the stall the marker exists to avoid.
+   */
+  it("a pure cache hit does not clear a marker", async () => {
+    let fetches = 0;
+    const failing: NpxFetchFn = async (repo) => {
+      fetches++;
+      throw new NpxFetchFailed(repo, "spawnSync npx ETIMEDOUT");
+    };
+    const opts = { repoRoot, fetch: failing, tolerateFetchFailure: true };
+
+    // "wide" wants two skills; only one is cached, so the fetch of the other
+    // fails and is remembered.
+    seedCache("a/b", undefined, ["cached"]);
+    const wide = profile([{ repo: "a/b", skills: ["cached", "missing"] }]);
+    await resolveNpxDetailed(wide, opts);
+    expect(fetches).toBe(1);
+
+    // "narrow" is served entirely from cache — no fetch, no new evidence.
+    const narrow = profile([{ repo: "a/b", skills: ["cached"] }]);
+    const narrowRes = await resolveNpxDetailed(narrow, opts);
+    expect(narrowRes.failures).toEqual([]);
+    expect(fetches).toBe(1);
+
+    // The marker must have survived, so "wide" is still suppressed.
+    const again = await resolveNpxDetailed(wide, opts);
+    expect(fetches).toBe(1);
+    expect(again.failures[0]?.skipped).toBe(true);
+  });
+
+  it("a real fetch still clears it", async () => {
+    const failing: NpxFetchFn = async (repo) => {
+      throw new NpxFetchFailed(repo, "boom");
+    };
+    const p = profile([{ repo: "a/c", skills: ["s"] }]);
+
+    await resolveNpxDetailed(p, { repoRoot, fetch: failing, tolerateFetchFailure: true });
+    await resolveNpxDetailed(p, {
+      repoRoot,
+      fetch: fakeFetcher(),
+      tolerateFetchFailure: true,
+      force: true,
+    });
+    rmSync(cachePath({ repoRoot }, cacheKey("a/c", undefined)), {
+      recursive: true,
+      force: true,
+    });
+
+    const after = await resolveNpxDetailed(p, {
+      repoRoot,
+      fetch: fakeFetcher(),
+      tolerateFetchFailure: true,
+    });
+    expect(after.failures).toEqual([]);
+    expect(after.plans).toHaveLength(1);
+  });
+});

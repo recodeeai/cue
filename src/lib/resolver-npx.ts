@@ -464,7 +464,7 @@ export async function resolveNpxDetailed(
 
     let usable = entry.skills;
     try {
-      await ensureCacheForEntry(
+      const fetched = await ensureCacheForEntry(
         layout,
         key,
         entry,
@@ -474,8 +474,11 @@ export async function resolveNpxDetailed(
         suppress,
         activeKeys,
       );
-      // Nothing to fetch, or the fetch worked: any remembered failure is stale.
-      clearFetchFailure(layout, key);
+      // Only a real fetch proves the repo is reachable again. A pure cache hit
+      // proves nothing — and clearing on it would drop a marker that is still
+      // protecting a DIFFERENT request from the stall, so two profiles sharing
+      // a slot could take turns paying the full failed-fetch delay.
+      if (fetched) clearFetchFailure(layout, key);
     } catch (err) {
       if (err instanceof NpxFetchSkipped) {
         // Already remembered; re-recording would slide the cooldown forward
@@ -532,6 +535,7 @@ function cachedSkills(
 // Internals
 // ---------------------------------------------------------------------------
 
+/** Populate the slot if needed. Returns true iff a fetch was actually run. */
 async function ensureCacheForEntry(
   layout: CacheLayout,
   key: string,
@@ -541,12 +545,12 @@ async function ensureCacheForEntry(
   offline: boolean,
   suppress: SuppressOptions = { enabled: false, cooldownMs: 0 },
   protect: ReadonlySet<string> = new Set(),
-): Promise<void> {
+): Promise<boolean> {
   if (cacheHit(layout, key)) {
     const present = new Set(cacheChildren(layout, key));
     const missing = entry.skills.filter((s) => !present.has(s) || !isNonEmptyDir(cacheSkillPath(layout, key, s)));
     if (missing.length === 0) {
-      return; // full hit
+      return false; // full hit, nothing fetched
     }
     // Partial hit: detectable corruption. In offline mode this is fatal.
     if (offline) {
@@ -555,7 +559,7 @@ async function ensureCacheForEntry(
     // Otherwise, fall through to re-populate the missing skills.
     assertNotCoolingDown(layout, key, entry, suppress);
     await fetchInto(layout, key, entry, missing, fetcher, batchFetcher, protect);
-    return;
+    return true;
   }
 
   // Total miss.
@@ -567,6 +571,7 @@ async function ensureCacheForEntry(
   }
   assertNotCoolingDown(layout, key, entry, suppress);
   await fetchInto(layout, key, entry, entry.skills, fetcher, batchFetcher, protect);
+  return true;
 }
 
 /** Cooldown policy handed down to ensureCacheForEntry. */
