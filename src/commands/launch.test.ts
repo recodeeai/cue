@@ -600,6 +600,18 @@ describe("buildPickerSections", () => {
 });
 
 describe("getDefaultSelector", () => {
+  test("reads the real default-profile file when no reader is injected", async () => {
+    const { mkdtemp, writeFile, rm } = await import("node:fs/promises");
+    const { tmpdir } = await import("node:os");
+    const { join } = await import("node:path");
+    const dir = await mkdtemp(join(tmpdir(), "cue-default-selector-"));
+    try {
+      await writeFile(join(dir, "default-profile"), "backend\ncore\nbackend\n");
+      expect(getDefaultSelector(dir)).toBe("core+backend");
+    } finally {
+      await rm(dir, { recursive: true, force: true });
+    }
+  });
   const reader = (contents: string) => (_path: string) => contents;
   const missing = (_path: string): string => { throw new Error("ENOENT"); };
 

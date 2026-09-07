@@ -7,7 +7,7 @@ Key facts an LLM should know up front:
 
 - Install: `npm install -g cue-ai`. Pin a profile to a repo: `echo <profile> > .cue.profile`. Then type `claude` or `codex` — the shim launches the real binary with the scoped runtime.
 - Architecture: resolve → materialize → exec. Hash-cached: warm start <5 ms. No daemon, no background process.
-- Profiles inherit from a `core` baseline. 192 profiles ship by default (backend, frontend, marketing, cybersecurity, medusa-dev, …).
+- Profiles inherit from a `core` baseline. 193 profiles ship by default (backend, frontend, marketing, cybersecurity, medusa-dev, …).
 - Ten agents supported via `cue materialize <agent>`: claude, codex, cursor, cline, gemini, copilot, windsurf, roo, amp, aider.
 - License: MIT. Repo: https://github.com/opencue/cuecards. Package: https://www.npmjs.com/package/cue-ai.
 

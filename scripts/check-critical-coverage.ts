@@ -6,12 +6,13 @@ interface Threshold {
 }
 
 const thresholds: Record<string, Threshold> = {
+  "src/lib/default-profile.ts": { lines: 90, functions: 100 },
   "src/lib/cwd-resolver.ts": { lines: 90, functions: 90 },
   "src/lib/profile-loader.ts": { lines: 80, functions: 80 },
   "src/lib/runtime-materializer.ts": { lines: 80, functions: 75 },
   // launch.ts still contains orchestration exercised by e2e tests outside this
   // focused run. This floor locks its current unit-tested surface while it is split.
-  "src/commands/launch.ts": { lines: 15, functions: 70 },
+  "src/commands/launch.ts": { lines: 18, functions: 75 },
 };
 
 const lcovPath = process.argv[2] ?? "coverage/critical/lcov.info";

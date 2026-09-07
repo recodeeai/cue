@@ -349,13 +349,24 @@ export const _internal = { sep };
  * different root without touching the real skills tree).
  */
 export async function resolveLocalSkill(id: string): Promise<string> {
+  return createLocalSkillResolver()(id);
+}
+
+/** Share one lazy directory scan within a launch/install, never across sessions.
+ * SKILL.md is still checked on every lookup; errors and ambiguity stay unchanged.
+ */
+export function createLocalSkillResolver(options?: ResolveLocalOptions): (id: string) => Promise<string> {
   const skillsRoot = (process.env.CUE_REPO_ROOT ?? process.env.SOUL_REPO_ROOT)
     ? join((process.env.CUE_REPO_ROOT ?? process.env.SOUL_REPO_ROOT)!, "resources", "skills", "skills")
     : DEFAULT_SKILLS_ROOT;
-  const root = resolve(skillsRoot);
-  const { categoryIndex, slugIndex, allSlugs } = await walk(root);
-  const plan = await resolveOne(id, root, categoryIndex, slugIndex, allSlugs);
-  return plan.source;
+  const root = resolve(options?.skillsRoot ?? skillsRoot);
+  let index: Promise<SkillsIndex> | undefined;
+  return async (id) => {
+    index ??= walk(root);
+    const { categoryIndex, slugIndex, allSlugs } = await index;
+    const plan = await resolveOne(id, root, categoryIndex, slugIndex, allSlugs);
+    return plan.source;
+  };
 }
 
 /**

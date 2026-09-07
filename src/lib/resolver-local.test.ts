@@ -11,12 +11,14 @@
  *   - an empty `skills.local` list returns `[]`
  *   - traversal escapes (`..`, absolute paths) are rejected
  */
-import { afterEach, beforeEach, describe, expect, test } from "bun:test";
+import { afterEach, beforeEach, describe, expect, spyOn, test } from "bun:test";
+import * as fs from "node:fs/promises";
 import { mkdir, mkdtemp, rm, writeFile } from "node:fs/promises";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 import {
   AmbiguousSkillRef,
+  createLocalSkillResolver,
   resolveLocal,
   SkillNotFound,
   suggest,
@@ -75,6 +77,43 @@ beforeEach(async () => {
 
 afterEach(async () => {
   await rm(rootDir, { recursive: true, force: true });
+});
+
+describe("launch-scoped local resolver", () => {
+  test("walks once for concurrent and subsequent lookups, without eager work", async () => {
+    const reads = spyOn(fs, "readdir");
+    try {
+      const resolveSkill = createLocalSkillResolver({ skillsRoot });
+      expect(reads).not.toHaveBeenCalled();
+      expect(await Promise.all([
+        resolveSkill("medusa/unique-skill"), resolveSkill("github/review-pr"),
+      ])).toEqual([join(skillsRoot, "medusa/unique-skill"), join(skillsRoot, "github/review-pr")]);
+      expect(await resolveSkill("unique-skill")).toBe(join(skillsRoot, "medusa/unique-skill"));
+      expect(reads.mock.calls.filter(([path]) => path === skillsRoot)).toHaveLength(1);
+    } finally {
+      reads.mockRestore();
+    }
+  });
+
+  test("keeps ambiguity, missing-file and traversal checks", async () => {
+    const resolveSkill = createLocalSkillResolver({ skillsRoot });
+    await expect(resolveSkill("shared-skill")).rejects.toBeInstanceOf(AmbiguousSkillRef);
+    await expect(resolveSkill("medusa/broken-skill")).rejects.toBeInstanceOf(SkillNotFound);
+    await expect(resolveSkill("../unique-skill")).rejects.toBeInstanceOf(SkillNotFound);
+    await expect(resolveSkill("/medusa/unique-skill")).rejects.toBeInstanceOf(SkillNotFound);
+    await expect(resolveSkill("missing")).rejects.toBeInstanceOf(SkillNotFound);
+  });
+
+  test("new resolvers observe added skills and existing resolvers recheck deleted files", async () => {
+    const resolveSkill = createLocalSkillResolver({ skillsRoot });
+    await resolveSkill("meta/init");
+    await mkdir(join(skillsRoot, "meta/new"));
+    await writeFile(join(skillsRoot, "meta/new/SKILL.md"), "# new");
+    expect(await createLocalSkillResolver({ skillsRoot })("meta/new"))
+      .toBe(join(skillsRoot, "meta/new"));
+    await rm(join(skillsRoot, "meta/init/SKILL.md"));
+    await expect(resolveSkill("meta/init")).rejects.toBeInstanceOf(SkillNotFound);
+  });
 });
 
 // ---------------------------------------------------------------------------
