@@ -25,8 +25,10 @@
  *   CUE_REPO_ROOT              →  override repo root (legacy: SOUL_REPO_ROOT).
  *   CUE_NPX_ATTEMPTS           →  fetch attempts per repo (default 3, max 6).
  *   CUE_NPX_TIMEOUT_MS         →  per-attempt timeout (default 45000).
- *   CUE_NPX_RETRY_COOLDOWN_MS  →  negative-cache cooldown (default 6h, 0 = off).
+ *   CUE_NPX_RETRY_COOLDOWN_MS  →  base negative-cache cooldown (default 6h, 0 = off;
+ *                                 doubles per consecutive failure, capped at 7d).
  *   CUE_NPX_CACHE_MAX          →  cache slots kept before LRU eviction (default 200).
+ *   CUE_NPX_CONCURRENCY        →  repos fetched in parallel (default 4, max 8).
  *   CUE_NPX_FORCE=1            →  ignore the negative cache this run.
  *
  */
@@ -459,10 +461,17 @@ export async function resolveNpxDetailed(
   const activeKeys = new Set(entries.map((e) => cacheKey(e.repo, e.pin)));
 
   for (const entry of entries) {
-    const key = cacheKey(entry.repo, entry.pin);
-    keys[entryId(entry)] = key;
+    keys[entryId(entry)] = cacheKey(entry.repo, entry.pin);
+  }
 
+  /** Resolve one entry. Never throws under tolerateFetchFailure. */
+  const resolveEntry = async (
+    entry: NpxSkillRef,
+  ): Promise<{ plans: LinkPlan[]; failure?: NpxEntryFailure }> => {
+    const key = cacheKey(entry.repo, entry.pin);
     let usable = entry.skills;
+    let failure: NpxEntryFailure | undefined;
+
     try {
       await ensureCacheForEntry(
         layout,
@@ -488,7 +497,7 @@ export async function resolveNpxDetailed(
       // slot means the offline/flaky launch is indistinguishable from a good
       // one; a cold slot means those skills are simply absent this run.
       usable = cachedSkills(layout, key, entry.skills);
-      failures.push({
+      failure = {
         repo: entry.repo,
         pin: entry.pin,
         skills: entry.skills.filter((s) => !usable.includes(s)),
@@ -497,16 +506,47 @@ export async function resolveNpxDetailed(
         ...(err instanceof NpxFetchSkipped
           ? { skipped: true, retryInMs: err.retryInMs }
           : {}),
-      });
+      };
     }
 
-    for (const skill of usable) {
-      plans.push({
+    return {
+      plans: usable.map((skill) => ({
         source: cacheSkillPath(layout, key, skill),
         target: `.claude/skills/${skill}`,
-        origin: "npx",
-      });
+        origin: "npx" as const,
+      })),
+      failure,
+    };
+  };
+
+  // Entries are independent network fetches, so they run concurrently — a cold
+  // profile is bounded by its slowest repo instead of the sum of all of them
+  // (the bundled ego-lite-stack has 41). The limit is small on purpose: each
+  // task is a full `npx skills add` with its own git clone, so an unbounded
+  // fan-out trades launch latency for disk and registry pressure.
+  //
+  // Results are collected by index and flattened afterwards, so plan order
+  // stays the profile's declaration order no matter how the tasks interleave.
+  const results = new Array<{ plans: LinkPlan[]; failure?: NpxEntryFailure }>(
+    entries.length,
+  );
+  let cursor = 0;
+  const worker = async (): Promise<void> => {
+    for (;;) {
+      const i = cursor++;
+      const entry = entries[i];
+      if (entry === undefined) return;
+      results[i] = await resolveEntry(entry);
     }
+  };
+  const lanes = Math.min(fetchConcurrency(), entries.length);
+  // A rejection here can only come from the non-tolerating path, where the
+  // first failure is meant to abort the resolve.
+  await Promise.all(Array.from({ length: lanes }, () => worker()));
+
+  for (const result of results) {
+    plans.push(...result.plans);
+    if (result.failure) failures.push(result.failure);
   }
 
   return { plans, keys, failures };
@@ -572,11 +612,37 @@ interface SuppressOptions {
   cooldownMs: number;
 }
 
-/** Cooldown length. CUE_NPX_RETRY_COOLDOWN_MS overrides; 0 disables. */
+/** Concurrent repo fetches. CUE_NPX_CONCURRENCY overrides (1 = serial, max 8). */
+function fetchConcurrency(): number {
+  const raw = Number(process.env.CUE_NPX_CONCURRENCY);
+  if (Number.isFinite(raw) && raw >= 1) return Math.min(Math.floor(raw), 8);
+  return 4;
+}
+
+/** Base cooldown. CUE_NPX_RETRY_COOLDOWN_MS overrides; 0 disables entirely. */
 function failureCooldownMs(): number {
   const raw = Number(process.env.CUE_NPX_RETRY_COOLDOWN_MS);
   if (Number.isFinite(raw) && raw >= 0) return raw;
   return NPX_FAILURE_COOLDOWN_MS;
+}
+
+/** Ceiling for the escalated cooldown — a week without a retry is enough. */
+const MAX_FAILURE_COOLDOWN_MS = 7 * 24 * 60 * 60 * 1000;
+
+/**
+ * Cooldown after `strikes` consecutive failures: base, then double each time.
+ *
+ * A repo having a bad afternoon is retried within the base window; one that is
+ * permanently gone (renamed, deleted, or simply too large to ever clone inside
+ * the timeout) stops costing a stall every cooldown. The ceiling keeps a
+ * recovered repo from being written off forever, and any explicit retry —
+ * CUE_NPX_FORCE=1, or `cue validate`, which never consults the marker — is
+ * unaffected by how high the count has climbed.
+ */
+function escalatedCooldownMs(base: number, strikes: number): number {
+  if (base <= 0) return 0;
+  const factor = 2 ** Math.max(0, Math.min(strikes - 1, 20));
+  return Math.min(base * factor, MAX_FAILURE_COOLDOWN_MS);
 }
 
 /**
@@ -593,11 +659,12 @@ function assertNotCoolingDown(
   if (!suppress.enabled || suppress.cooldownMs <= 0) return;
   const mark = readFetchFailure(layout, key);
   if (!mark) return;
+  const cooldown = escalatedCooldownMs(suppress.cooldownMs, mark.strikes);
   const elapsed = Date.now() - mark.at;
   // A marker from the future (clock skew, restored backup) is not evidence of
   // anything — attempt the fetch rather than suppressing it indefinitely.
-  if (elapsed < 0 || elapsed >= suppress.cooldownMs) return;
-  throw new NpxFetchSkipped(entry.repo, mark, suppress.cooldownMs - elapsed);
+  if (elapsed < 0 || elapsed >= cooldown) return;
+  throw new NpxFetchSkipped(entry.repo, mark, cooldown - elapsed);
 }
 
 /** Compact reason string for a marker — the raw message minus our own prefix. */

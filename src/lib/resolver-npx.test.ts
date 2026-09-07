@@ -737,3 +737,164 @@ describe("cache eviction during a resolve", () => {
     expect(existsSync(stale)).toBe(false);
   });
 });
+
+// --- concurrency -----------------------------------------------------------
+
+describe("parallel entry resolution", () => {
+  afterEach(() => {
+    delete process.env.CUE_NPX_CONCURRENCY;
+  });
+
+  /** Fetcher that holds each call open for `ms`, tracking peak overlap. */
+  function slowFetcher(ms: number) {
+    let inFlight = 0;
+    let peak = 0;
+    const fetch: NpxFetchFn = async (repo, pin, skill, destDir) => {
+      inFlight++;
+      peak = Math.max(peak, inFlight);
+      await new Promise((r) => setTimeout(r, ms));
+      mkdirSync(join(destDir, skill), { recursive: true });
+      writeFileSync(join(destDir, skill, "SKILL.md"), "# x\n");
+      inFlight--;
+    };
+    return { fetch, peak: () => peak };
+  }
+
+  const eight = (): Profile =>
+    profile(Array.from({ length: 8 }, (_, i) => ({ repo: `o/r${i}`, skills: ["s"] })));
+
+  it("fetches repos concurrently", async () => {
+    const f = slowFetcher(30);
+    await resolveNpxDetailed(eight(), { repoRoot, fetch: f.fetch });
+    expect(f.peak()).toBeGreaterThan(1);
+  });
+
+  it("honors the concurrency limit", async () => {
+    process.env.CUE_NPX_CONCURRENCY = "2";
+    const f = slowFetcher(30);
+    await resolveNpxDetailed(eight(), { repoRoot, fetch: f.fetch });
+    expect(f.peak()).toBe(2);
+  });
+
+  it("CUE_NPX_CONCURRENCY=1 is serial", async () => {
+    process.env.CUE_NPX_CONCURRENCY = "1";
+    const f = slowFetcher(5);
+    await resolveNpxDetailed(eight(), { repoRoot, fetch: f.fetch });
+    expect(f.peak()).toBe(1);
+  });
+
+  it("keeps plan order at the profile's declaration order", async () => {
+    // Later entries finish first, so any order-by-completion bug shows up here.
+    const delays = [50, 40, 30, 20, 10];
+    const fetch: NpxFetchFn = async (repo, pin, skill, destDir) => {
+      const idx = Number(repo.split("r")[1]);
+      await new Promise((r) => setTimeout(r, delays[idx] ?? 0));
+      mkdirSync(join(destDir, skill), { recursive: true });
+      writeFileSync(join(destDir, skill, "SKILL.md"), "# x\n");
+    };
+    const p = profile(
+      delays.map((_, i) => ({ repo: `o/r${i}`, skills: [`skill-${i}`] })),
+    );
+
+    const res = await resolveNpxDetailed(p, { repoRoot, fetch });
+    expect(res.plans.map((pl) => pl.target)).toEqual([
+      ".claude/skills/skill-0",
+      ".claude/skills/skill-1",
+      ".claude/skills/skill-2",
+      ".claude/skills/skill-3",
+      ".claude/skills/skill-4",
+    ]);
+  });
+
+  it("one failure does not take down the other lanes", async () => {
+    const fetch: NpxFetchFn = async (repo, pin, skill, destDir) => {
+      if (repo === "o/r2") throw new NpxFetchFailed(repo, "boom");
+      mkdirSync(join(destDir, skill), { recursive: true });
+      writeFileSync(join(destDir, skill, "SKILL.md"), "# x\n");
+    };
+    const res = await resolveNpxDetailed(eight(), {
+      repoRoot,
+      fetch,
+      tolerateFetchFailure: true,
+    });
+    expect(res.failures).toHaveLength(1);
+    expect(res.failures[0]?.repo).toBe("o/r2");
+    expect(res.plans).toHaveLength(7);
+  });
+});
+
+// --- escalating backoff ----------------------------------------------------
+
+describe("escalating cooldown", () => {
+  afterEach(() => {
+    delete process.env.CUE_NPX_RETRY_COOLDOWN_MS;
+  });
+
+  const failing: NpxFetchFn = async (repo) => {
+    throw new NpxFetchFailed(repo, "spawnSync npx ETIMEDOUT");
+  };
+
+  /** Fail once with the cooldown disabled, so every call reaches the fetcher. */
+  async function strike(p: Profile): Promise<number | undefined> {
+    process.env.CUE_NPX_RETRY_COOLDOWN_MS = "0";
+    await resolveNpxDetailed(p, { repoRoot, fetch: failing, tolerateFetchFailure: true });
+    // Now measure the cooldown a 1s base would produce for the strikes so far.
+    process.env.CUE_NPX_RETRY_COOLDOWN_MS = "1000";
+    const res = await resolveNpxDetailed(p, {
+      repoRoot,
+      fetch: failing,
+      tolerateFetchFailure: true,
+    });
+    return res.failures[0]?.retryInMs;
+  }
+
+  it("doubles the wait on each consecutive failure", async () => {
+    const p = profile([{ repo: "a/b", skills: ["s"] }]);
+
+    const first = await strike(p);
+    const second = await strike(p);
+    const third = await strike(p);
+
+    // 1 strike -> ~1s, 2 -> ~2s, 3 -> ~4s (minus the elapsed test time).
+    expect(first).toBeGreaterThan(500);
+    expect(first).toBeLessThanOrEqual(1000);
+    expect(second).toBeGreaterThan(1000);
+    expect(second).toBeLessThanOrEqual(2000);
+    expect(third).toBeGreaterThan(2000);
+    expect(third).toBeLessThanOrEqual(4000);
+  });
+
+  it("a success resets the escalation", async () => {
+    const p = profile([{ repo: "a/c", skills: ["s"] }]);
+    await strike(p);
+    await strike(p);
+
+    process.env.CUE_NPX_RETRY_COOLDOWN_MS = "0";
+    await resolveNpxDetailed(p, { repoRoot, fetch: fakeFetcher(), tolerateFetchFailure: true });
+    rmSync(cachePath({ repoRoot }, cacheKey("a/c", undefined)), {
+      recursive: true,
+      force: true,
+    });
+
+    // Back to a single strike, so back to the base cooldown.
+    const after = await strike(p);
+    expect(after).toBeLessThanOrEqual(1000);
+  });
+
+  it("never escalates past the one-week ceiling", async () => {
+    const p = profile([{ repo: "a/d", skills: ["s"] }]);
+    process.env.CUE_NPX_RETRY_COOLDOWN_MS = "0";
+    for (let i = 0; i < 12; i++) {
+      await resolveNpxDetailed(p, { repoRoot, fetch: failing, tolerateFetchFailure: true });
+    }
+    // 12 strikes against a 1h base would be 2048h without a ceiling.
+    process.env.CUE_NPX_RETRY_COOLDOWN_MS = String(60 * 60 * 1000);
+    const res = await resolveNpxDetailed(p, {
+      repoRoot,
+      fetch: failing,
+      tolerateFetchFailure: true,
+    });
+    expect(res.failures[0]?.retryInMs).toBeLessThanOrEqual(7 * 24 * 60 * 60 * 1000);
+    expect(res.failures[0]?.retryInMs).toBeGreaterThan(6 * 24 * 60 * 60 * 1000);
+  });
+});
