@@ -1,27 +1,27 @@
 ---
 title: "sjkim1127/Reversecore_MCP — Claude Code skill discovered by cue"
-description: "A security-first MCP server empowering AI agents to orchestrate Ghidra, Radare2, and YARA for automated reverse engineering."
+description: "A security-first MCP server that empowers AI agents to perform automated reverse engineering, malware analysis, forensics, vulnerability research, and SAST — po"
 layout: page
-updated: 2026-06-24
-tags: [claude-code, skill, core]
+updated: 2026-09-04
+tags: [claude-code, skill, cybersecurity]
 ---
 
 # 💎 [sjkim1127/Reversecore_MCP](https://github.com/sjkim1127/Reversecore_MCP)
 
-**★ 88** · exceptional (score 13.3) · Python · ghidra, mcp, mcp-server, radare2, reverse-engineering
+**★ 197** · exceptional (score 12.8) · Python · ghidra, mcp, mcp-security, mcp-server, radare2
 
-> A security-first MCP server empowering AI agents to orchestrate Ghidra, Radare2, and YARA for automated reverse engineering.
+> A security-first MCP server that empowers AI agents to perform automated reverse engineering, malware analysis, forensics, vulnerability research, and SAST — powered by Radare2, YARA, LIEF, Capstone, and more.
 
 ## Why cue indexed it
 
-cue ran [GitHub Code Search](https://docs.github.com/en/search-github/searching-on-github/searching-code) for `filename:SKILL.md` and found this repo. It scored 13.3 based on:
-- ⭐ 88 stars
-- 🗓️ Last pushed: 2026-06-24
-- 🏷️ Tags: ghidra, mcp, mcp-server, radare2, reverse-engineering, security
+cue ran [GitHub Code Search](https://docs.github.com/en/search-github/searching-on-github/searching-code) for `filename:SKILL.md` and found this repo. It scored 12.8 based on:
+- ⭐ 197 stars
+- 🗓️ Last pushed: 2026-09-04
+- 🏷️ Tags: ghidra, mcp, mcp-security, mcp-server, radare2, reverse-engineering, sast, security
 
 ## Best fit cue profiles
 
-[core](../core.md)
+[cybersecurity](../cybersecurity.md)
 
 
 
@@ -29,7 +29,7 @@ cue ran [GitHub Code Search](https://docs.github.com/en/search-github/searching-
 
 ```bash
 npm install -g cue-ai
-cue skills add sjkim1127/Reversecore_MCP --profile core
+cue skills add sjkim1127/Reversecore_MCP --profile cybersecurity
 ```
 
 ## About

@@ -2,22 +2,22 @@
 title: "shinpr/mcp-local-rag — Claude Code skill discovered by cue"
 description: "Local-first RAG server for developers. Semantic + keyword search for code and technical docs. Works with MCP or CLI. Fully private, zero setup."
 layout: page
-updated: 2026-06-29
+updated: 2026-09-04
 tags: [claude-code, skill, core]
 ---
 
 # 💎 [shinpr/mcp-local-rag](https://github.com/shinpr/mcp-local-rag)
 
-**★ 327** · exceptional (score 14.8) · TypeScript · agent-skills, developer-tools, hybrid-search, local-first, local-rag
+**★ 382** · exceptional (score 14.9) · TypeScript · agent-skills, cli-tool, developer-tools, hybrid-search, local-first
 
 > Local-first RAG server for developers. Semantic + keyword search for code and technical docs. Works with MCP or CLI. Fully private, zero setup.
 
 ## Why cue indexed it
 
-cue ran [GitHub Code Search](https://docs.github.com/en/search-github/searching-on-github/searching-code) for `filename:SKILL.md` and found this repo. It scored 14.8 based on:
-- ⭐ 327 stars
-- 🗓️ Last pushed: 2026-06-29
-- 🏷️ Tags: agent-skills, developer-tools, hybrid-search, local-first, local-rag, mcp, mcp-server, privacy-first, rag, semantic-search, skills, vector-search
+cue ran [GitHub Code Search](https://docs.github.com/en/search-github/searching-on-github/searching-code) for `filename:SKILL.md` and found this repo. It scored 14.9 based on:
+- ⭐ 382 stars
+- 🗓️ Last pushed: 2026-09-04
+- 🏷️ Tags: agent-skills, cli-tool, developer-tools, hybrid-search, local-first, local-rag, mcp, mcp-server, model-context-protocol, privacy-first, rag, semantic-search, vector-search
 
 ## Best fit cue profiles
 

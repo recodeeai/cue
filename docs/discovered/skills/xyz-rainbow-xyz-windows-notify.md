@@ -1,24 +1,24 @@
 ---
 title: "xyz-rainbow/xyz-windows-notify — Claude Code skill discovered by cue"
-description: "Universal AI Agent Toast Notification Skill for Windows 11 with custom icon (-AppLogo) & percentage progress updates"
+description: "AI agent skill for native Windows 10/11 toast notifications with smart icons, % progress, and sound alerts."
 layout: page
-updated: 2026-07-26
+updated: 2026-09-04
 tags: [claude-code, skill, core]
 ---
 
 # 💎 [xyz-rainbow/xyz-windows-notify](https://github.com/xyz-rainbow/xyz-windows-notify)
 
-**★ 1** · exceptional (score 9.2) · ai-agent-skill, antigravity, burnttoast, powershell, toast-notifications
+**★ 1** · exceptional (score 9.3) · agent-skills, ai-agent-skill, burnttoast, notifications, npx-skills-add
 
-> Universal AI Agent Toast Notification Skill for Windows 11 with custom icon (-AppLogo) & percentage progress updates
+> AI agent skill for native Windows 10/11 toast notifications with smart icons, % progress, and sound alerts.
 
 ## Why cue indexed it
 
-cue ran [GitHub Code Search](https://docs.github.com/en/search-github/searching-on-github/searching-code) for `filename:SKILL.md` and found this repo. It scored 9.2 based on:
+cue ran [GitHub Code Search](https://docs.github.com/en/search-github/searching-on-github/searching-code) for `filename:SKILL.md` and found this repo. It scored 9.3 based on:
 - ✅ Contains SKILL.md
 - ⭐ 1 stars
-- 🗓️ Last pushed: 2026-07-22
-- 🏷️ Tags: ai-agent-skill, antigravity, burnttoast, powershell, toast-notifications, unicorn-icon, windows11
+- 🗓️ Last pushed: 2026-09-03
+- 🏷️ Tags: agent-skills, ai-agent-skill, burnttoast, notifications, npx-skills-add, powershell, skills-sh, toast-notifications, windows, windows10, windows11
 
 ## Best fit cue profiles
 

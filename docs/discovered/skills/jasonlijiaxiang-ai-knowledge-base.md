@@ -2,21 +2,21 @@
 title: "jasonlijiaxiang/ai-knowledge-base — Claude Code skill discovered by cue"
 description: "个人 AI 知识库：19 个模块 / 1733 页讲义 + 网页版，附维护它的 Claude 技能 knowledge-base-builder（可单独下载）"
 layout: page
-updated: 2026-08-02
+updated: 2026-09-06
 tags: [claude-code, skill, core]
 ---
 
 # 💎 [jasonlijiaxiang/ai-knowledge-base](https://github.com/jasonlijiaxiang/ai-knowledge-base)
 
-**★ 0** · exceptional (score 8) · HTML · ai, chinese, claude-code, claude-skill, knowledge-base
+**★ 1** · exceptional (score 8.3) · HTML · ai, chinese, claude-code, claude-skill, knowledge-base
 
 > 个人 AI 知识库：19 个模块 / 1733 页讲义 + 网页版，附维护它的 Claude 技能 knowledge-base-builder（可单独下载）
 
 ## Why cue indexed it
 
-cue ran [GitHub Code Search](https://docs.github.com/en/search-github/searching-on-github/searching-code) for `filename:SKILL.md` and found this repo. It scored 8 based on:
-- ⭐ 0 stars
-- 🗓️ Last pushed: 2026-08-02
+cue ran [GitHub Code Search](https://docs.github.com/en/search-github/searching-on-github/searching-code) for `filename:SKILL.md` and found this repo. It scored 8.3 based on:
+- ⭐ 1 stars
+- 🗓️ Last pushed: 2026-09-06
 - 🏷️ Tags: ai, chinese, claude-code, claude-skill, knowledge-base, learning-notes, llm
 
 ## Best fit cue profiles

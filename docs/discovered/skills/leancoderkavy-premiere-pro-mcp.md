@@ -1,23 +1,23 @@
 ---
 title: "leancoderkavy/premiere-pro-mcp — Claude Code skill discovered by cue"
-description: "Adobe Premiere Pro MCP server with 280 core AI video editing tools, a production CEP bridge, and capability-aware UXP support."
+description: "Local-first Adobe Premiere Pro MCP: 285 AI video editing tools, opt-in project context, CEP bridge, and capability-aware UXP."
 layout: page
-updated: 2026-08-19
+updated: 2026-09-04
 tags: [claude-code, skill, core]
 ---
 
 # 💎 [leancoderkavy/premiere-pro-mcp](https://github.com/leancoderkavy/premiere-pro-mcp)
 
-**★ 203** · exceptional (score 14.7) · TypeScript · adobe, adobe-premiere-pro, ai, ai-video-editing, cep
+**★ 233** · exceptional (score 14.7) · TypeScript · adobe, adobe-premiere-pro, ai, ai-video-editing, cep
 
-> Adobe Premiere Pro MCP server with 280 core AI video editing tools, a production CEP bridge, and capability-aware UXP support.
+> Local-first Adobe Premiere Pro MCP: 285 AI video editing tools, opt-in project context, CEP bridge, and capability-aware UXP.
 
 ## Why cue indexed it
 
 cue ran [GitHub Code Search](https://docs.github.com/en/search-github/searching-on-github/searching-code) for `filename:SKILL.md` and found this repo. It scored 14.7 based on:
-- ⭐ 203 stars
-- 🗓️ Last pushed: 2026-08-19
-- 🏷️ Tags: adobe, adobe-premiere-pro, ai, ai-video-editing, cep, claude, creative-cloud, cursor, extendscript, llm, mcp, mcp-server, mcp-tools, model-context-protocol, premiere-automation, premiere-pro, typescript, video-automation, video-editing, video-editing-automation
+- ⭐ 233 stars
+- 🗓️ Last pushed: 2026-09-04
+- 🏷️ Tags: adobe, adobe-premiere-pro, ai, ai-video-editing, cep, claude, creative-cloud, cursor, extendscript, local-first, mcp, mcp-server, mcp-tools, model-context-protocol, premiere-automation, premiere-pro, typescript, video-automation, video-editing, video-editing-automation
 
 ## Best fit cue profiles
 

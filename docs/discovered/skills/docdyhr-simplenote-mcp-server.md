@@ -2,21 +2,21 @@
 title: "docdyhr/simplenote-mcp-server — Claude Code skill discovered by cue"
 description: "MCP Server for Simplenote integration with Claude Desktop"
 layout: page
-updated: 2026-08-09
+updated: 2026-09-07
 tags: [claude-code, skill, core]
 ---
 
 # 💎 [docdyhr/simplenote-mcp-server](https://github.com/docdyhr/simplenote-mcp-server)
 
-**★ 17** · exceptional (score 10.4) · Python · ai, backend, claude-ai, crud, electron
+**★ 19** · exceptional (score 10.5) · Python · ai, backend, claude-ai, crud, electron
 
 > MCP Server for Simplenote integration with Claude Desktop
 
 ## Why cue indexed it
 
-cue ran [GitHub Code Search](https://docs.github.com/en/search-github/searching-on-github/searching-code) for `filename:SKILL.md` and found this repo. It scored 10.4 based on:
-- ⭐ 17 stars
-- 🗓️ Last pushed: 2026-08-09
+cue ran [GitHub Code Search](https://docs.github.com/en/search-github/searching-on-github/searching-code) for `filename:SKILL.md` and found this repo. It scored 10.5 based on:
+- ⭐ 19 stars
+- 🗓️ Last pushed: 2026-09-07
 - 🏷️ Tags: ai, backend, claude-ai, crud, electron, integration, mcp-server, open-source, python3, simplenote
 
 ## Best fit cue profiles

@@ -2,7 +2,7 @@
 title: "Edward0l1/skill-flare-discover — Claude Code skill discovered by cue"
 description: "Best AI Agent Skill Finder 2026 – Multi-Registry Install & Security Labels"
 layout: page
-updated: 2026-08-30
+updated: 2026-09-06
 tags: [claude-code, skill, core]
 ---
 
@@ -16,7 +16,7 @@ tags: [claude-code, skill, core]
 
 cue ran [GitHub Code Search](https://docs.github.com/en/search-github/searching-on-github/searching-code) for `filename:SKILL.md` and found this repo. It scored 9.3 based on:
 - ⭐ 1 stars
-- 🗓️ Last pushed: 2026-08-30
+- 🗓️ Last pushed: 2026-09-06
 - 🏷️ Tags: agent-skills, ai-agents, ai-coding-agent, claude-code, claude-code-plugin, claude-code-skill, claude-skills, cross-platform, cursor-ai, llm-tools, mcp, prompt-injection, security-scanning, skill-discovery, skill-installer
 
 ## Best fit cue profiles

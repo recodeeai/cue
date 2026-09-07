@@ -1,109 +1,228 @@
 ---
 title: "Claude Code Skills for backend"
-description: "8 community Claude Code skills curated by cue for the backend profile. Hidden-gem repos with SKILL.md, MCP servers, and CLI integrations."
+description: "17 community Claude Code skills curated by cue for the backend profile. Hidden-gem repos with SKILL.md, MCP servers, and CLI integrations."
 layout: page
-updated: 2026-09-02
+updated: 2026-09-07
 tags: [claude-code, backend, skills, mcp, ai-agents]
 ---
 
 # Claude Code Skills for `backend`
 
-> 8 community-built skills curated by [cue](https://github.com/opencue/cuecards) for the **backend** profile.
+> 17 community-built skills curated by [cue](https://github.com/opencue/cuecards) for the **backend** profile.
 > Each one was discovered via GitHub Code Search, scored on signal quality, and mapped to this profile by keyword overlap.
 
 **[← back to all discovered skills](./index.md)**
 
 ---
 
-<a id="n8n-io-n8n"></a>
-## 💎 [n8n-io/n8n](https://github.com/n8n-io/n8n)
+<a id="ruvnet-ruflo"></a>
+## 💎 [ruvnet/ruflo](https://github.com/ruvnet/ruflo)
 
-**★ 203096** · exceptional (score 14) · TypeScript · tags: ai, apis, automation, cli, data-flow
+**★ 71156** · exceptional (score 23.5) · TypeScript · tags: agentic-ai, agentic-framework, agentic-workflow, agents, ai-agents
 
-Fair-code workflow automation platform with native AI capabilities. Combine visual building with custom code, self-host or cloud, 400+ integrations.
-
-```bash
-cue skills add n8n-io/n8n --profile backend
-```
-
----
-
-<a id="navidmoazzez-bluesky-mcp-cli"></a>
-## 💎 [navidmoazzez/bluesky-mcp-cli](https://github.com/navidmoazzez/bluesky-mcp-cli)
-
-**★ 0** · exceptional (score 13.5) · TypeScript · tags: ai-agents, anthropic, at-protocol, atproto, bluesky
-
-Bluesky MCP server and CLI for Claude Code and AI agents. 41 tools for posting, threads, replies, timeline, search, custom feeds, lists, notifications and the social graph.
+🌊 The original agent meta-harness. Deploy intelligent multi-player swarms, coordinate autonomous workflows, and build conversational AI systems. Features adaptive memory, self-learning intelligence, RAG integration, and native Claude Code / Codex / Hermes and many more Integrated
 
 ✅ SKILL.md
 
 ```bash
-cue skills add navidmoazzez/bluesky-mcp-cli --profile backend
+cue skills add ruvnet/ruflo --profile backend
 ```
 
 ---
 
-<a id="githits-com-githits-cli"></a>
-## 💎 [githits-com/githits-cli](https://github.com/githits-com/githits-cli)
+<a id="vexa-ai-vexa"></a>
+## 💎 [Vexa-ai/vexa](https://github.com/Vexa-ai/vexa)
 
-**★ 92** · exceptional (score 13.3) · TypeScript · tags: ai-coding-tools, ai-tools, cli, code-graph, code-search
+**★ 2755** · exceptional (score 19.5) · Python · tags: api, claude-code, codex, google-meet, mcp
 
-CLI & MCP for GitHits - The Code Context Layer for AI Coding Agents
+Open-source meeting transcription API for Google Meet, Microsoft Teams & Zoom. Auto-join bots, real-time WebSocket transcripts, MCP server for AI agents. Self-host or use hosted SaaS.
 
 ```bash
-cue skills add githits-com/githits-cli --profile backend
+cue skills add Vexa-ai/vexa --profile backend
 ```
 
 ---
 
-<a id="tsukumohq-wrai-th"></a>
-## 💎 [TsukumoHQ/WRAI.TH](https://github.com/TsukumoHQ/WRAI.TH)
+<a id="jakubs2623-notebooklm-skill"></a>
+## 💎 [jakubs2623/notebooklm-skill](https://github.com/jakubs2623/notebooklm-skill)
 
-**★ 27** · exceptional (score 13.1) · Go · tags: ai-agents, claude, claude-code, golang, mcp
+**★ 7** · exceptional (score 17.3) · Python · tags: agentic-skill, ai-agents, ai-research, antigravity, api
 
-Multi-agent orchestration via MCP. Persistent memory, inter-agent messaging, goal cascade, context budget pruning. One binary, zero config.
+Connect NotebookLM research with Claude to generate structured content from URLs, PDFs, and trending topics for multi-platform publishing.
+
+✅ SKILL.md
 
 ```bash
-cue skills add TsukumoHQ/WRAI.TH --profile backend
+cue skills add jakubs2623/notebooklm-skill --profile backend
 ```
 
 ---
 
-<a id="forger-labs-hq-researchforge"></a>
-## 💎 [forger-labs-hq/researchforge](https://github.com/forger-labs-hq/researchforge)
+<a id="retyc-retyc-cli"></a>
+## 💎 [retyc/retyc-cli](https://github.com/retyc/retyc-cli)
 
-**★ 7** · exceptional (score 10.5) · Python · tags: ai-agents, automated-benchmarking, automated-build, autonomous-research, autonomous-researcher
+**★ 22** · exceptional (score 12) · Go · tags: claude-code, claude-desktop, cli, cursor-builtin, dataroom
 
-A lab protocol for coding agents. Freeze baselines, run hypotheses in isolated worktrees, reject failures and validate improvements from Claude Code, Cursor  or a direct API key (Gemini/Anthropic/openAI).
+Official CLI client for Retyc with MCP server
 
 ```bash
-cue skills add forger-labs-hq/researchforge --profile backend
+cue skills add retyc/retyc-cli --profile backend
 ```
 
 ---
 
-<a id="vassiliylakhonin-agenda-intelligence-md"></a>
-## 💎 [vassiliylakhonin/agenda-intelligence-md](https://github.com/vassiliylakhonin/agenda-intelligence-md)
+<a id="daizedong-schedule-reminder"></a>
+## 💎 [DaizeDong/schedule-reminder](https://github.com/DaizeDong/schedule-reminder)
 
-**★ 6** · exceptional (score 9.6) · Python · tags: ai-agents, claim-verification, evidence-validation, human-in-the-loop, json-schema
+**★ 0** · exceptional (score 10.5) · Python · tags: agent, ai, ai-agent, automation, claude
 
-Deterministic evidence-packet linter for claim-backed AI output. Reports packet completeness, not truth. CLI, Python API, MCP, A2A, Cloudflare Workers.
+Persistent store for todos, events, deadlines and progress with pending/doing/done states; fires due reminders via Discord; stable CLI/JSON API other skills call.
 
 ```bash
-cue skills add vassiliylakhonin/agenda-intelligence-md --profile backend
+cue skills add DaizeDong/schedule-reminder --profile backend
 ```
 
 ---
 
-<a id="cammac-creator-ibanforge"></a>
-## 💎 [cammac-creator/ibanforge](https://github.com/cammac-creator/ibanforge)
+<a id="eirik-rune-runemap"></a>
+## 💎 [eirik-rune/runemap](https://github.com/eirik-rune/runemap)
 
-**★ 3** · exceptional (score 8.2) · TypeScript · tags: ai-agents, api, banking, bic, compliance
+**★ 3** · exceptional (score 9.2) · Python · tags: agent-skills, agents, ascii-art, claude-skill, llm
 
-IBANforge — IBAN validation, BIC/SWIFT lookup, Swiss clearing, and EMI/vIBAN classification API with MCP for AI agents
+Weather radar MCP server and Agent Skill — live conditions and a text radar map for any place on earth, in one HTTP request. No image, no API key.
 
 ```bash
-cue skills add cammac-creator/ibanforge --profile backend
+cue skills add eirik-rune/runemap --profile backend
+```
+
+---
+
+<a id="renefichtmueller-adaptive-llm-gateway"></a>
+## 💎 [renefichtmueller/adaptive-llm-gateway](https://github.com/renefichtmueller/adaptive-llm-gateway)
+
+**★ 11** · exceptional (score 8) · TypeScript · tags: ai-gateway, anthropic, apache-2, chatgpt, claude
+
+Self-hosted LLM gateway that turns flat-rate AI subscriptions (Claude Code Max, ChatGPT Plus, Codex, Copilot, M365, Gemini) into one OpenAI/Anthropic-compatible API. Unified subscription wallet, OAuth passthrough on /v1/responses, prompt-injection + PII defense, MCP server, semantic cache, time-travel replay.
+
+```bash
+cue skills add renefichtmueller/adaptive-llm-gateway --profile backend
+```
+
+---
+
+<a id="gordonkjlee-facthouse"></a>
+## 💎 [gordonkjlee/facthouse](https://github.com/gordonkjlee/facthouse)
+
+**★ 2** · exceptional (score 8) · TypeScript · tags: ai-memory, knowledge-engine, mcp, mcp-server, memory-system
+
+A local memory engine any AI tool can use.
+
+```bash
+cue skills add gordonkjlee/facthouse --profile backend
+```
+
+---
+
+<a id="xuantinhnbs-rgb-autocad-trimble-mcp"></a>
+## ✨ [xuantinhnbs-rgb/autocad-trimble-mcp](https://github.com/xuantinhnbs-rgb/autocad-trimble-mcp)
+
+**★ 1** · strong (score 7.7) · Python · tags: autocad, autocad-automation, bim, cad, claude
+
+MCP servers that let Claude and other AI tools drive AutoCAD 2022+ (49 tools, via COM) and Trimble Connect for Desktop (34 tools, via .NET API) on Windows. One installer auto-detects your paths. Docs in Vietnamese.
+
+```bash
+cue skills add xuantinhnbs-rgb/autocad-trimble-mcp --profile backend
+```
+
+---
+
+<a id="hproxy-com-free-proxy-list"></a>
+## ✨ [hproxy-com/free-proxy-list](https://github.com/hproxy-com/free-proxy-list)
+
+**★ 49** · strong (score 7.3) · tags: ai-agents, anonymous-proxy, free-proxies, free-proxy, free-proxy-api
+
+Free proxy list, verified around the clock: HTTP, HTTPS, SOCKS4 and SOCKS5 proxies with country, anonymity, latency and uptime on every row, updated several times a day. Live list, proxy checker, keyless API and MCP server at hproxy.com.
+
+```bash
+cue skills add hproxy-com/free-proxy-list --profile backend
+```
+
+---
+
+<a id="alexfp28-huginndb"></a>
+## ✨ [Alexfp28/huginnDB](https://github.com/Alexfp28/huginnDB)
+
+**★ 2** · strong (score 7) · TypeScript · tags: ai-tools, database-client, database-gui, dbeaver-alternative, desktop-database
+
+Desktop database manager for PostgreSQL, MySQL, SQLite, MongoDB and SQL Server, built with Tauri + React. Minimal, keyboard-first UI with Monaco-everywhere editing, inspired by HeidiSQL. Includes a MongoDB aggregation editor, an index manager, and huginndb-mcp, a connector letting AI clients query your databases. MIT licensed.
+
+```bash
+cue skills add Alexfp28/huginnDB --profile backend
+```
+
+---
+
+<a id="iksnerd-hopper-recon"></a>
+## ✨ [iksnerd/hopper-recon](https://github.com/iksnerd/hopper-recon)
+
+**★ 1** · strong (score 6.8) · TypeScript · tags: attack-surface, attack-surface-management, bug-bounty, docker, golang
+
+Self-hosted attack-surface recon — point it at a domain you own and map subdomains, DNS, TLS, HTTP, CDN, and historical URLs in one dashboard. The same tools run over MCP, so AI agents (Claude Code, Cline) can drive recon too.
+
+```bash
+cue skills add iksnerd/hopper-recon --profile backend
+```
+
+---
+
+<a id="shimon-ks-tasklite-mcp"></a>
+## ✨ [shimon-ks/tasklite-mcp](https://github.com/shimon-ks/tasklite-mcp)
+
+**★ 0** · strong (score 6) · TypeScript · tags: ai-agents, backend-as-a-service, chatgpt, claude, gemini
+
+TaskLite MCP server — build a real backend from Claude, ChatGPT, Gemini, Cursor or VS Code: boards, data, automations, REST API and a ready-made admin
+
+```bash
+cue skills add shimon-ks/tasklite-mcp --profile backend
+```
+
+---
+
+<a id="balaianu-cogz"></a>
+## ✨ [balaianu/CogZ](https://github.com/balaianu/CogZ)
+
+**★ 0** · strong (score 6) · Rust · tags: agent-memory, ai-coding-agent, code-awareness, code-indexing, context-engine
+
+Local-first engineering cognition runtime for AI coding agents — persistent memory, contextual retrieval, and continuous cognition about your codebase.
+
+```bash
+cue skills add balaianu/CogZ --profile backend
+```
+
+---
+
+<a id="hammotime-eve-online-mcp"></a>
+## ✨ [HammoTime/eve-online-mcp](https://github.com/HammoTime/eve-online-mcp)
+
+**★ 0** · strong (score 6) · TypeScript · tags: ai-tools, api-client, ccp-games, developer-tools, esi
+
+A secure, read-only MCP server that gives AI assistants comprehensive access to EVE Online’s ESI API, including authenticated character data and schema-aware tools.
+
+```bash
+cue skills add HammoTime/eve-online-mcp --profile backend
+```
+
+---
+
+<a id="anirudhlath-alfred"></a>
+## ✨ [anirudhlath/alfred](https://github.com/anirudhlath/alfred)
+
+**★ 2** · strong (score 5) · Python · tags: agentic-ai, claude, fastapi, home-automation, llm
+
+Local-first multi-agent voice assistant — dual-process architecture (local Ollama SLM fast path + Claude agentic tool-use loop), LLM-generated automation triggers, three-layer memory with embedding search, DeepEval evals. Python, FastAPI, Redis, MQTT.
+
+```bash
+cue skills add anirudhlath/alfred --profile backend
 ```
 
 ---

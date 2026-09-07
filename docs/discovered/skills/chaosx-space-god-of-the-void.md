@@ -2,7 +2,7 @@
 title: "CHAOSX-SPACE/god-of-the-void — Claude Code skill discovered by cue"
 description: "A Claude Code skill with a BODY: persistent memory across sessions, ~0-token semantic search, an errarium that ambushes you before you repeat a bug, caged auton"
 layout: page
-updated: 2026-08-01
+updated: 2026-09-06
 tags: [claude-code, skill, docs-writer]
 ---
 
@@ -17,7 +17,7 @@ tags: [claude-code, skill, docs-writer]
 cue ran [GitHub Code Search](https://docs.github.com/en/search-github/searching-on-github/searching-code) for `filename:SKILL.md` and found this repo. It scored 14.8 based on:
 - ✅ Contains SKILL.md
 - ⭐ 1 stars
-- 🗓️ Last pushed: 2026-08-01
+- 🗓️ Last pushed: 2026-09-06
 - 🏷️ Tags: agent-memory, ai-agent, anthropic, claude, claude-code, claude-code-skill, claude-skills, cli, dashboard, developer-tools, fts5, knowledge-base, llm-tools, obsidian-alternative, persistent-memory, productivity, second-brain, semantic-search, sqlite, zero-dependencies
 
 ## Best fit cue profiles

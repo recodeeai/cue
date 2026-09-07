@@ -2,21 +2,21 @@
 title: "SVerITG/Metis_PH — Claude Code skill discovered by cue"
 description: "A Research Cortex. A research companion for Claude. Your library, notes & memory stay on your machine; answers cited from your own library; 30+ specialist skill"
 layout: page
-updated: 2026-06-22
+updated: 2026-09-04
 tags: [claude-code, skill, backend, research]
 ---
 
 # ✨ [SVerITG/Metis_PH](https://github.com/SVerITG/Metis_PH)
 
-**★ 1** · strong (score 5.3) · Python · ai-assistant, anthropic, claude, epidemiology, knowledge-management
+**★ 1** · strong (score 6.8) · Python · ai-assistant, anthropic, claude, epidemiology, knowledge-management
 
 > A Research Cortex. A research companion for Claude. Your library, notes & memory stay on your machine; answers cited from your own library; 30+ specialist skills; auto cross-pollination across   papers, meetings, ideas, notes & journal; weekly self-review that drafts improvements for your approval. Reasoning runs on the Claude API.
 
 ## Why cue indexed it
 
-cue ran [GitHub Code Search](https://docs.github.com/en/search-github/searching-on-github/searching-code) for `filename:SKILL.md` and found this repo. It scored 5.3 based on:
+cue ran [GitHub Code Search](https://docs.github.com/en/search-github/searching-on-github/searching-code) for `filename:SKILL.md` and found this repo. It scored 6.8 based on:
 - ⭐ 1 stars
-- 🗓️ Last pushed: 2026-06-22
+- 🗓️ Last pushed: 2026-09-04
 - 🏷️ Tags: ai-assistant, anthropic, claude, epidemiology, knowledge-management, mcp, mcp-server, privacy, public-health, rag, research-tools, retrieval-augmented-generation, second-brain, self-improving-ai, sqlite, vector-search
 
 ## Best fit cue profiles

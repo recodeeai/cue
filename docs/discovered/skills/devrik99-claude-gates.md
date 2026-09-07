@@ -2,7 +2,7 @@
 title: "DevRik99/claude-gates — Claude Code skill discovered by cue"
 description: "Installable deterministic gates (hooks) for Claude Code: block destructive commands, protected paths, and enforce delegation/spec/quality rules. Configurable pe"
 layout: page
-updated: 2026-09-02
+updated: 2026-09-07
 tags: [claude-code, skill, core]
 ---
 
@@ -16,7 +16,7 @@ tags: [claude-code, skill, core]
 
 cue ran [GitHub Code Search](https://docs.github.com/en/search-github/searching-on-github/searching-code) for `filename:SKILL.md` and found this repo. It scored 4.3 based on:
 - ⭐ 1 stars
-- 🗓️ Last pushed: 2026-09-01
+- 🗓️ Last pushed: 2026-09-07
 - 🏷️ Tags: (none)
 
 ## Best fit cue profiles

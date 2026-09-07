@@ -1,8 +1,8 @@
 ---
 title: "Aboudjem/loopify — Claude Code skill discovered by cue"
-description: "Hand Claude a job that repeats. Come back to a log of what every tick did — not a loop you have to babysit. A Claude Code skill that writes a standing brief and"
+description: "Hand Claude a job that repeats. Come back to a log of what every tick did, not a loop you have to babysit."
 layout: page
-updated: 2026-09-01
+updated: 2026-09-04
 tags: [claude-code, skill, core]
 ---
 
@@ -10,14 +10,14 @@ tags: [claude-code, skill, core]
 
 **★ 0** · exceptional (score 8) · Python · agent-skills, agentic-workflow, ai-agents, ai-productivity, anthropic
 
-> Hand Claude a job that repeats. Come back to a log of what every tick did — not a loop you have to babysit. A Claude Code skill that writes a standing brief and one /loop line.
+> Hand Claude a job that repeats. Come back to a log of what every tick did, not a loop you have to babysit.
 
 ## Why cue indexed it
 
 cue ran [GitHub Code Search](https://docs.github.com/en/search-github/searching-on-github/searching-code) for `filename:SKILL.md` and found this repo. It scored 8 based on:
 - ⭐ 0 stars
-- 🗓️ Last pushed: 2026-09-01
-- 🏷️ Tags: agent-skills, agentic-workflow, ai-agents, ai-productivity, anthropic, automation, autonomous-agents, claude, claude-code, claude-code-plugin, claude-skill, cli, cron, developer-tools, llm, loop, loopify, productivity, recurring-tasks, scheduling
+- 🗓️ Last pushed: 2026-09-04
+- 🏷️ Tags: agent-skills, agentic-workflow, ai-agents, ai-productivity, anthropic, automation, autonomous-agents, claude, claude-code, claude-code-plugin, claude-skill, cli, cron, developer-tools, llm, loop, loopify, recurring-tasks, scheduling, skills-sh
 
 ## Best fit cue profiles
 

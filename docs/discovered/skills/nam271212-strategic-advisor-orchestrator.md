@@ -2,21 +2,21 @@
 title: "nam271212/strategic-advisor-orchestrator — Claude Code skill discovered by cue"
 description: "AI Coding Agent Orchestrator 2026: Pro-Level Strategy & Review Framework"
 layout: page
-updated: 2026-09-02
+updated: 2026-09-07
 tags: [claude-code, skill, core]
 ---
 
 # 💎 [nam271212/strategic-advisor-orchestrator](https://github.com/nam271212/strategic-advisor-orchestrator)
 
-**★ 117** · exceptional (score 14.3) · HTML · advisor-strategy, ai-coding, anthropic, claude-advisor, claude-code
+**★ 117** · exceptional (score 14.4) · HTML · advisor-strategy, ai-coding, anthropic, claude-advisor, claude-code
 
 > AI Coding Agent Orchestrator 2026: Pro-Level Strategy & Review Framework
 
 ## Why cue indexed it
 
-cue ran [GitHub Code Search](https://docs.github.com/en/search-github/searching-on-github/searching-code) for `filename:SKILL.md` and found this repo. It scored 14.3 based on:
+cue ran [GitHub Code Search](https://docs.github.com/en/search-github/searching-on-github/searching-code) for `filename:SKILL.md` and found this repo. It scored 14.4 based on:
 - ⭐ 117 stars
-- 🗓️ Last pushed: 2026-09-02
+- 🗓️ Last pushed: 2026-09-07
 - 🏷️ Tags: advisor-strategy, ai-coding, anthropic, claude-advisor, claude-code, claude-code-plugin, claude-code-skill, claude-opus, claude-skill, cline, coding-agent, gemini-cli, multi-model, vibe-coding
 
 ## Best fit cue profiles

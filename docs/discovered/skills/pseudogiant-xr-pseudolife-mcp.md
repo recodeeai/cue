@@ -1,8 +1,8 @@
 ---
 title: "Pseudogiant-xr/Pseudolife-MCP — Claude Code skill discovered by cue"
-description: "Persistent long-term memory for Claude — an MCP server with an associative memory bank, a canonical-fact cortex, sleep-like dream consolidation, and a web conso"
+description: "Persistent long-term memory for Agents — an MCP server with an associative memory bank, a canonical-fact cortex, sleep-like dream consolidation, and a web conso"
 layout: page
-updated: 2026-07-18
+updated: 2026-09-04
 tags: [claude-code, skill, backend]
 ---
 
@@ -10,13 +10,13 @@ tags: [claude-code, skill, backend]
 
 **★ 4** · strong (score 6.8) · Python · agent-memory, claude, long-term-memory, mcp, mcp-server
 
-> Persistent long-term memory for Claude — an MCP server with an associative memory bank, a canonical-fact cortex, sleep-like dream consolidation, and a web console. Not quite alive.
+> Persistent long-term memory for Agents — an MCP server with an associative memory bank, a canonical-fact cortex, sleep-like dream consolidation, and a web console. Not quite alive.
 
 ## Why cue indexed it
 
 cue ran [GitHub Code Search](https://docs.github.com/en/search-github/searching-on-github/searching-code) for `filename:SKILL.md` and found this repo. It scored 6.8 based on:
 - ⭐ 4 stars
-- 🗓️ Last pushed: 2026-07-18
+- 🗓️ Last pushed: 2026-09-04
 - 🏷️ Tags: agent-memory, claude, long-term-memory, mcp, mcp-server, memory, pgvector, postgres
 
 ## Best fit cue profiles

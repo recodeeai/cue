@@ -2,21 +2,21 @@
 title: "MikkoParkkola/glyphdown — Claude Code skill discovered by cue"
 description: "Lossless, on-device token-cost reduction for Claude Code and LLM coding agents. Free plugin: compresses tool-result output, dedups context, compacts the system "
 layout: page
-updated: 2026-08-25
+updated: 2026-09-07
 tags: [claude-code, skill, core]
 ---
 
 # ✨ [MikkoParkkola/glyphdown](https://github.com/MikkoParkkola/glyphdown)
 
-**★ 1** · strong (score 5.1) · Rust · agentic, ai-agents, anthropic, claude, claude-code
+**★ 1** · strong (score 6.7) · Rust · agentic, ai-agents, anthropic, claude, claude-code
 
 > Lossless, on-device token-cost reduction for Claude Code and LLM coding agents. Free plugin: compresses tool-result output, dedups context, compacts the system prompt — stacks on Anthropic prompt caching. Rust hot path, Python fallback, fail-open. PolyForm Noncommercial.
 
 ## Why cue indexed it
 
-cue ran [GitHub Code Search](https://docs.github.com/en/search-github/searching-on-github/searching-code) for `filename:SKILL.md` and found this repo. It scored 5.1 based on:
+cue ran [GitHub Code Search](https://docs.github.com/en/search-github/searching-on-github/searching-code) for `filename:SKILL.md` and found this repo. It scored 6.7 based on:
 - ⭐ 1 stars
-- 🗓️ Last pushed: 2026-08-19
+- 🗓️ Last pushed: 2026-09-04
 - 🏷️ Tags: agentic, ai-agents, anthropic, claude, claude-code, context-compression, cost-optimization, developer-tools, llm, llm-tools, mcp, prompt-compression, rust, token-compression, token-optimization
 
 ## Best fit cue profiles

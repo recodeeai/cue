@@ -2,21 +2,21 @@
 title: "Vitorlindo201/Themata-Claude-Scribe — Claude Code skill discovered by cue"
 description: "Claude Mythos Engine 2026: AI Sub-Agent Framework for Epic Interactive Storytelling"
 layout: page
-updated: 2026-08-31
+updated: 2026-09-06
 tags: [claude-code, skill, core]
 ---
 
 # 💎 [Vitorlindo201/Themata-Claude-Scribe](https://github.com/Vitorlindo201/Themata-Claude-Scribe)
 
-**★ 117** · exceptional (score 12.3) · HTML · claude, claude-ai, claude-code, claude-code-cli, claude-code-hooks
+**★ 118** · exceptional (score 12.4) · HTML · claude, claude-ai, claude-code, claude-code-cli, claude-code-hooks
 
 > Claude Mythos Engine 2026: AI Sub-Agent Framework for Epic Interactive Storytelling
 
 ## Why cue indexed it
 
-cue ran [GitHub Code Search](https://docs.github.com/en/search-github/searching-on-github/searching-code) for `filename:SKILL.md` and found this repo. It scored 12.3 based on:
-- ⭐ 117 stars
-- 🗓️ Last pushed: 2026-08-31
+cue ran [GitHub Code Search](https://docs.github.com/en/search-github/searching-on-github/searching-code) for `filename:SKILL.md` and found this repo. It scored 12.4 based on:
+- ⭐ 118 stars
+- 🗓️ Last pushed: 2026-09-06
 - 🏷️ Tags: claude, claude-ai, claude-code, claude-code-cli, claude-code-hooks, claude-code-marketplace, claude-code-plugin, claude-code-plugins, claude-code-skill, claude-code-skills, claude-code-subagents, claude-cowork-free, claude-design-ai, claude-design-alternative, claude-design-download, claude-design-free, claude-mythos, claude-opus, claude-opus-4-6, mythos
 
 ## Best fit cue profiles

@@ -2,21 +2,21 @@
 title: "aKyther/orcan — Claude Code skill discovered by cue"
 description: "Isolated Docker environments for Cursor and Claude Code with path-parity workspaces."
 layout: page
-updated: 2026-09-01
+updated: 2026-09-07
 tags: [claude-code, skill, core]
 ---
 
 # ✨ [aKyther/orcan](https://github.com/aKyther/orcan)
 
-**★ 1** · strong (score 6.2) · Python · claude-code, cursor, devtools, docker, tmux
+**★ 1** · strong (score 6.3) · Python · claude-code, cursor, devtools, docker, tmux
 
 > Isolated Docker environments for Cursor and Claude Code with path-parity workspaces.
 
 ## Why cue indexed it
 
-cue ran [GitHub Code Search](https://docs.github.com/en/search-github/searching-on-github/searching-code) for `filename:SKILL.md` and found this repo. It scored 6.2 based on:
+cue ran [GitHub Code Search](https://docs.github.com/en/search-github/searching-on-github/searching-code) for `filename:SKILL.md` and found this repo. It scored 6.3 based on:
 - ⭐ 1 stars
-- 🗓️ Last pushed: 2026-08-29
+- 🗓️ Last pushed: 2026-09-07
 - 🏷️ Tags: claude-code, cursor, devtools, docker, tmux, ttyd
 
 ## Best fit cue profiles

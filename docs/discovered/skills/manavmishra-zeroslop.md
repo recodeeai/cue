@@ -1,24 +1,24 @@
 ---
 title: "manavmishra/ZeroSlop — Claude Code skill discovered by cue"
-description: "An open-source skill that finds AI slop in your writing and strips it out without changing the facts, scoring the draft before and after."
+description: "Open-source Agent Skill that scores AI-sounding writing 0–100, edits it with your assistant, and checks source details locally."
 layout: page
-updated: 2026-09-01
+updated: 2026-09-06
 tags: [claude-code, skill, core]
 ---
 
 # 💎 [manavmishra/ZeroSlop](https://github.com/manavmishra/ZeroSlop)
 
-**★ 24** · exceptional (score 14.6) · Python · agent-skills, ai-detection, ai-humanizer, ai-slop, ai-slop-detection
+**★ 110** · exceptional (score 20.9) · Python · agent-skills, ai-editor, ai-slop, ai-writing, anti-slop
 
-> An open-source skill that finds AI slop in your writing and strips it out without changing the facts, scoring the draft before and after.
+> Open-source Agent Skill that scores AI-sounding writing 0–100, edits it with your assistant, and checks source details locally.
 
 ## Why cue indexed it
 
-cue ran [GitHub Code Search](https://docs.github.com/en/search-github/searching-on-github/searching-code) for `filename:SKILL.md` and found this repo. It scored 14.6 based on:
+cue ran [GitHub Code Search](https://docs.github.com/en/search-github/searching-on-github/searching-code) for `filename:SKILL.md` and found this repo. It scored 20.9 based on:
 - ✅ Contains SKILL.md
-- ⭐ 24 stars
-- 🗓️ Last pushed: 2026-09-01
-- 🏷️ Tags: agent-skills, ai-detection, ai-humanizer, ai-slop, ai-slop-detection, anti-slop, claude-code, claude-skill, codex, de-slop, editing, humanize-ai-text, humanizer, prose, prose-linter, skills, slop-detector, text-analysis, writing-score, writing-tools
+- ⭐ 110 stars
+- 🗓️ Last pushed: 2026-09-06
+- 🏷️ Tags: agent-skills, ai-editor, ai-slop, ai-writing, anti-slop, claude-code, claude-skill, codex, cursor, editing, humanize-ai-text, humanizer, mcp-server, model-context-protocol, offline-first, open-source, privacy, prose-linter, writing-assistant, writing-tools
 
 ## Best fit cue profiles
 

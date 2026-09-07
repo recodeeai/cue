@@ -2,7 +2,7 @@
 title: "amohavarshansankar/google-fonts-skill — Claude Code skill discovered by cue"
 description: "Generate Google Fonts typography systems with font search, pair suggestions, and CSS/Tailwind output from 1,923 curated fonts"
 layout: page
-updated: 2026-08-06
+updated: 2026-09-07
 tags: [claude-code, skill, frontend]
 ---
 
@@ -17,7 +17,7 @@ tags: [claude-code, skill, frontend]
 cue ran [GitHub Code Search](https://docs.github.com/en/search-github/searching-on-github/searching-code) for `filename:SKILL.md` and found this repo. It scored 12.8 based on:
 - ✅ Contains SKILL.md
 - ⭐ 1 stars
-- 🗓️ Last pushed: 2026-08-06
+- 🗓️ Last pushed: 2026-09-07
 - 🏷️ Tags: claude-code-skill, css, css-grid, css-grid-layout, design-system, flexbox, front-end-web-development, googlefonts, grid, html, html-css, memory-game, responsive, responsive-web-design, tailwind, type-scale, typography, web-fonts
 
 ## Best fit cue profiles

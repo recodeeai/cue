@@ -2,7 +2,7 @@
 title: "cs32dasdasd/ionik-capacitor-flux-patterns — Claude Code skill discovered by cue"
 description: "Ionic Capacitor Pro 2026: AI-Powered Hybrid App Builder for React, Angular & Vue"
 layout: page
-updated: 2026-08-30
+updated: 2026-09-06
 tags: [claude-code, skill, frontend]
 ---
 
@@ -16,7 +16,7 @@ tags: [claude-code, skill, frontend]
 
 cue ran [GitHub Code Search](https://docs.github.com/en/search-github/searching-on-github/searching-code) for `filename:SKILL.md` and found this repo. It scored 9 based on:
 - ⭐ 0 stars
-- 🗓️ Last pushed: 2026-08-30
+- 🗓️ Last pushed: 2026-09-06
 - 🏷️ Tags: agent, agents, ai, ai-coding, android, angular, capacitor, capacitor-skills, capawesome, claude-code, claude-skill, cross-platform, cursor, firebase, gemini, ionic, ios, mobile-development, skills, vue
 
 ## Best fit cue profiles

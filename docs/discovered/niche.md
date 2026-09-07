@@ -2,7 +2,7 @@
 title: "Claude Code Skills for niche"
 description: "1 community Claude Code skills curated by cue for the niche profile. Hidden-gem repos with SKILL.md, MCP servers, and CLI integrations."
 layout: page
-updated: 2026-09-01
+updated: 2026-09-06
 tags: [claude-code, niche, skills, mcp, ai-agents]
 ---
 
@@ -15,17 +15,17 @@ tags: [claude-code, niche, skills, mcp, ai-agents]
 
 ---
 
-<a id="ikramahmadmemon13-grant-thinking-skill"></a>
-## 💎 [Ikramahmadmemon13/grant-thinking-skill](https://github.com/Ikramahmadmemon13/grant-thinking-skill)
+<a id="yizchu-patent-compose-skill"></a>
+## 💎 [yizchu/patent-compose-skill](https://github.com/yizchu/patent-compose-skill)
 
-**★ 0** · exceptional (score 12) · tags: agent-skills, claude-code, claude-code-skill, claude-skills, feasibility
+**★ 3** · exceptional (score 9.2) · Python · tags: claim-optimization, claim-tree, claude-code-skill, cnki, compose
 
-Evaluate project fundability and refine grant logic using AI agent skills to identify innovation, assess feasibility, and reduce rejection risks.
+AI驱动的专利撰写工作流，自动化完成项目分析、查新检索、专利组合生成与优化、交底书和流程图撰写。
 
 ✅ SKILL.md
 
 ```bash
-cue skills add Ikramahmadmemon13/grant-thinking-skill --profile niche
+cue skills add yizchu/patent-compose-skill --profile niche
 ```
 
 ---

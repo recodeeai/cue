@@ -2,21 +2,21 @@
 title: "qiaeru/skill-claudemd — Claude Code skill discovered by cue"
 description: "A Claude Code skill that trims a project's CLAUDE.md to what is strictly necessary, replacing derivable or duplicated content with on-demand references to save "
 layout: page
-updated: 2026-06-30
+updated: 2026-09-05
 tags: [claude-code, skill, core]
 ---
 
 # 💎 [qiaeru/skill-claudemd](https://github.com/qiaeru/skill-claudemd)
 
-**★ 1** · exceptional (score 8.3) · agent-skills, anthropic, claude, claude-code, claude-md
+**★ 1** · exceptional (score 9.8) · JavaScript · agent-skills, anthropic, claude, claude-code, claude-md
 
 > A Claude Code skill that trims a project's CLAUDE.md to what is strictly necessary, replacing derivable or duplicated content with on-demand references to save context tokens.
 
 ## Why cue indexed it
 
-cue ran [GitHub Code Search](https://docs.github.com/en/search-github/searching-on-github/searching-code) for `filename:SKILL.md` and found this repo. It scored 8.3 based on:
+cue ran [GitHub Code Search](https://docs.github.com/en/search-github/searching-on-github/searching-code) for `filename:SKILL.md` and found this repo. It scored 9.8 based on:
 - ⭐ 1 stars
-- 🗓️ Last pushed: 2026-06-30
+- 🗓️ Last pushed: 2026-09-05
 - 🏷️ Tags: agent-skills, anthropic, claude, claude-code, claude-md, claude-plugin, claude-skill, context-engineering, documentation, skill
 
 ## Best fit cue profiles

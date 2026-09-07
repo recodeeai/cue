@@ -2,7 +2,7 @@
 title: "mindgameolympiangames78/llm-knowledge-base — Claude Code skill discovered by cue"
 description: "Automate your personal knowledge base in Obsidian using Claude. Feed raw content and let the LLM organize, link, and synthesize your notes."
 layout: page
-updated: 2026-08-06
+updated: 2026-09-07
 tags: [claude-code, skill, docs-writer]
 ---
 
@@ -16,7 +16,7 @@ tags: [claude-code, skill, docs-writer]
 
 cue ran [GitHub Code Search](https://docs.github.com/en/search-github/searching-on-github/searching-code) for `filename:SKILL.md` and found this repo. It scored 9.5 based on:
 - ⭐ 0 stars
-- 🗓️ Last pushed: 2026-08-06
+- 🗓️ Last pushed: 2026-09-07
 - 🏷️ Tags: bert-models, biomedical-informatics, claude-code, claude-code-skill, gpt, gpt4, knowledge-base, knowledge-management, llama2, llm, mattermost, open-source, personal-wiki, retrieval, sentence-transformers
 
 ## Best fit cue profiles

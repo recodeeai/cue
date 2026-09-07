@@ -2,21 +2,21 @@
 title: "mxsm/rocketmq-rust — Claude Code skill discovered by cue"
 description: "🚀Apache RocketMQ build in  Rust🦀. Faster, safer, and with lower memory usage. ⭐ Star to support our work❤️!"
 layout: page
-updated: 2026-08-23
+updated: 2026-09-06
 tags: [claude-code, skill, core]
 ---
 
 # 💎 [mxsm/rocketmq-rust](https://github.com/mxsm/rocketmq-rust)
 
-**★ 1506** · exceptional (score 14) · Rust · ai-sre, cloud-native, mcp, mcp-server, mcp-tools
+**★ 1509** · exceptional (score 14) · Rust · ai-sre, cloud-native, mcp, mcp-server, mcp-tools
 
 > 🚀Apache RocketMQ build in  Rust🦀. Faster, safer, and with lower memory usage. ⭐ Star to support our work❤️!
 
 ## Why cue indexed it
 
 cue ran [GitHub Code Search](https://docs.github.com/en/search-github/searching-on-github/searching-code) for `filename:SKILL.md` and found this repo. It scored 14 based on:
-- ⭐ 1506 stars
-- 🗓️ Last pushed: 2026-08-23
+- ⭐ 1509 stars
+- 🗓️ Last pushed: 2026-09-06
 - 🏷️ Tags: ai-sre, cloud-native, mcp, mcp-server, mcp-tools, messaging, rocketmq, rocketmq-rust, rocketmq-rust-client, rocketmq-rust-sdk, rust, tauri
 
 ## Best fit cue profiles

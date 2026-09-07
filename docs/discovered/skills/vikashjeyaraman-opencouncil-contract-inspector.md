@@ -2,21 +2,21 @@
 title: "vikashjeyaraman/opencouncil-contract-inspector — Claude Code skill discovered by cue"
 description: "Proven 2026 Multi-Agent AI Review System – Verdict-Driven Quality Control"
 layout: page
-updated: 2026-09-01
+updated: 2026-09-06
 tags: [claude-code, skill, fleet-control]
 ---
 
 # 💎 [vikashjeyaraman/opencouncil-contract-inspector](https://github.com/vikashjeyaraman/opencouncil-contract-inspector)
 
-**★ 118** · exceptional (score 13.3) · HTML · agent-orchestration, ai-agents, ai-hallucination, ai-quality, anthropic
+**★ 120** · exceptional (score 13.4) · HTML · agent-orchestration, ai-agents, ai-hallucination, ai-quality, anthropic
 
 > Proven 2026 Multi-Agent AI Review System – Verdict-Driven Quality Control
 
 ## Why cue indexed it
 
-cue ran [GitHub Code Search](https://docs.github.com/en/search-github/searching-on-github/searching-code) for `filename:SKILL.md` and found this repo. It scored 13.3 based on:
-- ⭐ 118 stars
-- 🗓️ Last pushed: 2026-09-01
+cue ran [GitHub Code Search](https://docs.github.com/en/search-github/searching-on-github/searching-code) for `filename:SKILL.md` and found this repo. It scored 13.4 based on:
+- ⭐ 120 stars
+- 🗓️ Last pushed: 2026-09-06
 - 🏷️ Tags: agent-orchestration, ai-agents, ai-hallucination, ai-quality, anthropic, anti-sycophancy, claude, claude-code, claude-opus, claude-skill, claude-sonnet, llm-quality, llm-tools, multi-agent, prompt-engineering, skills, sycophancy
 
 ## Best fit cue profiles

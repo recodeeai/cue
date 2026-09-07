@@ -2,7 +2,7 @@
 title: "nsasoft/nsauditor-ai-agent-skill — Claude Code skill discovered by cue"
 description: "AI Agent Skill for NSAuditor AI — gives any AI coding agent built-in knowledge of NSAuditor's MCP tools, schemas, plugins, and security audit workflows. Works w"
 layout: page
-updated: 2026-08-24
+updated: 2026-09-05
 tags: [claude-code, skill, cybersecurity]
 ---
 
@@ -17,7 +17,7 @@ tags: [claude-code, skill, cybersecurity]
 cue ran [GitHub Code Search](https://docs.github.com/en/search-github/searching-on-github/searching-code) for `filename:SKILL.md` and found this repo. It scored 16.8 based on:
 - ✅ Contains SKILL.md
 - ⭐ 4 stars
-- 🗓️ Last pushed: 2026-08-24
+- 🗓️ Last pushed: 2026-09-05
 - 🏷️ Tags: ai-agent, ai-agent-skill, claude, claude-code, copilot, cursor, cve, mcp, mcp-server, mitre-attack, model-context-protocol, network-security, nsauditor, nvd, penetration-testing, port-scanner, security-audit, vulnerability-scanner, windsurf
 
 ## Best fit cue profiles

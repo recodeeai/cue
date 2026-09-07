@@ -2,7 +2,7 @@
 title: "AzamatRaimbekov/vibe-coding-mentor — Claude Code skill discovered by cue"
 description: "Claude Code skill that teaches you to build software with an agent instead of just handing you code — red tests, project diagnostics, plain language, self-learn"
 layout: page
-updated: 2026-08-29
+updated: 2026-09-04
 tags: [claude-code, skill, core]
 ---
 
@@ -16,7 +16,7 @@ tags: [claude-code, skill, core]
 
 cue ran [GitHub Code Search](https://docs.github.com/en/search-github/searching-on-github/searching-code) for `filename:SKILL.md` and found this repo. It scored 8.5 based on:
 - ⭐ 2 stars
-- 🗓️ Last pushed: 2026-08-29
+- 🗓️ Last pushed: 2026-09-04
 - 🏷️ Tags: agent-skills, ai-agents, claude-code, claude-skill, learning, llm, mentor, skills, teaching, vibe-coding
 
 ## Best fit cue profiles

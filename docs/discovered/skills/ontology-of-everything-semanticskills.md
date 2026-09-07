@@ -1,23 +1,23 @@
 ---
 title: "ontology-of-everything/SemanticSkills — Claude Code skill discovered by cue"
-description: "Semantic agent skills for cloud operations — open SKILL.md packages for Claude Code, Cursor, Codex CLI. Includes huawei-cloud-billing-scout (read-only BSS/KooCL"
+description: "Ontology & concept design Agent Skills, plus read-only Huawei Cloud FinOps. npx skills add ontology-of-everything/SemanticSkills"
 layout: page
-updated: 2026-07-10
+updated: 2026-09-07
 tags: [claude-code, skill, core]
 ---
 
 # 💎 [ontology-of-everything/SemanticSkills](https://github.com/ontology-of-everything/SemanticSkills)
 
-**★ 6** · exceptional (score 10) · Python · agent-skills, billing, claude-code, claude-code-skill, claude-skills
+**★ 8** · exceptional (score 15.3) · Python · agent-skill, agent-skills, agentskills, claude-code, claude-code-skill
 
-> Semantic agent skills for cloud operations — open SKILL.md packages for Claude Code, Cursor, Codex CLI. Includes huawei-cloud-billing-scout (read-only BSS/KooCLI billing).
+> Ontology & concept design Agent Skills, plus read-only Huawei Cloud FinOps. npx skills add ontology-of-everything/SemanticSkills
 
 ## Why cue indexed it
 
-cue ran [GitHub Code Search](https://docs.github.com/en/search-github/searching-on-github/searching-code) for `filename:SKILL.md` and found this repo. It scored 10 based on:
-- ⭐ 6 stars
-- 🗓️ Last pushed: 2026-07-10
-- 🏷️ Tags: agent-skills, billing, claude-code, claude-code-skill, claude-skills, cursor, finops, huawei-cloud, koocli, semantic-skills
+cue ran [GitHub Code Search](https://docs.github.com/en/search-github/searching-on-github/searching-code) for `filename:SKILL.md` and found this repo. It scored 15.3 based on:
+- ⭐ 8 stars
+- 🗓️ Last pushed: 2026-09-07
+- 🏷️ Tags: agent-skill, agent-skills, agentskills, claude-code, claude-code-skill, claude-code-skills, claude-skills, clawhub, coding-agents, concept-design, cursor-skills, hermes-agent, huawei-cloud, ontology, openai-codex, openclaw, openclaw-skills, semantic-layer, semantic-skills, skills-sh
 
 ## Best fit cue profiles
 

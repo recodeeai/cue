@@ -2,21 +2,21 @@
 title: "githits-com/githits-cli — Claude Code skill discovered by cue"
 description: "CLI & MCP for GitHits - The Code Context Layer for AI Coding Agents"
 layout: page
-updated: 2026-09-02
+updated: 2026-09-04
 tags: [claude-code, skill, backend]
 ---
 
 # 💎 [githits-com/githits-cli](https://github.com/githits-com/githits-cli)
 
-**★ 92** · exceptional (score 13.3) · TypeScript · ai-coding-tools, ai-tools, cli, code-graph, code-search
+**★ 94** · exceptional (score 13.4) · TypeScript · ai-coding-tools, ai-tools, cli, code-graph, code-search
 
 > CLI & MCP for GitHits - The Code Context Layer for AI Coding Agents
 
 ## Why cue indexed it
 
-cue ran [GitHub Code Search](https://docs.github.com/en/search-github/searching-on-github/searching-code) for `filename:SKILL.md` and found this repo. It scored 13.3 based on:
-- ⭐ 92 stars
-- 🗓️ Last pushed: 2026-09-02
+cue ran [GitHub Code Search](https://docs.github.com/en/search-github/searching-on-github/searching-code) for `filename:SKILL.md` and found this repo. It scored 13.4 based on:
+- ⭐ 94 stars
+- 🗓️ Last pushed: 2026-09-04
 - 🏷️ Tags: ai-coding-tools, ai-tools, cli, code-graph, code-search, context-api, context-engineering, context-layer-for-ai, context7-alternative, documentation-mcp, index, mcp, mcp-server, remote-mcp, skills
 
 ## Best fit cue profiles

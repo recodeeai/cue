@@ -2,19 +2,19 @@
 title: "e01n0/skillspec — Claude Code skill discovered by cue"
 description: "SkillSpec is a DSL that adds types, contracts, composition, and tests around agent skills, then compiles back down to the same SKILL.md that existing runtimes a"
 layout: page
-updated: 2026-09-02
+updated: 2026-09-07
 tags: [claude-code, skill, core]
 ---
 
 # 🔹 [e01n0/skillspec](https://github.com/e01n0/skillspec)
 
-**★ 2** · potential (score 3.8) · Rust · agentic-ai, agentic-coding, agentic-workflow, agentic-workflows, agents
+**★ 2** · potential (score 3.7) · Rust · agentic-ai, agentic-coding, agentic-workflow, agentic-workflows, agents
 
 > SkillSpec is a DSL that adds types, contracts, composition, and tests around agent skills, then compiles back down to the same SKILL.md that existing runtimes already understand. Once a skill works and you want to make it production-ready, you codify it into a .agent file and get versioning, structural diffs, type checking, and a path to CI/CD.
 
 ## Why cue indexed it
 
-cue ran [GitHub Code Search](https://docs.github.com/en/search-github/searching-on-github/searching-code) for `filename:SKILL.md` and found this repo. It scored 3.8 based on:
+cue ran [GitHub Code Search](https://docs.github.com/en/search-github/searching-on-github/searching-code) for `filename:SKILL.md` and found this repo. It scored 3.7 based on:
 - ⭐ 2 stars
 - 🗓️ Last pushed: 2026-07-10
 - 🏷️ Tags: agentic-ai, agentic-coding, agentic-workflow, agentic-workflows, agents, claude, claude-agent-skill, claude-agents, claude-ai, claude-code, codex, codex-skill, markdown, rust, skills

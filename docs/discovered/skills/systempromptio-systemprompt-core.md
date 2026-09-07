@@ -2,7 +2,7 @@
 title: "systempromptio/systemprompt-core — Claude Code skill discovered by cue"
 description: "AI governance infrastructure for agentic systems. Rust library behind systemprompt.io — MCP, A2A, OAuth2, audit trails, compile-time extensions. Evaluate with s"
 layout: page
-updated: 2026-09-01
+updated: 2026-09-05
 tags: [claude-code, skill, rust, backend]
 ---
 
@@ -16,7 +16,7 @@ tags: [claude-code, skill, rust, backend]
 
 cue ran [GitHub Code Search](https://docs.github.com/en/search-github/searching-on-github/searching-code) for `filename:SKILL.md` and found this repo. It scored 12.4 based on:
 - ⭐ 8 stars
-- 🗓️ Last pushed: 2026-09-01
+- 🗓️ Last pushed: 2026-09-05
 - 🏷️ Tags: a2a, agent-orchestration, agentic-ai, ai-agents, ai-governance, ai-infrastructure, autonomous-agents, claude, claude-code, enterprise, llm, llmops, mcp, mcp-server, model-context-protocol, oauth2, postgresql, rust, rust-crate, self-hosted
 
 ## Best fit cue profiles

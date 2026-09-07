@@ -2,21 +2,21 @@
 title: "naorsabag/openhop — Claude Code skill discovered by cue"
 description: "Interactive data-flow diagrams your AI agent can write. One SKILL.md — install in Claude Code, Cursor, Codex, and 11+ other clients via `npx openskills install "
 layout: page
-updated: 2026-06-25
+updated: 2026-09-04
 tags: [claude-code, skill, core]
 ---
 
 # 💎 [naorsabag/openhop](https://github.com/naorsabag/openhop)
 
-**★ 29** · exceptional (score 11) · TypeScript · ai, ai-agents, animation, architecture, claude-code
+**★ 42** · exceptional (score 11.8) · TypeScript · ai, ai-agents, animation, architecture, claude-code
 
 > Interactive data-flow diagrams your AI agent can write. One SKILL.md — install in Claude Code, Cursor, Codex, and 11+ other clients via `npx openskills install naorsabag/openhop`.
 
 ## Why cue indexed it
 
-cue ran [GitHub Code Search](https://docs.github.com/en/search-github/searching-on-github/searching-code) for `filename:SKILL.md` and found this repo. It scored 11 based on:
-- ⭐ 29 stars
-- 🗓️ Last pushed: 2026-06-25
+cue ran [GitHub Code Search](https://docs.github.com/en/search-github/searching-on-github/searching-code) for `filename:SKILL.md` and found this repo. It scored 11.8 based on:
+- ⭐ 42 stars
+- 🗓️ Last pushed: 2026-09-04
 - 🏷️ Tags: ai, ai-agents, animation, architecture, claude-code, claude-code-skill, code-visualization, codex, cursor, data-flow, developer-tools, diagram, flow-chart, llm-tools, mermaid-alternative, skills, yaml
 
 ## Best fit cue profiles

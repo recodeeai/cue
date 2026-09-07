@@ -1,23 +1,24 @@
 ---
 title: "ruvnet/ruflo — Claude Code skill discovered by cue"
-description: "🌊 The leading agent meta-harness for Claude. Deploy intelligent multi-agent swarms, coordinate autonomous workflows, and build conversational AI systems. Featu"
+description: "🌊 The original agent meta-harness. Deploy intelligent multi-player swarms, coordinate autonomous workflows, and build conversational AI systems. Features adapt"
 layout: page
-updated: 2026-06-27
+updated: 2026-09-07
 tags: [claude-code, skill, fleet-control, backend]
 ---
 
 # 💎 [ruvnet/ruflo](https://github.com/ruvnet/ruflo)
 
-**★ 61661** · exceptional (score 18.5) · TypeScript · agentic-ai, agentic-framework, agentic-rag, agentic-workflow, agents
+**★ 71156** · exceptional (score 23.5) · TypeScript · agentic-ai, agentic-framework, agentic-workflow, agents, ai-agents
 
-> 🌊 The leading agent meta-harness for Claude. Deploy intelligent multi-agent swarms, coordinate autonomous workflows, and build conversational AI systems. Features adaptive memory, self-learning swarm intelligence, RAG integration, and native Claude Code / Codex Integration
+> 🌊 The original agent meta-harness. Deploy intelligent multi-player swarms, coordinate autonomous workflows, and build conversational AI systems. Features adaptive memory, self-learning intelligence, RAG integration, and native Claude Code / Codex / Hermes and many more Integrated
 
 ## Why cue indexed it
 
-cue ran [GitHub Code Search](https://docs.github.com/en/search-github/searching-on-github/searching-code) for `filename:SKILL.md` and found this repo. It scored 18.5 based on:
-- ⭐ 61661 stars
-- 🗓️ Last pushed: 2026-06-27
-- 🏷️ Tags: agentic-ai, agentic-framework, agentic-rag, agentic-workflow, agents, ai-agents, ai-assistant, ai-coding, ai-skills, autonomous-agents, claude-code, codex, mcp-server, multi-agent, multi-agent-systems, npm, skills, swarm, swarm-intelligence, typescript
+cue ran [GitHub Code Search](https://docs.github.com/en/search-github/searching-on-github/searching-code) for `filename:SKILL.md` and found this repo. It scored 23.5 based on:
+- ✅ Contains SKILL.md
+- ⭐ 71156 stars
+- 🗓️ Last pushed: 2026-09-07
+- 🏷️ Tags: agentic-ai, agentic-framework, agentic-workflow, agents, ai-agents, ai-assistant, ai-skills, autonomous-agents, claude-code, codex, dsh-plugin, harness, mcp-server, multi-agent, multi-agent-systems, npm, skills, swarm, swarm-intelligence, typescript
 
 ## Best fit cue profiles
 

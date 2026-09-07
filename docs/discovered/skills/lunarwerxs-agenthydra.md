@@ -2,22 +2,22 @@
 title: "LunarWerxs/AgentHydra — Claude Code skill discovered by cue"
 description: "Every local AI coding session in one tab: Claude Code, Codex and OpenCode in a single list, with a queue you can schedule and isolated Claude Desktop instances "
 layout: page
-updated: 2026-08-12
+updated: 2026-09-07
 tags: [claude-code, skill, core]
 ---
 
 # 💎 [LunarWerxs/AgentHydra](https://github.com/LunarWerxs/AgentHydra)
 
-**★ 17** · exceptional (score 9.9) · TypeScript · agent-orchestration, ai-agents, anthropic, bun, claude
+**★ 43** · exceptional (score 10.4) · TypeScript · agent-orchestration, ai-agents, anthropic, bun, claude
 
 > Every local AI coding session in one tab: Claude Code, Codex and OpenCode in a single list, with a queue you can schedule and isolated Claude Desktop instances kept apart. Local, private, MCP-native.
 
 ## Why cue indexed it
 
-cue ran [GitHub Code Search](https://docs.github.com/en/search-github/searching-on-github/searching-code) for `filename:SKILL.md` and found this repo. It scored 9.9 based on:
-- ⭐ 17 stars
-- 🗓️ Last pushed: 2026-08-12
-- 🏷️ Tags: agent-orchestration, ai-agents, anthropic, bun, claude, claude-code, codex, dashboard, developer-tools, local-first, mcp, mcp-server, opencode, vue
+cue ran [GitHub Code Search](https://docs.github.com/en/search-github/searching-on-github/searching-code) for `filename:SKILL.md` and found this repo. It scored 10.4 based on:
+- ⭐ 43 stars
+- 🗓️ Last pushed: 2026-09-07
+- 🏷️ Tags: agent-orchestration, ai-agents, anthropic, bun, claude, claude-code, codex, dashboard, developer-tools, local-first, mcp, mcp-server, model-context-protocol, opencode, vue
 
 ## Best fit cue profiles
 

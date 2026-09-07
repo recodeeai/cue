@@ -2,7 +2,7 @@
 title: "inthearto/shiplog — Claude Code skill discovered by cue"
 description: "Capture and search your codebase decisions, trade-offs, and discoveries within GitHub to maintain clear, lasting project context."
 layout: page
-updated: 2026-08-14
+updated: 2026-09-07
 tags: [claude-code, skill, core]
 ---
 
@@ -16,7 +16,7 @@ tags: [claude-code, skill, core]
 
 cue ran [GitHub Code Search](https://docs.github.com/en/search-github/searching-on-github/searching-code) for `filename:SKILL.md` and found this repo. It scored 5.5 based on:
 - ⭐ 0 stars
-- 🗓️ Last pushed: 2026-08-14
+- 🗓️ Last pushed: 2026-09-07
 - 🏷️ Tags: ai, ai-agent-skill, ai-agents, changelog, claudeskills, cli, codex, context-engineering, cursor, electron, github-workflow, llm, lua, mod, skills, traceability, typescript
 
 ## Best fit cue profiles

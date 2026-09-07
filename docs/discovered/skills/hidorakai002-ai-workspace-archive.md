@@ -2,21 +2,21 @@
 title: "HIDORAKAI002/ai-workspace-archive — Claude Code skill discovered by cue"
 description: "A massive, self-updating local archive of AI tools — 11,000+ agent skills, 240+ MCP servers, 2,200+ IDE rules (Cursor/Cline), and 30+ system prompt collections."
 layout: page
-updated: 2026-09-02
+updated: 2026-09-06
 tags: [claude-code, skill, core]
 ---
 
 # 💎 [HIDORAKAI002/ai-workspace-archive](https://github.com/HIDORAKAI002/ai-workspace-archive)
 
-**★ 33** · exceptional (score 14.7) · agents, ai, antigravity, automation, claude
+**★ 34** · exceptional (score 14.7) · agents, ai, antigravity, automation, claude
 
 > A massive, self-updating local archive of AI tools — 11,000+ agent skills, 240+ MCP servers, 2,200+ IDE rules (Cursor/Cline), and 30+ system prompt collections. One repo to rule them all.
 
 ## Why cue indexed it
 
 cue ran [GitHub Code Search](https://docs.github.com/en/search-github/searching-on-github/searching-code) for `filename:SKILL.md` and found this repo. It scored 14.7 based on:
-- ⭐ 33 stars
-- 🗓️ Last pushed: 2026-09-02
+- ⭐ 34 stars
+- 🗓️ Last pushed: 2026-09-06
 - 🏷️ Tags: agents, ai, antigravity, automation, claude, claude-code, claude-code-skill, claude-code-skills, claude-plugin, claude-skills, codex, codex-desktop, codex-pet, codex-plugin, codex-skill, ide, llm, mcp, mcp-servers, prompts
 
 ## Best fit cue profiles

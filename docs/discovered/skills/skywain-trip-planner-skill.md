@@ -2,22 +2,22 @@
 title: "skywain/trip-planner-skill — Claude Code skill discovered by cue"
 description: "Agent skill for AI trip planning (Claude Code · Codex · Gemini CLI · Cursor · Copilot · any SKILL.md agent) — verified, bookable itineraries: hour-by-hour days,"
 layout: page
-updated: 2026-08-28
+updated: 2026-09-05
 tags: [claude-code, skill, core]
 ---
 
 # 💎 [skywain/trip-planner-skill](https://github.com/skywain/trip-planner-skill)
 
-**★ 22** · exceptional (score 16.1) · Python · agent-skills, ai-agent, claude-code, claude-code-skill, claude-skill
+**★ 37** · exceptional (score 16.3) · Python · agent-skills, ai-agent, claude-code, claude-code-skill, claude-skill
 
 > Agent skill for AI trip planning (Claude Code · Codex · Gemini CLI · Cursor · Copilot · any SKILL.md agent) — verified, bookable itineraries: hour-by-hour days, real flight prices, offline KML maps, eight themed page designs · 旅行规划 / 行程 / 机票比价
 
 ## Why cue indexed it
 
-cue ran [GitHub Code Search](https://docs.github.com/en/search-github/searching-on-github/searching-code) for `filename:SKILL.md` and found this repo. It scored 16.1 based on:
+cue ran [GitHub Code Search](https://docs.github.com/en/search-github/searching-on-github/searching-code) for `filename:SKILL.md` and found this repo. It scored 16.3 based on:
 - ✅ Contains SKILL.md
-- ⭐ 22 stars
-- 🗓️ Last pushed: 2026-08-28
+- ⭐ 37 stars
+- 🗓️ Last pushed: 2026-09-05
 - 🏷️ Tags: agent-skills, ai-agent, claude-code, claude-code-skill, claude-skill, codex, cursor, flight-search, gemini-cli, itinerary, itinerary-planner, kml, travel, travel-itinerary, travel-planner, trip-planner
 
 ## Best fit cue profiles

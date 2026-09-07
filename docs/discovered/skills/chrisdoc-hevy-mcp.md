@@ -2,22 +2,22 @@
 title: "chrisdoc/hevy-mcp — Claude Code skill discovered by cue"
 description: "Manage your Hevy workouts, routines, folders, and exercise templates. Create and update sessions faster, organize plans, and search exercises to build workouts "
 layout: page
-updated: 2026-07-10
+updated: 2026-09-07
 tags: [claude-code, skill, core]
 ---
 
 # 💎 [chrisdoc/hevy-mcp](https://github.com/chrisdoc/hevy-mcp)
 
-**★ 314** · exceptional (score 10.9) · TypeScript · hevy, mcp, mcp-server
+**★ 453** · exceptional (score 11) · TypeScript · claude, codex, fitness, hevy, mcp
 
 > Manage your Hevy workouts, routines, folders, and exercise templates. Create and update sessions faster, organize plans, and search exercises to build workouts quickly. Stay synced with changes so your training log is always up to date.
 
 ## Why cue indexed it
 
-cue ran [GitHub Code Search](https://docs.github.com/en/search-github/searching-on-github/searching-code) for `filename:SKILL.md` and found this repo. It scored 10.9 based on:
-- ⭐ 314 stars
-- 🗓️ Last pushed: 2026-07-10
-- 🏷️ Tags: hevy, mcp, mcp-server
+cue ran [GitHub Code Search](https://docs.github.com/en/search-github/searching-on-github/searching-code) for `filename:SKILL.md` and found this repo. It scored 11 based on:
+- ⭐ 453 stars
+- 🗓️ Last pushed: 2026-09-07
+- 🏷️ Tags: claude, codex, fitness, hevy, mcp, mcp-server, model-context-protocol, workout-planner, workout-tracker
 
 ## Best fit cue profiles
 

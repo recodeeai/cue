@@ -2,7 +2,7 @@
 title: "CenMeow/markdown-new-skill — Claude Code skill discovered by cue"
 description: "Convert public URLs to clean Markdown using selectable methods for versatile output modes and improved content accuracy."
 layout: page
-updated: 2026-08-24
+updated: 2026-09-04
 tags: [claude-code, skill, docs-writer]
 ---
 
@@ -16,7 +16,7 @@ tags: [claude-code, skill, docs-writer]
 
 cue ran [GitHub Code Search](https://docs.github.com/en/search-github/searching-on-github/searching-code) for `filename:SKILL.md` and found this repo. It scored 9.5 based on:
 - ⭐ 0 stars
-- 🗓️ Last pushed: 2026-08-24
+- 🗓️ Last pushed: 2026-09-04
 - 🏷️ Tags: agent-skills, agentic-skill, azure, claude-code, claude-code-skill, github, ked, learning-by-doing, markdown, powershell, prompt-injection, readme-profile, skills-sh, sku-pro, web-fetch
 
 ## Best fit cue profiles

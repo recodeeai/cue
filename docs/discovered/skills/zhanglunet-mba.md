@@ -2,7 +2,7 @@
 title: "zhanglunet/mba — Claude Code skill discovered by cue"
 description: "把品牌影响力拆成可打分、可比较、可复盘的事。Claude Code skill,5 位人物评委(傅盛·Steve Jobs·李可佳·吴俊东·张一鸣)按 7 维度 × 5 镜头独立打分,Lead 合成版本化报告:雷达图 + 异议热力图 + 影响力构造图 + 90 天行动建议。`/mba <brand>` 一行触发,EVO"
 layout: page
-updated: 2026-09-02
+updated: 2026-09-06
 tags: [claude-code, skill, core]
 ---
 
@@ -16,7 +16,7 @@ tags: [claude-code, skill, core]
 
 cue ran [GitHub Code Search](https://docs.github.com/en/search-github/searching-on-github/searching-code) for `filename:SKILL.md` and found this repo. It scored 12.3 based on:
 - ⭐ 1 stars
-- 🗓️ Last pushed: 2026-09-02
+- 🗓️ Last pushed: 2026-09-06
 - 🏷️ Tags: ai-agent, brand-audit, brand-influence, claude-code, claude-skill, llm-agents, multi-agent, persona-panel
 
 ## Best fit cue profiles

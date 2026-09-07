@@ -2,7 +2,7 @@
 title: "Rick-254/moodle-quizsmith — Claude Code skill discovered by cue"
 description: "Claude Quiz Engine 2026 - Moodle MCQ Generator for GIFT XML Aiken"
 layout: page
-updated: 2026-09-02
+updated: 2026-09-06
 tags: [claude-code, skill, core]
 ---
 
@@ -16,7 +16,7 @@ tags: [claude-code, skill, core]
 
 cue ran [GitHub Code Search](https://docs.github.com/en/search-github/searching-on-github/searching-code) for `filename:SKILL.md` and found this repo. It scored 11 based on:
 - ⭐ 0 stars
-- 🗓️ Last pushed: 2026-09-02
+- 🗓️ Last pushed: 2026-09-06
 - 🏷️ Tags: agent-skills, ai-coding-agent, assessment, claude, claude-code, claude-code-skill, claude-desktop, claude-skill, claude-skills, education, higher-education, lecturer-tools, lms, mcq, moodle, moodle-gift, moodle-quiz, moodle-xml, quiz-bank
 
 ## Best fit cue profiles

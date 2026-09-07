@@ -2,7 +2,7 @@
 title: "eriknewton/sanctuary-framework — Claude Code skill discovered by cue"
 description: "Open-source security for AI agents: kernel-enforced egress control on macOS and Linux, keys only the operator holds, tamper-evident audit. One command protects "
 layout: page
-updated: 2026-09-02
+updated: 2026-09-07
 tags: [claude-code, skill, cybersecurity]
 ---
 
@@ -16,7 +16,7 @@ tags: [claude-code, skill, cybersecurity]
 
 cue ran [GitHub Code Search](https://docs.github.com/en/search-github/searching-on-github/searching-code) for `filename:SKILL.md` and found this repo. It scored 10.3 based on:
 - ⭐ 8 stars
-- 🗓️ Last pushed: 2026-09-02
+- 🗓️ Last pushed: 2026-09-07
 - 🏷️ Tags: agent-infrastructure, ai-agent-security, ai-agents, claude-code, decentralized-identity, egress-control, endpoint-security, mcp, mcp-server, open-standard, privacy
 
 ## Best fit cue profiles

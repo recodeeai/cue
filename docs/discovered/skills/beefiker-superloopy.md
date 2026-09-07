@@ -2,21 +2,21 @@
 title: "beefiker/superloopy — Claude Code skill discovered by cue"
 description: "Lightweight Codex/Claude loop harness with strict evidence gates."
 layout: page
-updated: 2026-08-19
+updated: 2026-09-04
 tags: [claude-code, skill, core]
 ---
 
 # 💎 [beefiker/superloopy](https://github.com/beefiker/superloopy)
 
-**★ 108** · exceptional (score 16.3) · JavaScript · ai-agents, claude, claude-code, claude-code-plugin, claude-code-skill
+**★ 108** · exceptional (score 16.8) · JavaScript · ai-agents, claude, claude-code, claude-code-plugin, claude-code-skill
 
 > Lightweight Codex/Claude loop harness with strict evidence gates.
 
 ## Why cue indexed it
 
-cue ran [GitHub Code Search](https://docs.github.com/en/search-github/searching-on-github/searching-code) for `filename:SKILL.md` and found this repo. It scored 16.3 based on:
+cue ran [GitHub Code Search](https://docs.github.com/en/search-github/searching-on-github/searching-code) for `filename:SKILL.md` and found this repo. It scored 16.8 based on:
 - ⭐ 108 stars
-- 🗓️ Last pushed: 2026-08-19
+- 🗓️ Last pushed: 2026-09-04
 - 🏷️ Tags: ai-agents, claude, claude-code, claude-code-plugin, claude-code-skill, codex, codex-plugin, codex-skills, developer-tools, evidence-gates, superloopy, workflow-automation
 
 ## Best fit cue profiles

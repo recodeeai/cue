@@ -2,7 +2,7 @@
 title: "wahmoh/claude-react-kit — Claude Code skill discovered by cue"
 description: "Enforce clean architecture and prevent technical debt in React projects with a drop-in Claude Code configuration that manages context and imports."
 layout: page
-updated: 2026-08-24
+updated: 2026-09-07
 tags: [claude-code, skill, frontend]
 ---
 
@@ -16,7 +16,7 @@ tags: [claude-code, skill, frontend]
 
 cue ran [GitHub Code Search](https://docs.github.com/en/search-github/searching-on-github/searching-code) for `filename:SKILL.md` and found this repo. It scored 10 based on:
 - ⭐ 2 stars
-- 🗓️ Last pushed: 2026-08-24
+- 🗓️ Last pushed: 2026-09-07
 - 🏷️ Tags: agentic-ai, ai, ai-coding-assistant, anthropic, architecture, aws, claude-code, claude-code-skill, claude-md, claude-plugin, expo, java, langchain4j, mcp, nextjs, php, react, typescript
 
 ## Best fit cue profiles

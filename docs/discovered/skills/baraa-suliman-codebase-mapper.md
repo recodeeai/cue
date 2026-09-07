@@ -2,21 +2,21 @@
 title: "Baraa-Suliman/codebase-mapper — Claude Code skill discovered by cue"
 description: "Stacklit: AI Codebase Indexing 2026 – Zero-Setup Local Repo Mapping for Agents"
 layout: page
-updated: 2026-08-07
+updated: 2026-09-04
 tags: [claude-code, skill, core]
 ---
 
 # 💎 [Baraa-Suliman/codebase-mapper](https://github.com/Baraa-Suliman/codebase-mapper)
 
-**★ 0** · exceptional (score 8) · HTML · ai, ai-agents, ai-coding, claude, claude-code
+**★ 0** · exceptional (score 9.5) · HTML · ai, ai-agents, ai-coding, claude, claude-code
 
 > Stacklit: AI Codebase Indexing 2026 – Zero-Setup Local Repo Mapping for Agents
 
 ## Why cue indexed it
 
-cue ran [GitHub Code Search](https://docs.github.com/en/search-github/searching-on-github/searching-code) for `filename:SKILL.md` and found this repo. It scored 8 based on:
+cue ran [GitHub Code Search](https://docs.github.com/en/search-github/searching-on-github/searching-code) for `filename:SKILL.md` and found this repo. It scored 9.5 based on:
 - ⭐ 0 stars
-- 🗓️ Last pushed: 2026-08-07
+- 🗓️ Last pushed: 2026-09-04
 - 🏷️ Tags: ai, ai-agents, ai-coding, claude, claude-code, cli, code-analysis, code-intelligence, codebase-context, codebase-index, cursor, dependency-graph, developer-tools, mcp, mcp-server, monorepo, repo-map, token-optimization
 
 ## Best fit cue profiles

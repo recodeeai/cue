@@ -2,7 +2,7 @@
 title: "vxctorrdrgzzz/codex-yolo — Claude Code skill discovered by cue"
 description: "Run parallel OpenAI Codex CLI agents in tmux with automatic approval of permission prompts for seamless command execution."
 layout: page
-updated: 2026-08-24
+updated: 2026-09-07
 tags: [claude-code, skill, core]
 ---
 
@@ -16,7 +16,7 @@ tags: [claude-code, skill, core]
 
 cue ran [GitHub Code Search](https://docs.github.com/en/search-github/searching-on-github/searching-code) for `filename:SKILL.md` and found this repo. It scored 7.8 based on:
 - ⭐ 1 stars
-- 🗓️ Last pushed: 2026-08-24
+- 🗓️ Last pushed: 2026-09-07
 - 🏷️ Tags: ai-agents, ai-coding, auto-approve, automation, bash, claude-code-plugin, claude-skill, cli-tool, codex, developer-tools, docker, openai, parallel-agents, sandbox, terminal, tmux, yolo-mode
 
 ## Best fit cue profiles

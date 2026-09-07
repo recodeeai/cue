@@ -2,7 +2,7 @@
 title: "xoonjaeho/claude-skill-handoff — Claude Code skill discovered by cue"
 description: "A Claude Code skill: verbatim state handoff to disk before /clear or /compact, auto-resumed by a SessionStart hook."
 layout: page
-updated: 2026-07-02
+updated: 2026-09-05
 tags: [claude-code, skill, core]
 ---
 
@@ -17,7 +17,7 @@ tags: [claude-code, skill, core]
 cue ran [GitHub Code Search](https://docs.github.com/en/search-github/searching-on-github/searching-code) for `filename:SKILL.md` and found this repo. It scored 13 based on:
 - ✅ Contains SKILL.md
 - ⭐ 0 stars
-- 🗓️ Last pushed: 2026-07-02
+- 🗓️ Last pushed: 2026-09-05
 - 🏷️ Tags: anthropic, claude-code, claude-code-skill, context-window, hooks, python
 
 ## Best fit cue profiles

@@ -2,7 +2,7 @@
 title: "mtcto/haolvshi-legal-skill — Claude Code skill discovered by cue"
 description: "面向 AI Agent 的中文法律技能，支持法律咨询、赔偿计算、智能合同审核、起诉状与答辩状生成，并提供多轮问答、案件材料识别、任务恢复和 Word 文书输出，基于 MIT License 开源。"
 layout: page
-updated: 2026-09-02
+updated: 2026-09-04
 tags: [claude-code, skill, core]
 ---
 
@@ -16,7 +16,7 @@ tags: [claude-code, skill, core]
 
 cue ran [GitHub Code Search](https://docs.github.com/en/search-github/searching-on-github/searching-code) for `filename:SKILL.md` and found this repo. It scored 6.7 based on:
 - ⭐ 3 stars
-- 🗓️ Last pushed: 2026-09-02
+- 🗓️ Last pushed: 2026-09-04
 - 🏷️ Tags: agent-skills, ai-agent, ai-agent-skill, ai-agent-skills, ai-agents, contract-review, contract-review-agent, contract-review-skill, law, legal-ai, legal-assistant, legal-consultation, legal-document-ai, legal-document-analyzer, legal-documents, legal-skills, legal-tech
 
 ## Best fit cue profiles

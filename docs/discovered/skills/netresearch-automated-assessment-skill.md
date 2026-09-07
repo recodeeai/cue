@@ -2,7 +2,7 @@
 title: "netresearch/automated-assessment-skill — Claude Code skill discovered by cue"
 description: "Systematic project assessment against checkpoint-enabled skills with scripted verification + LLM review - by Netresearch"
 layout: page
-updated: 2026-08-13
+updated: 2026-09-04
 tags: [claude-code, skill, core]
 ---
 
@@ -16,7 +16,7 @@ tags: [claude-code, skill, core]
 
 cue ran [GitHub Code Search](https://docs.github.com/en/search-github/searching-on-github/searching-code) for `filename:SKILL.md` and found this repo. It scored 6 based on:
 - ⭐ 2 stars
-- 🗓️ Last pushed: 2026-08-12
+- 🗓️ Last pushed: 2026-09-04
 - 🏷️ Tags: ai-agent-skill, assessment, automation, checkpoints, code-quality, compliance, netresearch, quality-assurance
 
 ## Best fit cue profiles

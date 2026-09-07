@@ -1,24 +1,24 @@
 ---
 title: "matiaspalmac/fivem-security-audit — Claude Code skill discovered by cue"
-description: "Claude Code skill for FiveM resource auditing — security, performance, compatibility. Backdoor/RAT detection, SQLi, duplication, NUI exploitation, state bags. S"
+description: "Find the money dupe, not just the malware. A Claude Code skill that reviews FiveM and RedM resources for dupes, backdoors, crash vectors and supply-chain risk. "
 layout: page
-updated: 2026-06-21
+updated: 2026-09-04
 tags: [claude-code, skill, cybersecurity]
 ---
 
 # 💎 [matiaspalmac/fivem-security-audit](https://github.com/matiaspalmac/fivem-security-audit)
 
-**★ 0** · exceptional (score 13.5) · JavaScript · anticheat, backdoor-detection, claude-code, claude-code-skill, esx
+**★ 4** · exceptional (score 14.3) · JavaScript · anticheat, backdoor-detection, claude-code, claude-code-skill, esx
 
-> Claude Code skill for FiveM resource auditing — security, performance, compatibility. Backdoor/RAT detection, SQLi, duplication, NUI exploitation, state bags. Supports ESX, QBCore, QBox, ox_lib, ND_Core.
+> Find the money dupe, not just the malware. A Claude Code skill that reviews FiveM and RedM resources for dupes, backdoors, crash vectors and supply-chain risk. Legacy + GTA V Enhanced, ESX/QBCore/QBox/ox.
 
 ## Why cue indexed it
 
-cue ran [GitHub Code Search](https://docs.github.com/en/search-github/searching-on-github/searching-code) for `filename:SKILL.md` and found this repo. It scored 13.5 based on:
+cue ran [GitHub Code Search](https://docs.github.com/en/search-github/searching-on-github/searching-code) for `filename:SKILL.md` and found this repo. It scored 14.3 based on:
 - ✅ Contains SKILL.md
-- ⭐ 0 stars
-- 🗓️ Last pushed: 2026-06-21
-- 🏷️ Tags: anticheat, backdoor-detection, claude-code, claude-code-skill, esx, fivem, fivem-audit, fivem-exploit, fivem-resource, fivem-script, fivem-security, lua, nd-core, oxmysql, performance, qbcore, qbox, security-audit
+- ⭐ 4 stars
+- 🗓️ Last pushed: 2026-09-04
+- 🏷️ Tags: anticheat, backdoor-detection, claude-code, claude-code-skill, esx, fivem, fivem-audit, fivem-exploit, fivem-resource, fivem-script, fivem-security, gta5, lua, malware-detection, qbcore, qbox, redm, security-audit, static-analysis, supply-chain-security
 
 ## Best fit cue profiles
 

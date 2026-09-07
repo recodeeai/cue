@@ -1,27 +1,27 @@
 ---
 title: "Aboudjem/humanizer-skill — Claude Code skill discovered by cue"
-description: "AI writing humanizer and pattern detector. 55 patterns, 5 voices, 0-100 AI-tell score. Pure Markdown, zero dependencies."
+description: "Free, open-source AI writing humanizer and detector. 55 patterns, 5 voices, a 0-100 AI-tell score, and nothing leaves your machine."
 layout: page
-updated: 2026-08-27
-tags: [claude-code, skill, docs-writer]
+updated: 2026-09-04
+tags: [claude-code, skill, core]
 ---
 
 # 💎 [Aboudjem/humanizer-skill](https://github.com/Aboudjem/humanizer-skill)
 
-**★ 197** · exceptional (score 15.7) · JavaScript · agent-skills, ai-detection, ai-humanizer, ai-writing, anti-ai-detection
+**★ 214** · exceptional (score 15.7) · JavaScript · agent-skills, ai-detection, ai-humanizer, ai-writing, anti-ai-detection
 
-> AI writing humanizer and pattern detector. 55 patterns, 5 voices, 0-100 AI-tell score. Pure Markdown, zero dependencies.
+> Free, open-source AI writing humanizer and detector. 55 patterns, 5 voices, a 0-100 AI-tell score, and nothing leaves your machine.
 
 ## Why cue indexed it
 
 cue ran [GitHub Code Search](https://docs.github.com/en/search-github/searching-on-github/searching-code) for `filename:SKILL.md` and found this repo. It scored 15.7 based on:
-- ⭐ 197 stars
-- 🗓️ Last pushed: 2026-08-27
-- 🏷️ Tags: agent-skills, ai-detection, ai-humanizer, ai-writing, anti-ai-detection, awesome-claude-code, burstiness, claude, claude-code, claude-code-plugin, claude-code-skill, claude-skill, content-optimization, developer-tools, humanizer, nlp, openclaw-skill, perplexity, text-rewriting, writing-tools
+- ⭐ 214 stars
+- 🗓️ Last pushed: 2026-09-04
+- 🏷️ Tags: agent-skills, ai-detection, ai-humanizer, ai-writing, anti-ai-detection, awesome-claude-code, burstiness, claude, claude-code, claude-code-plugin, claude-code-skill, claude-skill, content-optimization, humanizer, nlp, openclaw-skill, perplexity, skills-sh, text-rewriting, writing-tools
 
 ## Best fit cue profiles
 
-[docs-writer](../docs-writer.md)
+[core](../core.md)
 
 
 
@@ -29,7 +29,7 @@ cue ran [GitHub Code Search](https://docs.github.com/en/search-github/searching-
 
 ```bash
 npm install -g cue-ai
-cue skills add Aboudjem/humanizer-skill --profile docs-writer
+cue skills add Aboudjem/humanizer-skill --profile core
 ```
 
 ## About

@@ -2,22 +2,22 @@
 title: "dd3ok/naverstock-api-skill — Claude Code skill discovered by cue"
 description: "비공식 네이버증권 API Skill: 인증 없이 주식·시장 데이터를 조회하는 경량 스킬"
 layout: page
-updated: 2026-07-09
+updated: 2026-09-07
 tags: [claude-code, skill, core]
 ---
 
 # 💎 [dd3ok/naverstock-api-skill](https://github.com/dd3ok/naverstock-api-skill)
 
-**★ 4** · exceptional (score 14.3) · Python · agent-skill, claude-skill, codex-skill, korean-stocks, market-data
+**★ 6** · exceptional (score 17.1) · Python · agent-skill, claude-skill, codex-skill, korean-stocks, market-data
 
 > 비공식 네이버증권 API Skill: 인증 없이 주식·시장 데이터를 조회하는 경량 스킬
 
 ## Why cue indexed it
 
-cue ran [GitHub Code Search](https://docs.github.com/en/search-github/searching-on-github/searching-code) for `filename:SKILL.md` and found this repo. It scored 14.3 based on:
+cue ran [GitHub Code Search](https://docs.github.com/en/search-github/searching-on-github/searching-code) for `filename:SKILL.md` and found this repo. It scored 17.1 based on:
 - ✅ Contains SKILL.md
-- ⭐ 4 stars
-- 🗓️ Last pushed: 2026-07-09
+- ⭐ 6 stars
+- 🗓️ Last pushed: 2026-09-07
 - 🏷️ Tags: agent-skill, claude-skill, codex-skill, korean-stocks, market-data, naverfinance, naverfinance-api, naverstock, naverstock-api, naverstock-skill, stock-api, stock-naver-com
 
 ## Best fit cue profiles
