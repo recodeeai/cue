@@ -489,9 +489,12 @@ export async function resolveNpxDetailed(
       if (err instanceof NpxFetchSkipped) {
         // Already remembered; re-recording would slide the cooldown forward
         // forever and the repo would never be retried.
-      } else {
+      } else if (!offline) {
         recordFetchFailure(layout, key, failureReason(err));
       }
+      // Offline mode throws without attempting anything, so there is nothing to
+      // remember: the marker would outlive the offline session and suppress
+      // real fetches for a whole cooldown after the network came back.
       if (!opts.tolerateFetchFailure) throw err;
       // Degraded path: serve whatever this cache slot already holds. A warm
       // slot means the offline/flaky launch is indistinguishable from a good
