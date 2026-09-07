@@ -481,7 +481,7 @@ export async function resolveNpxDetailed(
         // Already remembered; re-recording would slide the cooldown forward
         // forever and the repo would never be retried.
       } else if (!offline) {
-        recordFetchFailure(layout, key, failureReason(err));
+        recordFetchFailure(layout, key, failureReason(err), entry.skills);
       }
       // Offline mode throws without attempting anything, so there is nothing to
       // remember: the marker would outlive the offline session and suppress
@@ -596,6 +596,12 @@ function assertNotCoolingDown(
   if (!suppress.enabled || suppress.cooldownMs <= 0) return;
   const mark = readFetchFailure(layout, key);
   if (!mark) return;
+  // The key is (repo, pin), but the failure may have been about one skill —
+  // a name that does not exist in that repo. Suppress only a request the
+  // remembered failure already covers; a skill we have never seen fail is
+  // evidence we do not have, so fetch it and find out.
+  const covered = new Set(mark.skills);
+  if (!entry.skills.every((skill) => covered.has(skill))) return;
   const elapsed = Date.now() - mark.at;
   // A marker from the future (clock skew, restored backup) is not evidence of
   // anything — attempt the fetch rather than suppressing it indefinitely.

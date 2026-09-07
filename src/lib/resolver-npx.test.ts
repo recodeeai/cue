@@ -767,3 +767,70 @@ describe("offline mode and the negative cache", () => {
     expect(res.plans).toHaveLength(1);
   });
 });
+
+// --- the marker is scoped to the skills that failed ------------------------
+
+describe("skill-scoped suppression", () => {
+  /**
+   * Regression: the cache key is only (repo, pin), so a failure caused by ONE
+   * bad skill name used to suppress every other skill from that repo — for a
+   * corrected profile and for unrelated profiles alike — until the cooldown
+   * expired.
+   */
+  function counting(): { fetch: NpxFetchFn; count: () => number } {
+    let n = 0;
+    return {
+      fetch: async (repo) => {
+        n++;
+        throw new NpxFetchFailed(repo, "exit 1");
+      },
+      count: () => n,
+    };
+  }
+
+  it("suppresses a repeat of the same request", async () => {
+    const f = counting();
+    const p = profile([{ repo: "a/b", skills: ["typo"] }]);
+    const opts = { repoRoot, fetch: f.fetch, tolerateFetchFailure: true };
+
+    await resolveNpxDetailed(p, opts);
+    await resolveNpxDetailed(p, opts);
+    expect(f.count()).toBe(1);
+  });
+
+  it("still fetches a skill the marker has never seen fail", async () => {
+    const f = counting();
+    const opts = { repoRoot, fetch: f.fetch, tolerateFetchFailure: true };
+
+    await resolveNpxDetailed(profile([{ repo: "a/b", skills: ["typo"] }]), opts);
+    // The name is corrected — that request is not covered by the marker.
+    await resolveNpxDetailed(profile([{ repo: "a/b", skills: ["real"] }]), opts);
+    expect(f.count()).toBe(2);
+  });
+
+  it("a partly-new request is not suppressed", async () => {
+    const f = counting();
+    const opts = { repoRoot, fetch: f.fetch, tolerateFetchFailure: true };
+
+    await resolveNpxDetailed(profile([{ repo: "a/b", skills: ["one"] }]), opts);
+    await resolveNpxDetailed(
+      profile([{ repo: "a/b", skills: ["one", "two"] }]),
+      opts,
+    );
+    expect(f.count()).toBe(2);
+  });
+
+  it("repeated failures widen what the marker covers", async () => {
+    const f = counting();
+    const opts = { repoRoot, fetch: f.fetch, tolerateFetchFailure: true };
+
+    await resolveNpxDetailed(profile([{ repo: "a/b", skills: ["one"] }]), opts);
+    await resolveNpxDetailed(profile([{ repo: "a/b", skills: ["two"] }]), opts);
+    expect(f.count()).toBe(2);
+
+    // Both are remembered now, together and separately.
+    await resolveNpxDetailed(profile([{ repo: "a/b", skills: ["one", "two"] }]), opts);
+    await resolveNpxDetailed(profile([{ repo: "a/b", skills: ["two"] }]), opts);
+    expect(f.count()).toBe(2);
+  });
+});

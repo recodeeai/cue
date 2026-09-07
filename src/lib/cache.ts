@@ -232,6 +232,18 @@ export interface FetchFailureMark {
   at: number;
   /** Short human-readable reason, replayed in the degraded-launch message. */
   reason: string;
+  /**
+   * The skills that were being requested when it failed, unioned across
+   * attempts.
+   *
+   * The cache key is only (repo, pin), but a failure is not always about the
+   * repo: asking for a skill that does not exist there fails too. Without this,
+   * one bad skill name would suppress every OTHER skill from the same repo —
+   * including after the name was corrected, and for unrelated profiles — for a
+   * whole cooldown. Suppression therefore applies only to a request this set
+   * already covers; anything new is evidence we do not have, so it is fetched.
+   */
+  skills: string[];
 }
 
 function failureRoot(layout: CacheLayout): string {
@@ -263,22 +275,37 @@ export function readFetchFailure(
     const raw = readFileSync(failurePath(layout, key), "utf8");
     const parsed = JSON.parse(raw) as Partial<FetchFailureMark>;
     if (typeof parsed?.at !== "number" || !Number.isFinite(parsed.at)) return null;
-    return { at: parsed.at, reason: String(parsed.reason ?? "unknown") };
+    // A marker with no skill list carries no evidence about any specific
+    // request, so it suppresses nothing — fail open, never open-ended.
+    const skills = Array.isArray(parsed.skills) ? parsed.skills.map(String) : [];
+    return { at: parsed.at, reason: String(parsed.reason ?? "unknown"), skills };
   } catch {
     return null;
   }
 }
 
-/** Remember that fetching `key` failed, so the next launch can skip it. */
+/**
+ * Remember that fetching `key` failed, so the next launch can skip it.
+ *
+ * `skills` is what was being requested. It is unioned with anything already
+ * remembered, so repeated failures widen the set the marker can suppress
+ * rather than replacing it.
+ */
 export function recordFetchFailure(
   layout: CacheLayout,
   key: string,
   reason: string,
+  skills: readonly string[] = [],
 ): void {
   try {
     const path = failurePath(layout, key);
     mkdirSync(dirname(path), { recursive: true });
-    const mark: FetchFailureMark = { at: Date.now(), reason };
+    const previous = readFetchFailure(layout, key);
+    const mark: FetchFailureMark = {
+      at: Date.now(),
+      reason,
+      skills: [...new Set([...(previous?.skills ?? []), ...skills])].sort(),
+    };
     writeFileSync(path, JSON.stringify(mark), "utf8");
   } catch {
     // Best-effort: losing the marker only costs the next launch a retry.
