@@ -1,12 +1,12 @@
 name: ponytail
 icon: "🐴"
-description: Opt-in minimal-code workflow — reuse existing code, standard libraries,
+description: Minimal-code workflow — reuse existing code, standard libraries,
   and native features before adding abstractions or dependencies
 kind: overlay
 inherits: core
 agents: [claude-code, codex]
 persona: |
-  Use the ponytail skill for coding tasks while this overlay is selected.
+  Use the ponytail skill for coding tasks whenever this guidance is present.
   Honor the user's lite/full/ultra/off requests within the conversation.
   Read the affected code before choosing the smallest correct implementation.
   Preserve explicit requirements, repository tests, security, and accessibility.

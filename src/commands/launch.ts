@@ -48,6 +48,7 @@ import {
   parseProfileSelector,
 } from "../lib/profile-loader";
 import { resolveProfileForCwd } from "../lib/cwd-resolver";
+import { withCodexPonytail } from "../lib/codex-ponytail";
 import {
   DIVIDER_PREFIX,
   dedupeSelectorParts,
@@ -3036,6 +3037,9 @@ export async function run(args: string[]): Promise<number> {
 
     // The materializer only symlinks profile.skills.local, so resolve remote
     // npx entries and promote their concrete source paths before materializing.
+    // Apply after skill filtering and workspace persona replacement so Codex's
+    // default guidance survives both, without changing the selected runtime key.
+    profile = await withCodexPonytail(await applyWorkspaceOverrides(profile), agentKind);
     const npxSkillMap = await resolveNpxSkillSources(profile, {
       onDegraded: (failures) => {
         // Deferred: the loader owns the terminal until the finally below.
@@ -3060,7 +3064,7 @@ export async function run(args: string[]): Promise<number> {
 
     progress("Preparing runtime…", "");
     runtime = await materializeRuntime({
-      profile: await applyWorkspaceOverrides(profile),
+      profile,
       agent: agentKind,
       runtimeRoot: join(configDir(), "runtime"),
       runtimeKey,

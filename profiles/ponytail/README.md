@@ -1,12 +1,25 @@
 # Ponytail
 
-Opt-in [Ponytail](https://github.com/DietrichGebert/ponytail) skills for Claude Code
-and Codex. Reuses Cue's remote skill resolver; no new loader or runtime service.
+[Ponytail](https://github.com/DietrichGebert/ponytail) skills are enabled by default
+for Cue-managed Codex launches. Claude Code remains opt-in. Both reuse Cue's
+remote skill resolver; no new loader or runtime service.
 
 ## Use
 
-Select `ponytail` in Cue, or compose it with a domain profile such as
-`frontend+ponytail`. For a one-off launch without changing the directory's profile:
+Codex automatically gets all six skills and Ponytail coding guidance alongside
+the selected profile, including composites and workspace persona overrides:
+
+```sh
+cue launch codex
+cue launch codex --cue-profile frontend
+```
+
+No `+ponytail` suffix is needed. The selected profile name, runtime directory,
+settings, and project pin remain unchanged. Normal skill filtering does not
+remove this default. `CUE_BYPASS=1` still bypasses Cue entirely.
+
+For Claude, select `ponytail` or compose it with a domain profile. Explicit
+Ponytail selection also remains supported on Codex without duplicating guidance:
 
 ```sh
 cue launch codex --cue-profile frontend+ponytail
