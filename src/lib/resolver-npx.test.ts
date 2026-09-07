@@ -433,3 +433,307 @@ describe("flattenNpxLayout", () => {
     expect(existsSync(join(skillsDir, "alpha"))).toBe(false);
   });
 });
+
+// --- network resilience ----------------------------------------------------
+
+describe("isTransientNpxFailure", () => {
+  it("retries spawn errors but not a missing npx binary", async () => {
+    const { isTransientNpxFailure } = await import("./resolver-npx");
+    const enoent = Object.assign(new Error("spawn npx ENOENT"), { code: "ENOENT" });
+    const etimedout = Object.assign(new Error("timed out"), { code: "ETIMEDOUT" });
+
+    expect(isTransientNpxFailure({ error: enoent })).toBe(false);
+    expect(isTransientNpxFailure({ error: etimedout })).toBe(true);
+  });
+
+  it("classifies network stderr as transient", async () => {
+    const { isTransientNpxFailure } = await import("./resolver-npx");
+    for (const stderr of [
+      "request to https://registry.npmjs.org failed, reason: getaddrinfo EAI_AGAIN",
+      "Error: socket hang up",
+      "npm ERR! 503 Service Unavailable",
+      "TypeError: fetch failed",
+      "npm ERR! code ECONNRESET",
+    ]) {
+      expect(isTransientNpxFailure({ status: 1, stderr })).toBe(true);
+    }
+  });
+
+  it("does not retry a repo/skill that does not exist", async () => {
+    const { isTransientNpxFailure } = await import("./resolver-npx");
+    for (const stderr of [
+      "Error: skill 'nope' not found in owner/repo",
+      "HTTP 404: Not Found (https://api.github.com/repos/owner/repo)",
+      "npm ERR! 403 Forbidden",
+    ]) {
+      expect(isTransientNpxFailure({ status: 1, stderr })).toBe(false);
+    }
+  });
+});
+
+describe("resolveNpxDetailed — tolerateFetchFailure", () => {
+  it("throws by default when a fetch fails (validate must still fail)", async () => {
+    const boom: NpxFetchFn = async () => {
+      throw new NpxFetchFailed("owner/repo", "exit 1");
+    };
+    await expect(
+      resolveNpxDetailed(profile([{ repo: "owner/repo", skills: ["a"] }]), {
+        repoRoot,
+        fetch: boom,
+      }),
+    ).rejects.toBeInstanceOf(NpxFetchFailed);
+  });
+
+  it("drops the unreachable repo and reports it instead of failing the launch", async () => {
+    const boom: NpxFetchFn = async () => {
+      throw new NpxFetchFailed("owner/down", "exit 1");
+    };
+
+    const { plans, failures } = await resolveNpxDetailed(
+      profile([
+        { repo: "owner/up", skills: ["good"] },
+        { repo: "owner/down", skills: ["gone"] },
+      ]),
+      {
+        repoRoot,
+        fetch: async (repo, pin, skill, destDir) => {
+          if (repo === "owner/down") return boom(repo, pin, skill, destDir);
+          return fakeFetcher()(repo, pin, skill, destDir);
+        },
+        tolerateFetchFailure: true,
+      },
+    );
+
+    expect(plans.map((p) => p.target)).toEqual([".claude/skills/good"]);
+    expect(failures).toHaveLength(1);
+    expect(failures[0]!.repo).toBe("owner/down");
+    expect(failures[0]!.skills).toEqual(["gone"]);
+    expect(failures[0]!.servedFromCache).toEqual([]);
+  });
+
+  it("serves the cached copy when the refetch of a partial slot fails", async () => {
+    // Slot holds `warm` but not `cold`; the repair fetch dies on the network.
+    const key = seedCache("owner/repo", undefined, ["warm"]);
+    const boom: NpxFetchFn = async () => {
+      throw new NpxFetchFailed("owner/repo", "getaddrinfo EAI_AGAIN");
+    };
+
+    const { plans, failures } = await resolveNpxDetailed(
+      profile([{ repo: "owner/repo", skills: ["warm", "cold"] }]),
+      { repoRoot, fetch: boom, tolerateFetchFailure: true },
+    );
+
+    expect(plans).toEqual([
+      {
+        source: cacheSkillPath({ repoRoot }, key, "warm"),
+        target: ".claude/skills/warm",
+        origin: "npx",
+      },
+    ]);
+    expect(failures[0]!.servedFromCache).toEqual(["warm"]);
+    expect(failures[0]!.skills).toEqual(["cold"]);
+  });
+});
+
+describe("isTransientNpxFailure — private/auth repos", () => {
+  it("treats a private-repo auth failure as permanent", async () => {
+    const { isTransientNpxFailure } = await import("./resolver-npx");
+    expect(
+      isTransientNpxFailure({
+        status: 1,
+        stderr:
+          "Authentication failed for https://github.com/xixu-me/skills.git.\n  - For private repos, ensure you have access",
+      }),
+    ).toBe(false);
+  });
+});
+
+// --- negative cache (remembered fetch failures) -----------------------------
+
+describe("negative cache", () => {
+  /** Fetcher that fails every time, counting attempts. */
+  function failingFetcher(): { fetch: NpxFetchFn; count: () => number } {
+    let n = 0;
+    return {
+      fetch: async (repo) => {
+        n++;
+        throw new NpxFetchFailed(repo, "spawnSync npx ETIMEDOUT");
+      },
+      count: () => n,
+    };
+  }
+
+  it("skips the second attempt while the cooldown is unexpired", async () => {
+    const f = failingFetcher();
+    const p = profile([{ repo: "github/awesome-copilot", skills: ["pytest-coverage"] }]);
+
+    const first = await resolveNpxDetailed(p, {
+      repoRoot,
+      fetch: f.fetch,
+      tolerateFetchFailure: true,
+    });
+    expect(f.count()).toBe(1);
+    expect(first.failures[0]?.skipped).toBeUndefined();
+
+    const second = await resolveNpxDetailed(p, {
+      repoRoot,
+      fetch: f.fetch,
+      tolerateFetchFailure: true,
+    });
+    // No new fetch: this is the whole point — a doomed repo must not cost the
+    // full retry budget on every single launch.
+    expect(f.count()).toBe(1);
+    expect(second.failures[0]?.skipped).toBe(true);
+    expect(second.failures[0]?.retryInMs).toBeGreaterThan(0);
+    expect(second.plans).toEqual([]);
+  });
+
+  it("retries once the cooldown has elapsed", async () => {
+    const f = failingFetcher();
+    const p = profile([{ repo: "a/b", skills: ["s"] }]);
+    const opts = { repoRoot, fetch: f.fetch, tolerateFetchFailure: true };
+
+    await resolveNpxDetailed(p, opts);
+    expect(f.count()).toBe(1);
+
+    // 0 disables the cooldown entirely, which is also how a user opts out.
+    process.env.CUE_NPX_RETRY_COOLDOWN_MS = "0";
+    try {
+      await resolveNpxDetailed(p, opts);
+    } finally {
+      delete process.env.CUE_NPX_RETRY_COOLDOWN_MS;
+    }
+    expect(f.count()).toBe(2);
+  });
+
+  it("force ignores the remembered failure", async () => {
+    const f = failingFetcher();
+    const p = profile([{ repo: "a/b", skills: ["s"] }]);
+
+    await resolveNpxDetailed(p, { repoRoot, fetch: f.fetch, tolerateFetchFailure: true });
+    await resolveNpxDetailed(p, {
+      repoRoot,
+      fetch: f.fetch,
+      tolerateFetchFailure: true,
+      force: true,
+    });
+    expect(f.count()).toBe(2);
+  });
+
+  it("does not suppress non-degrading callers (validate must see the truth)", async () => {
+    const f = failingFetcher();
+    const p = profile([{ repo: "a/b", skills: ["s"] }]);
+
+    await resolveNpxDetailed(p, { repoRoot, fetch: f.fetch, tolerateFetchFailure: true });
+    await expect(resolveNpxDetailed(p, { repoRoot, fetch: f.fetch })).rejects.toThrow(
+      NpxFetchFailed,
+    );
+    expect(f.count()).toBe(2);
+  });
+
+  it("a warm cache slot is served even while a marker is fresh", async () => {
+    const f = failingFetcher();
+    const p = profile([{ repo: "a/b", skills: ["s"] }]);
+
+    await resolveNpxDetailed(p, { repoRoot, fetch: f.fetch, tolerateFetchFailure: true });
+    seedCache("a/b", undefined, ["s"]);
+
+    const res = await resolveNpxDetailed(p, {
+      repoRoot,
+      fetch: explodingFetcher,
+      tolerateFetchFailure: true,
+    });
+    expect(res.failures).toEqual([]);
+    expect(res.plans).toHaveLength(1);
+  });
+
+  it("a later success clears the marker", async () => {
+    const f = failingFetcher();
+    const p = profile([{ repo: "a/b", skills: ["s"] }]);
+
+    await resolveNpxDetailed(p, { repoRoot, fetch: f.fetch, tolerateFetchFailure: true });
+    // Force past the cooldown with a working fetcher, then confirm the next
+    // (unforced) resolve is not suppressed by the stale marker.
+    await resolveNpxDetailed(p, {
+      repoRoot,
+      fetch: fakeFetcher(),
+      tolerateFetchFailure: true,
+      force: true,
+    });
+    rmSync(cachePath({ repoRoot }, cacheKey("a/b", undefined)), {
+      recursive: true,
+      force: true,
+    });
+    const after = await resolveNpxDetailed(p, {
+      repoRoot,
+      fetch: fakeFetcher(),
+      tolerateFetchFailure: true,
+    });
+    expect(after.failures).toEqual([]);
+    expect(after.plans).toHaveLength(1);
+  });
+});
+
+// --- cache convergence -----------------------------------------------------
+
+describe("cache eviction during a resolve", () => {
+  /**
+   * Regression: eviction runs from inside cachePut, so a profile with more
+   * entries than the cache cap used to evict the slots it had just written.
+   * The observable damage was twofold — the profile re-fetched everything on
+   * every launch, and half its resolved LinkPlan sources pointed at directories
+   * that no longer existed by the time the materializer read them.
+   *
+   * The cap is pinned low here on purpose: the invariant is that a resolve
+   * converges regardless of how the cap compares to the entry count.
+   */
+  const OVERSIZED = 12;
+
+  beforeEach(() => {
+    process.env.CUE_NPX_CACHE_MAX = "4";
+  });
+  afterEach(() => {
+    delete process.env.CUE_NPX_CACHE_MAX;
+  });
+
+  function bigProfile(): Profile {
+    return profile(
+      Array.from({ length: OVERSIZED }, (_, i) => ({
+        repo: `owner/repo-${i}`,
+        skills: ["s"],
+      })),
+    );
+  }
+
+  it("does not evict slots the same resolve just wrote", async () => {
+    const p = bigProfile();
+    const res = await resolveNpxDetailed(p, { repoRoot, fetch: fakeFetcher() });
+
+    expect(res.plans).toHaveLength(OVERSIZED);
+    const dangling = res.plans.filter((plan) => !existsSync(plan.source));
+    expect(dangling).toEqual([]);
+  });
+
+  it("a second resolve is a full cache hit", async () => {
+    const p = bigProfile();
+    await resolveNpxDetailed(p, { repoRoot, fetch: fakeFetcher() });
+    const before = calls.length;
+
+    const res = await resolveNpxDetailed(p, { repoRoot, fetch: explodingFetcher });
+    expect(calls.length).toBe(before);
+    expect(res.plans).toHaveLength(OVERSIZED);
+  });
+
+  it("still evicts unprotected slots from earlier runs", async () => {
+    await resolveNpxDetailed(profile([{ repo: "owner/stale", skills: ["s"] }]), {
+      repoRoot,
+      fetch: fakeFetcher(),
+    });
+    const stale = cachePath({ repoRoot }, cacheKey("owner/stale", undefined));
+    expect(existsSync(stale)).toBe(true);
+
+    await resolveNpxDetailed(bigProfile(), { repoRoot, fetch: fakeFetcher() });
+    // Not in the second resolve's protected set, and well past the cap.
+    expect(existsSync(stale)).toBe(false);
+  });
+});

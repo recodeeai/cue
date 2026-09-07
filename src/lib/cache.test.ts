@@ -3,12 +3,14 @@ import {
   existsSync,
   mkdirSync,
   mkdtempSync,
+  readFileSync,
   readdirSync,
   rmSync,
   writeFileSync,
 } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
+import { parse as parseYaml } from "yaml";
 import {
   MAX_CACHE_ENTRIES,
   cacheChildren,
@@ -35,8 +37,36 @@ afterAll(() => {
 // ---------------------------------------------------------------------------
 
 describe("MAX_CACHE_ENTRIES", () => {
-  test("equals 20", () => {
-    expect(MAX_CACHE_ENTRIES).toBe(20);
+  /**
+   * The cap is a budget, but it has one hard floor: a single profile's npx
+   * entries must all fit. Below that floor the profile re-fetches every repo on
+   * every launch, because eviction fires from inside cachePut while that same
+   * profile is still being resolved. (`protect` keeps such a profile CORRECT
+   * even under a small cap — this test keeps it FAST, by sizing the budget so
+   * protection is not doing the work alone.)
+   */
+  test("fits the largest bundled profile", () => {
+    const profilesDir = join(import.meta.dir, "..", "..", "profiles");
+    let largest = 0;
+    let worst = "";
+    for (const name of readdirSync(profilesDir)) {
+      const file = join(profilesDir, name, "profile.yaml");
+      if (!existsSync(file)) continue;
+      const doc = parseYaml(readFileSync(file, "utf8")) as {
+        skills?: { npx?: unknown[] };
+      };
+      const count = doc?.skills?.npx?.length ?? 0;
+      if (count > largest) {
+        largest = count;
+        worst = name;
+      }
+    }
+    // Guard against the scan silently finding nothing.
+    expect(largest).toBeGreaterThan(0);
+    expect(
+      MAX_CACHE_ENTRIES,
+      `profile "${worst}" needs ${largest} cache slots`,
+    ).toBeGreaterThanOrEqual(largest);
   });
 });
 

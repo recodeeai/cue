@@ -16,7 +16,17 @@
  * the real profiles/_cache/ tree.
  */
 
-import { existsSync, mkdirSync, readdirSync, renameSync, rmSync, statSync, utimesSync } from "node:fs";
+import {
+  existsSync,
+  mkdirSync,
+  readdirSync,
+  readFileSync,
+  renameSync,
+  rmSync,
+  statSync,
+  utimesSync,
+  writeFileSync,
+} from "node:fs";
 import { dirname, join, resolve } from "node:path";
 import { cacheDir } from "./config-paths";
 
@@ -44,8 +54,23 @@ function npxRoot(layout: CacheLayout): string {
   return join(cacheDir(), NPX_SUBDIR);
 }
 
-/** Maximum number of cache entries before LRU eviction kicks in. */
-export const MAX_CACHE_ENTRIES = 20;
+/**
+ * Maximum number of cache entries before LRU eviction kicks in.
+ *
+ * Sizing: a slot is one repo+pin's skill dirs — ~512 KB measured across a real
+ * cache — so this cap is roughly 100 MB. It must comfortably exceed the entry
+ * count of the largest single profile (the bundled `ego-lite-stack` needs 41),
+ * or that profile re-fetches on every launch. `protect` below is the hard
+ * guarantee; this number is the budget.
+ */
+export const MAX_CACHE_ENTRIES = 200;
+
+/** Effective cap: CUE_NPX_CACHE_MAX overrides the default (min 1). */
+export function cacheMaxEntries(): number {
+  const raw = Number(process.env.CUE_NPX_CACHE_MAX);
+  if (Number.isFinite(raw) && raw >= 1) return Math.floor(raw);
+  return MAX_CACHE_ENTRIES;
+}
 
 /**
  * Resolve the absolute cache dir for a given key. Does NOT create it.
@@ -89,7 +114,12 @@ export function cacheHit(layout: CacheLayout, key: string): boolean {
  * Callers should populate `srcDir` in a temp directory first, then call
  * cachePut to publish atomically. Never write directly into cachePath().
  */
-export function cachePut(layout: CacheLayout, key: string, srcDir: string): string {
+export function cachePut(
+  layout: CacheLayout,
+  key: string,
+  srcDir: string,
+  protect: ReadonlySet<string> = new Set(),
+): string {
   if (!existsSync(srcDir)) {
     throw new Error(`cache: source dir does not exist: ${srcDir}`);
   }
@@ -99,8 +129,9 @@ export function cachePut(layout: CacheLayout, key: string, srcDir: string): stri
     rmSync(dest, { recursive: true, force: true });
   }
   renameSync(srcDir, dest);
-  // Evict oldest entries if over budget.
-  cacheEvict(layout);
+  // Evict oldest entries if over budget, but never the slot just written nor
+  // anything the caller is still resolving — see cacheEvict.
+  cacheEvict(layout, cacheMaxEntries(), new Set([...protect, key]));
   return dest;
 }
 
@@ -127,8 +158,22 @@ export function cacheSkillPath(layout: CacheLayout, key: string, skill: string):
  * LRU eviction: remove the least-recently-accessed entries when the cache
  * exceeds MAX_CACHE_ENTRIES. Uses directory atime (updated on cacheHit).
  * Non-fatal — eviction errors are silently ignored.
+ *
+ * `protect` is a correctness guarantee, not a hint. Eviction runs from inside
+ * cachePut, i.e. WHILE a profile is being resolved, and the slots it just
+ * populated are the least-recently-used ones in the cache. Without protection a
+ * profile with more entries than the cap evicts its own fresh slots as it goes:
+ * it never converges (every launch re-fetches) and the resolver hands the
+ * materializer source paths that no longer exist. A protected cache may
+ * therefore exceed maxEntries — a temporarily oversized cache is strictly
+ * better than an incoherent one, and the next eviction with a smaller
+ * protected set trims it back.
  */
-export function cacheEvict(layout: CacheLayout, maxEntries = MAX_CACHE_ENTRIES): number {
+export function cacheEvict(
+  layout: CacheLayout,
+  maxEntries = cacheMaxEntries(),
+  protect: ReadonlySet<string> = new Set(),
+): number {
   const cacheRoot = npxRoot(layout);
   if (!existsSync(cacheRoot)) return 0;
 
@@ -146,9 +191,12 @@ export function cacheEvict(layout: CacheLayout, maxEntries = MAX_CACHE_ENTRIES):
 
   if (entries.length <= maxEntries) return 0;
 
-  // Sort by atime ascending (oldest first), remove excess.
+  // Sort by atime ascending (oldest first), remove excess — skipping protected
+  // slots, which stay regardless of age.
   entries.sort((a, b) => a.atime - b.atime);
-  const toRemove = entries.slice(0, entries.length - maxEntries);
+  const evictable = entries.filter((e) => !protect.has(e.name));
+  const overBudget = entries.length - maxEntries;
+  const toRemove = evictable.slice(0, Math.min(overBudget, evictable.length));
   let removed = 0;
   for (const entry of toRemove) {
     try {
@@ -157,4 +205,89 @@ export function cacheEvict(layout: CacheLayout, maxEntries = MAX_CACHE_ENTRIES):
     } catch {}
   }
   return removed;
+}
+
+// ---------------------------------------------------------------------------
+// Negative cache: remembered fetch failures
+// ---------------------------------------------------------------------------
+//
+// A remote skill repo that cannot be fetched is not a one-off cost: without a
+// memory of the failure, EVERY launch pays the full retry budget again (three
+// 45s `npx skills add` attempts = >2 minutes of dead time before the launch
+// degrades to the cache and proceeds). Marking the failure lets the next launch
+// skip straight to the degraded path, and the cooldown makes the retry happen
+// on its own once the transient cause is plausibly gone.
+//
+// Markers live beside the cache slots (never inside `npx/`, which cacheEvict
+// walks) and hold only a timestamp and a reason string.
+
+const NPX_FAILURE_SUBDIR = "npx-failed";
+
+/** How long a remembered fetch failure suppresses the next attempt. */
+export const NPX_FAILURE_COOLDOWN_MS = 6 * 60 * 60 * 1000;
+
+/** A remembered failure for one cache key. */
+export interface FetchFailureMark {
+  /** Epoch ms of the failed attempt. */
+  at: number;
+  /** Short human-readable reason, replayed in the degraded-launch message. */
+  reason: string;
+}
+
+function failureRoot(layout: CacheLayout): string {
+  if (layout.cacheRoot) return resolve(layout.cacheRoot, NPX_FAILURE_SUBDIR);
+  if (layout.repoRoot)
+    return resolve(layout.repoRoot, "profiles", "_cache", NPX_FAILURE_SUBDIR);
+  return join(cacheDir(), NPX_FAILURE_SUBDIR);
+}
+
+function failurePath(layout: CacheLayout, key: string): string {
+  if (!key || key.includes("/") || key.includes("..")) {
+    throw new Error(`cache: invalid key ${JSON.stringify(key)}`);
+  }
+  return join(failureRoot(layout), `${key}.json`);
+}
+
+/**
+ * Read the remembered failure for `key`, or null when there is none.
+ *
+ * Non-fatal by construction: an unreadable or malformed marker reads as "no
+ * failure remembered", so a corrupt cache dir can only ever cost an extra
+ * fetch attempt — never a launch.
+ */
+export function readFetchFailure(
+  layout: CacheLayout,
+  key: string,
+): FetchFailureMark | null {
+  try {
+    const raw = readFileSync(failurePath(layout, key), "utf8");
+    const parsed = JSON.parse(raw) as Partial<FetchFailureMark>;
+    if (typeof parsed?.at !== "number" || !Number.isFinite(parsed.at)) return null;
+    return { at: parsed.at, reason: String(parsed.reason ?? "unknown") };
+  } catch {
+    return null;
+  }
+}
+
+/** Remember that fetching `key` failed, so the next launch can skip it. */
+export function recordFetchFailure(
+  layout: CacheLayout,
+  key: string,
+  reason: string,
+): void {
+  try {
+    const path = failurePath(layout, key);
+    mkdirSync(dirname(path), { recursive: true });
+    const mark: FetchFailureMark = { at: Date.now(), reason };
+    writeFileSync(path, JSON.stringify(mark), "utf8");
+  } catch {
+    // Best-effort: losing the marker only costs the next launch a retry.
+  }
+}
+
+/** Forget any remembered failure for `key` (the fetch succeeded). */
+export function clearFetchFailure(layout: CacheLayout, key: string): void {
+  try {
+    rmSync(failurePath(layout, key), { force: true });
+  } catch {}
 }

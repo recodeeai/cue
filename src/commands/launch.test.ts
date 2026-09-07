@@ -14,6 +14,7 @@ import {
   mergeProfileSuggestions,
   ownsPaneBadge,
   relativeTime,
+  formatNpxDegraded,
   resolveNpxSkillSources,
   shouldAppendUserClaudeMd,
   sortProfileOptions,
@@ -83,6 +84,56 @@ describe("resolveNpxSkillSources", () => {
     } finally {
       rmSync(root, { recursive: true, force: true });
     }
+  });
+
+  test("formats a degraded fetch as a warning, not a crash", () => {
+    const lines = formatNpxDegraded([
+      {
+        repo: "xixu-me/skills",
+        skills: ["alpha", "beta"],
+        servedFromCache: [],
+        error: new Error("npx fetch failed for xixu-me/skills: exit 1 (after 3 attempts)"),
+      },
+      {
+        repo: "owner/warm",
+        skills: [],
+        servedFromCache: ["gamma"],
+        error: new Error("npx fetch failed for owner/warm: getaddrinfo EAI_AGAIN"),
+      },
+    ]);
+
+    expect(lines[0]).toContain("xixu-me/skills unreachable (exit 1 (after 3 attempts))");
+    expect(lines[0]).toContain("launching without alpha, beta");
+    expect(lines[1]).toContain("owner/warm unreachable (getaddrinfo EAI_AGAIN)");
+    expect(lines[1]).toContain("using cached copy");
+    expect(lines[2]).toContain("retry");
+  });
+
+  test("a skipped entry reports the cooldown, not a fresh failure", () => {
+    const lines = formatNpxDegraded([
+      {
+        repo: "github/awesome-copilot",
+        skills: ["pytest-coverage"],
+        servedFromCache: [],
+        error: new Error(
+          "npx fetch skipped for github/awesome-copilot: spawnSync npx ETIMEDOUT",
+        ),
+        skipped: true,
+        retryInMs: 5 * 60 * 60 * 1000 + 48 * 60 * 1000,
+      },
+    ]);
+
+    expect(lines[0]).toContain("github/awesome-copilot skipped");
+    // Must not claim a fetch happened this launch.
+    expect(lines[0]).not.toContain("unreachable");
+    expect(lines[0]).toContain("spawnSync npx ETIMEDOUT");
+    expect(lines[0]).toContain("auto-retry in 5h48m");
+    expect(lines[0]).toContain("launching without pytest-coverage");
+    expect(lines[1]).toContain("CUE_NPX_FORCE=1");
+  });
+
+  test("no failures means no output", () => {
+    expect(formatNpxDegraded([])).toEqual([]);
   });
 });
 

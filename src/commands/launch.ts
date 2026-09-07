@@ -67,7 +67,10 @@ import {
 } from "../lib/launch-loader";
 import { ensureClaudeLogoPath } from "../lib/claude-logo";
 import { resolveLocalSkill } from "../lib/resolver-local";
-import { resolveNpx } from "../lib/resolver-npx";
+import {
+  resolveNpxDetailed,
+  type NpxEntryFailure,
+} from "../lib/resolver-npx";
 import {
   expandSkillWildcards,
   loadMcpRegistry,
@@ -2017,25 +2020,101 @@ export function authmuxAccountTag(
 
 interface ResolveNpxSkillSourcesOptions {
   resolveNpx?: (profile: ResolvedProfile) => Promise<LinkPlan[]>;
+  /**
+   * Called when some remote skills could not be fetched and the launch is
+   * continuing without them. Not called on a clean resolve.
+   */
+  onDegraded?: (failures: NpxEntryFailure[]) => void;
 }
 
-/** Locate profile npx skills for either Claude Code or Codex materialization. */
+/**
+ * Locate profile npx skills for either Claude Code or Codex materialization.
+ *
+ * A remote skill repo is a network dependency, and the network is not a
+ * launch-blocking dependency: when a fetch fails after its retries, the entry
+ * degrades to whatever is already cached (often everything, since the cache is
+ * keyed by repo+pin) and the launch proceeds. Missing skills are reported to
+ * `onDegraded`, never thrown — losing one skill must not cost the session.
+ */
 export async function resolveNpxSkillSources(
   profile: ResolvedProfile,
   opts: ResolveNpxSkillSourcesOptions = {},
 ): Promise<Map<string, string>> {
   const sources = new Map<string, string>();
-  if (profile.skills.npx.length > 0) {
-    const resolver = opts.resolveNpx ?? resolveNpx;
-    // Always honor the profile's repo+pin through Cue's cache. A same-named
-    // marketplace skill has no trustworthy provenance and must not override it.
-    const plans = await resolver(profile);
-    for (const plan of plans) {
+  if (profile.skills.npx.length === 0) return sources;
+
+  // Always honor the profile's repo+pin through Cue's cache. A same-named
+  // marketplace skill has no trustworthy provenance and must not override it.
+  if (opts.resolveNpx) {
+    for (const plan of await opts.resolveNpx(profile)) {
       sources.set(basename(plan.target), plan.source);
     }
+    return sources;
   }
 
+  const { plans, failures } = await resolveNpxDetailed(profile, {
+    tolerateFetchFailure: true,
+  });
+  for (const plan of plans) {
+    sources.set(basename(plan.target), plan.source);
+  }
+  if (failures.length > 0) opts.onDegraded?.(failures);
+
   return sources;
+}
+
+/** "5h48m" / "12m" / "40s" — coarse on purpose, this is a hint, not a clock. */
+function formatDuration(ms: number): string {
+  const total = Math.max(0, Math.round(ms / 1000));
+  const h = Math.floor(total / 3600);
+  const m = Math.floor((total % 3600) / 60);
+  if (h > 0) return `${h}h${m}m`;
+  if (m > 0) return `${m}m`;
+  return `${total}s`;
+}
+
+/**
+ * Human-readable lines for skills dropped by a failed remote fetch.
+ *
+ * A skipped entry is reported differently from a failed one: nothing was tried
+ * this launch, so saying "unreachable" would be a fresh claim we did not make.
+ * The line names the remembered reason and when the retry happens on its own,
+ * because otherwise a user watching a skill stay missing has no way to tell a
+ * cooling-down repo from a permanently broken profile entry.
+ */
+export function formatNpxDegraded(failures: NpxEntryFailure[]): string[] {
+  const lines: string[] = [];
+  let anySkipped = false;
+  for (const f of failures) {
+    const reason = f.error.message.replace(
+      /^npx fetch (?:failed|skipped) for \S+: /,
+      "",
+    );
+    const outcome =
+      f.skills.length > 0
+        ? `launching without ${f.skills.join(", ")}`
+        : "using cached copy";
+    if (f.skipped) {
+      anySkipped = true;
+      const retry =
+        f.retryInMs === undefined
+          ? "auto-retry later"
+          : `auto-retry in ${formatDuration(f.retryInMs)}`;
+      lines.push(
+        `[cue] skills: ${f.repo} skipped — earlier fetch failed (${reason}), ${retry} — ${outcome}`,
+      );
+    } else {
+      lines.push(`[cue] skills: ${f.repo} unreachable (${reason}) — ${outcome}`);
+    }
+  }
+  if (lines.length > 0) {
+    lines.push(
+      anySkipped
+        ? "[cue] force a retry now with: CUE_NPX_FORCE=1 cue launch (or cue doctor)"
+        : "[cue] retry the fetch any time with: cue launch (or cue doctor)",
+    );
+  }
+  return lines;
 }
 
 // ---------------------------------------------------------------------------
@@ -2886,6 +2965,7 @@ export async function run(args: string[]): Promise<number> {
   };
 
   let runtime!: Awaited<ReturnType<typeof materializeRuntime>>;
+  const npxDegraded: NpxEntryFailure[] = [];
   try {
     // Skill subsetting runs ONLY when this launch carries a real prompt:
     //   - explicit `--subset "<text>"`, or
@@ -2957,7 +3037,12 @@ export async function run(args: string[]): Promise<number> {
 
     // The materializer only symlinks profile.skills.local, so resolve remote
     // npx entries and promote their concrete source paths before materializing.
-    const npxSkillMap = await resolveNpxSkillSources(profile);
+    const npxSkillMap = await resolveNpxSkillSources(profile, {
+      onDegraded: (failures) => {
+        // Deferred: the loader owns the terminal until the finally below.
+        npxDegraded.push(...failures);
+      },
+    });
     if (npxSkillMap.size > 0) {
       const existingIds = new Set(profile.skills.local.map((skill) => skill.id));
       const newSkills = [...npxSkillMap.keys()]
@@ -2996,6 +3081,11 @@ export async function run(args: string[]): Promise<number> {
     // Always restore the terminal before the warning block / exec, even if
     // materialize threw. stop() is idempotent and a no-op when loader is null.
     loader?.stop();
+  }
+
+  // Printed after the loader releases the terminal so the warning survives.
+  for (const line of formatNpxDegraded(npxDegraded)) {
+    process.stderr.write(`${line}\n`);
   }
 
   // Stamp the runtime as used NOW so the GC age signal is accurate even for a
