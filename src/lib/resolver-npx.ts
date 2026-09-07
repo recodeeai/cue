@@ -11,9 +11,23 @@
  *   npx skills add <repo> --skill <name...> -a claude-code -y
  * per repo entry, then hands the populated directory to `cachePut`.
  *
+ * Network resilience: `npxFetchMany` retries transient failures (DNS, 5xx,
+ * resets, timeouts) with exponential backoff, and callers that must not die on
+ * a blip pass `tolerateFetchFailure` to degrade to the cached copy instead.
+ *
+ * Negative cache: a repo that fails to fetch is remembered, so the next launch
+ * skips it instead of paying the full retry budget again. The cooldown expires
+ * on its own; `CUE_NPX_FORCE=1` ignores it. Only degrading callers (launch)
+ * consult it — validation always makes the real call.
+ *
  * Environment:
- *   SOUL_OFFLINE=1   →  cache miss is a hard failure (NpxFetchFailed).
- *   CUE_REPO_ROOT    →  override repo root (legacy: SOUL_REPO_ROOT).
+ *   SOUL_OFFLINE=1             →  cache miss is a hard failure (NpxFetchFailed).
+ *   CUE_REPO_ROOT              →  override repo root (legacy: SOUL_REPO_ROOT).
+ *   CUE_NPX_ATTEMPTS           →  fetch attempts per repo (default 3, max 6).
+ *   CUE_NPX_TIMEOUT_MS         →  per-attempt timeout (default 45000).
+ *   CUE_NPX_RETRY_COOLDOWN_MS  →  negative-cache cooldown (default 6h, 0 = off).
+ *   CUE_NPX_CACHE_MAX          →  cache slots kept before LRU eviction (default 200).
+ *   CUE_NPX_FORCE=1            →  ignore the negative cache this run.
  *
  */
 
@@ -30,7 +44,12 @@ import {
   cacheHit,
   cachePut,
   cacheSkillPath,
+  clearFetchFailure,
+  NPX_FAILURE_COOLDOWN_MS,
+  readFetchFailure,
+  recordFetchFailure,
   type CacheLayout,
+  type FetchFailureMark,
 } from "./cache";
 import { fetchCompanionFiles, detectSkillPath } from "./companion-fetch";
 
@@ -59,6 +78,28 @@ export class PinNotFound extends ProfileError {
     super(
       "PIN_NOT_FOUND",
       `skill "${skill}" missing in ${repo}@${pin} after fetch`,
+    );
+  }
+}
+
+/**
+ * A fetch was NOT attempted because a recent attempt for the same repo+pin
+ * already failed and the cooldown has not elapsed.
+ *
+ * This is the negative cache doing its job, not a new failure: the caller
+ * degrades to the cached copy exactly as it would for a real failure, but pays
+ * none of the retry budget. Distinct from NpxFetchFailed so the reporting layer
+ * can say "skipped, auto-retry in N" instead of implying a fresh network call.
+ */
+export class NpxFetchSkipped extends ProfileError {
+  constructor(
+    public repo: string,
+    public mark: FetchFailureMark,
+    public retryInMs: number,
+  ) {
+    super(
+      "NPX_FETCH_SKIPPED",
+      `npx fetch skipped for ${repo}: ${mark.reason}`,
     );
   }
 }
@@ -117,7 +158,59 @@ export type NpxBatchFetchFn = (
 ) => Promise<void>;
 
 /**
+ * Does this `npx skills add` failure look like a network blip rather than a
+ * real "this repo/skill does not exist"?
+ *
+ * Transient failures are worth retrying (DNS hiccup, registry 5xx, proxy
+ * reset, timeout). Permanent ones are not: retrying a 404 or a private-repo
+ * auth error just multiplies the wait before the same message. An unclassified
+ * non-zero exit is treated as permanent — the caller degrades rather than
+ * fails, so an un-retried blip costs one skill this launch, while retrying
+ * every deterministic error costs every launch a multi-second stall.
+ */
+export function isTransientNpxFailure(res: {
+  error?: Error & { code?: string };
+  status?: number | null;
+  stderr?: string;
+}): boolean {
+  if (res.error) {
+    // npx itself is missing / not executable — retrying never helps.
+    const code = res.error.code;
+    if (code === "ENOENT" || code === "EACCES" || code === "EPERM") return false;
+    return true; // ETIMEDOUT and friends
+  }
+  const err = (res.stderr ?? "").toLowerCase();
+  // Permanent: the repo or skill simply isn't there. Check first — a 404 body
+  // can still mention "fetch"/"network" in a stack trace.
+  if (
+    /\b404\b|not found|no such (repo|skill)|does not exist|unknown skill|\b(401|403)\b|authentication failed|permission denied|access denied|repository not found/.test(
+      err,
+    )
+  ) {
+    return false;
+  }
+  return /etimedout|econnreset|econnrefused|enotfound|eai_again|epipe|socket hang up|network|fetch failed|timed out|timeout|tls|certificate|proxy|getaddrinfo|\b(429|500|502|503|504)\b|rate limit|temporarily unavailable|registry error/.test(
+    err,
+  );
+}
+
+/** Attempts (not retries): 1 = no retry. CUE_NPX_ATTEMPTS overrides. */
+function npxAttempts(): number {
+  const raw = Number(process.env.CUE_NPX_ATTEMPTS);
+  if (Number.isFinite(raw) && raw >= 1) return Math.min(Math.floor(raw), 6);
+  return 3;
+}
+
+const NPX_RETRY_BASE_MS = 600;
+
+const sleep = (ms: number): Promise<void> =>
+  new Promise((r) => setTimeout(r, ms));
+
+/**
  * Production batch fetcher: shells out to `npx skills add ...`.
+ *
+ * Transient network failures are retried with exponential backoff before the
+ * error escapes — a single DNS blip must not fail a launch.
  *
  * Exported so the default resolver can use it; tests inject a mock instead
  * and never reach this code path.
@@ -154,19 +247,36 @@ export const npxFetchMany: NpxBatchFetchFn = async (
   // back to the 45s default rather than silently defeating the guard.
   const envTimeout = Number(process.env.CUE_NPX_TIMEOUT_MS);
   const npxTimeoutMs = Number.isFinite(envTimeout) && envTimeout > 0 ? envTimeout : 45000;
-  const res = spawnSync("npx", args, {
-    cwd: destDir,
-    stdio: ["ignore", "pipe", "pipe"],
-    encoding: "utf8",
-    timeout: npxTimeoutMs,
-    killSignal: "SIGKILL",
-    windowsHide: true,
-  });
-  if (res.error) {
-    throw new NpxFetchFailed(repo, res.error.message, res.error);
-  }
-  if (res.status !== 0) {
-    throw new NpxFetchFailed(repo, `exit ${res.status}`, {
+
+  const attempts = npxAttempts();
+  for (let attempt = 1; ; attempt++) {
+    const res = spawnSync("npx", args, {
+      cwd: destDir,
+      stdio: ["ignore", "pipe", "pipe"],
+      encoding: "utf8",
+      timeout: npxTimeoutMs,
+      killSignal: "SIGKILL",
+      windowsHide: true,
+    });
+    if (!res.error && res.status === 0) break;
+
+    // Our own timeout kill (SIGKILL after npxTimeoutMs) is a budget verdict,
+    // not a network blip: the clone needs more wall time than we allow, and a
+    // second and third identical budget will end identically. Retrying costs
+    // the user 2x npxTimeoutMs of dead launch for a guaranteed same answer, so
+    // a self-inflicted timeout ends the loop immediately. A network ETIMEDOUT
+    // reported BY npx (no SIGKILL) stays retryable.
+    const selfTimedOut = res.signal === "SIGKILL";
+    const last = attempt >= attempts || selfTimedOut;
+    if (!last && isTransientNpxFailure(res)) {
+      await sleep(NPX_RETRY_BASE_MS * 2 ** (attempt - 1));
+      continue;
+    }
+    const suffix = attempt > 1 ? ` (after ${attempt} attempts)` : "";
+    if (res.error) {
+      throw new NpxFetchFailed(repo, `${res.error.message}${suffix}`, res.error);
+    }
+    throw new NpxFetchFailed(repo, `exit ${res.status}${suffix}`, {
       stdout: res.stdout,
       stderr: res.stderr,
     });
@@ -250,12 +360,47 @@ export interface ResolveNpxOptions {
   fetchMany?: NpxBatchFetchFn;
   /** Override offline flag (defaults to CUE_OFFLINE / SOUL_OFFLINE env). */
   offline?: boolean;
+  /**
+   * Degrade instead of throwing when an entry can't be fetched.
+   *
+   * A launch must survive a flaky network: with this set, a repo that fails to
+   * fetch contributes whatever it already has in cache (possibly nothing) and
+   * lands in `result.failures` for the caller to report. Validation paths
+   * (`cue validate`) leave it off — there a fetch failure IS the finding.
+   */
+  tolerateFetchFailure?: boolean;
+  /**
+   * Ignore the negative cache and attempt every fetch again right now.
+   *
+   * Defaults to CUE_NPX_FORCE=1. The escape hatch for "the network is back,
+   * stop waiting out the cooldown".
+   */
+  force?: boolean;
+}
+
+/** One repo entry that could not be fully resolved under `tolerateFetchFailure`. */
+export interface NpxEntryFailure {
+  repo: string;
+  pin?: string;
+  /** Requested skills that are NOT available (cache had no usable copy). */
+  skills: string[];
+  /** Requested skills served from an existing (possibly stale) cache slot. */
+  servedFromCache: string[];
+  error: Error;
+  /**
+   * True when no fetch was attempted because a recent one already failed.
+   * `retryInMs` is the remaining cooldown.
+   */
+  skipped?: boolean;
+  retryInMs?: number;
 }
 
 export interface ResolveNpxResult {
   plans: LinkPlan[];
   /** Per-entry cache key — useful for debugging / `cue doctor`. */
   keys: Record<string, string>;
+  /** Non-empty only under `tolerateFetchFailure`. */
+  failures: NpxEntryFailure[];
 }
 
 /**
@@ -288,8 +433,9 @@ export async function resolveNpxDetailed(
   const entries = profile.skills?.npx ?? [];
   const plans: LinkPlan[] = [];
   const keys: Record<string, string> = {};
+  const failures: NpxEntryFailure[] = [];
   if (entries.length === 0) {
-    return { plans, keys };
+    return { plans, keys, failures };
   }
 
   // Default cache lives in the XDG cache dir (~/.cache/cue), never inside the
@@ -298,21 +444,79 @@ export async function resolveNpxDetailed(
   const fetcher = opts.fetch ?? npxFetch;
   const batchFetcher = opts.fetchMany ?? (opts.fetch ? undefined : npxFetchMany);
   const offline = opts.offline ?? (process.env.CUE_OFFLINE ?? process.env.SOUL_OFFLINE) === "1";
+  // The negative cache only guards the degrading caller (launch). Validation
+  // paths must always make the real call — there a fetch failure IS the finding,
+  // and a remembered one would report stale news.
+  const force = opts.force ?? process.env.CUE_NPX_FORCE === "1";
+  const suppress: SuppressOptions = {
+    enabled: opts.tolerateFetchFailure === true && !force,
+    cooldownMs: failureCooldownMs(),
+  };
+
+  // Every slot this resolve touches, computed before the first fetch: eviction
+  // runs inside cachePut, so without this the loop evicts its own earlier
+  // slots whenever a profile has more entries than the cache cap.
+  const activeKeys = new Set(entries.map((e) => cacheKey(e.repo, e.pin)));
 
   for (const entry of entries) {
     const key = cacheKey(entry.repo, entry.pin);
     keys[entryId(entry)] = key;
 
-    await ensureCacheForEntry(
-      layout,
-      key,
-      entry,
-      fetcher,
-      batchFetcher,
-      offline,
-    );
+    let usable = entry.skills;
+    try {
+      const fetched = await ensureCacheForEntry(
+        layout,
+        key,
+        entry,
+        fetcher,
+        batchFetcher,
+        offline,
+        suppress,
+        activeKeys,
+      );
+      // Only a real fetch proves the repo is reachable again. A pure cache hit
+      // proves nothing — and clearing on it would drop a marker that is still
+      // protecting a DIFFERENT request from the stall, so two profiles sharing
+      // a slot could take turns paying the full failed-fetch delay.
+      if (fetched) clearFetchFailure(layout, key);
+    } catch (err) {
+      // Two failures are deliberately NOT remembered.
+      //
+      // Offline mode throws without attempting anything, so the marker would
+      // outlive the offline session and suppress real fetches for a whole
+      // cooldown after the network came back.
+      //
+      // PinNotFound is the opposite of a stall: the fetch COMPLETED, and one
+      // requested name simply is not in that repo. It is deterministic, fast,
+      // and the user's to fix, so suppressing it would only hide a broken
+      // profile entry behind six hours of silence — and since the marker is
+      // keyed by repo+pin, blaming either the whole batch or just the bad name
+      // gets one of the two realistic edits (correcting the name, or
+      // relaunching unchanged) wrong.
+      if (err instanceof NpxFetchSkipped) {
+        // Already remembered; re-recording would slide the cooldown forward
+        // forever and the repo would never be retried.
+      } else if (!offline && !(err instanceof PinNotFound)) {
+        recordFetchFailure(layout, key, failureReason(err), entry.skills);
+      }
+      if (!opts.tolerateFetchFailure) throw err;
+      // Degraded path: serve whatever this cache slot already holds. A warm
+      // slot means the offline/flaky launch is indistinguishable from a good
+      // one; a cold slot means those skills are simply absent this run.
+      usable = cachedSkills(layout, key, entry.skills);
+      failures.push({
+        repo: entry.repo,
+        pin: entry.pin,
+        skills: entry.skills.filter((s) => !usable.includes(s)),
+        servedFromCache: usable,
+        error: err as Error,
+        ...(err instanceof NpxFetchSkipped
+          ? { skipped: true, retryInMs: err.retryInMs }
+          : {}),
+      });
+    }
 
-    for (const skill of entry.skills) {
+    for (const skill of usable) {
       plans.push({
         source: cacheSkillPath(layout, key, skill),
         target: `.claude/skills/${skill}`,
@@ -321,13 +525,27 @@ export async function resolveNpxDetailed(
     }
   }
 
-  return { plans, keys };
+  return { plans, keys, failures };
+}
+
+/** Subset of `skills` that is present and non-empty in the cache slot `key`. */
+function cachedSkills(
+  layout: CacheLayout,
+  key: string,
+  skills: string[],
+): string[] {
+  if (!cacheHit(layout, key)) return [];
+  const present = new Set(cacheChildren(layout, key));
+  return skills.filter(
+    (s) => present.has(s) && isNonEmptyDir(cacheSkillPath(layout, key, s)),
+  );
 }
 
 // ---------------------------------------------------------------------------
 // Internals
 // ---------------------------------------------------------------------------
 
+/** Populate the slot if needed. Returns true iff a fetch was actually run. */
 async function ensureCacheForEntry(
   layout: CacheLayout,
   key: string,
@@ -335,20 +553,23 @@ async function ensureCacheForEntry(
   fetcher: NpxFetchFn,
   batchFetcher: NpxBatchFetchFn | undefined,
   offline: boolean,
-): Promise<void> {
+  suppress: SuppressOptions = { enabled: false, cooldownMs: 0 },
+  protect: ReadonlySet<string> = new Set(),
+): Promise<boolean> {
   if (cacheHit(layout, key)) {
     const present = new Set(cacheChildren(layout, key));
     const missing = entry.skills.filter((s) => !present.has(s) || !isNonEmptyDir(cacheSkillPath(layout, key, s)));
     if (missing.length === 0) {
-      return; // full hit
+      return false; // full hit, nothing fetched
     }
     // Partial hit: detectable corruption. In offline mode this is fatal.
     if (offline) {
       throw new CacheCorrupt(key, missing);
     }
     // Otherwise, fall through to re-populate the missing skills.
-    await fetchInto(layout, key, entry, missing, fetcher, batchFetcher);
-    return;
+    assertNotCoolingDown(layout, key, entry, suppress);
+    await fetchInto(layout, key, entry, missing, fetcher, batchFetcher, protect);
+    return true;
   }
 
   // Total miss.
@@ -358,7 +579,55 @@ async function ensureCacheForEntry(
       `cache miss for key ${key} and SOUL_OFFLINE=1`,
     );
   }
-  await fetchInto(layout, key, entry, entry.skills, fetcher, batchFetcher);
+  assertNotCoolingDown(layout, key, entry, suppress);
+  await fetchInto(layout, key, entry, entry.skills, fetcher, batchFetcher, protect);
+  return true;
+}
+
+/** Cooldown policy handed down to ensureCacheForEntry. */
+interface SuppressOptions {
+  enabled: boolean;
+  cooldownMs: number;
+}
+
+/** Cooldown length. CUE_NPX_RETRY_COOLDOWN_MS overrides; 0 disables. */
+function failureCooldownMs(): number {
+  const raw = Number(process.env.CUE_NPX_RETRY_COOLDOWN_MS);
+  if (Number.isFinite(raw) && raw >= 0) return raw;
+  return NPX_FAILURE_COOLDOWN_MS;
+}
+
+/**
+ * Throw NpxFetchSkipped when a recent attempt for this cache key already
+ * failed. Called only where a network fetch is genuinely about to happen, so a
+ * warm cache slot is never withheld because of an old marker.
+ */
+function assertNotCoolingDown(
+  layout: CacheLayout,
+  key: string,
+  entry: NpxSkillRef,
+  suppress: SuppressOptions,
+): void {
+  if (!suppress.enabled || suppress.cooldownMs <= 0) return;
+  const mark = readFetchFailure(layout, key);
+  if (!mark) return;
+  // The key is (repo, pin), but the failure may have been about one skill —
+  // a name that does not exist in that repo. Suppress only a request the
+  // remembered failure already covers; a skill we have never seen fail is
+  // evidence we do not have, so fetch it and find out.
+  const covered = new Set(mark.skills);
+  if (!entry.skills.every((skill) => covered.has(skill))) return;
+  const elapsed = Date.now() - mark.at;
+  // A marker from the future (clock skew, restored backup) is not evidence of
+  // anything — attempt the fetch rather than suppressing it indefinitely.
+  if (elapsed < 0 || elapsed >= suppress.cooldownMs) return;
+  throw new NpxFetchSkipped(entry.repo, mark, suppress.cooldownMs - elapsed);
+}
+
+/** Compact reason string for a marker — the raw message minus our own prefix. */
+function failureReason(err: unknown): string {
+  const msg = err instanceof Error ? err.message : String(err);
+  return msg.replace(/^npx fetch failed for \S+: /, "").slice(0, 300);
 }
 
 async function fetchInto(
@@ -368,6 +637,7 @@ async function fetchInto(
   skills: string[],
   fetcher: NpxFetchFn,
   batchFetcher?: NpxBatchFetchFn,
+  protect: ReadonlySet<string> = new Set(),
 ): Promise<void> {
   // Stage into a tmp dir, then publish via cachePut (atomic-ish rename).
   // If the slot already exists (partial-hit repair), we merge skill subdirs
@@ -407,7 +677,7 @@ async function fetchInto(
         }
       }
     } else {
-      cachePut(layout, key, staging);
+      cachePut(layout, key, staging, protect);
       return; // staging was consumed by rename inside cachePut
     }
   } finally {

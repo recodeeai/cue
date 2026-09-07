@@ -433,3 +433,516 @@ describe("flattenNpxLayout", () => {
     expect(existsSync(join(skillsDir, "alpha"))).toBe(false);
   });
 });
+
+// --- network resilience ----------------------------------------------------
+
+describe("isTransientNpxFailure", () => {
+  it("retries spawn errors but not a missing npx binary", async () => {
+    const { isTransientNpxFailure } = await import("./resolver-npx");
+    const enoent = Object.assign(new Error("spawn npx ENOENT"), { code: "ENOENT" });
+    const etimedout = Object.assign(new Error("timed out"), { code: "ETIMEDOUT" });
+
+    expect(isTransientNpxFailure({ error: enoent })).toBe(false);
+    expect(isTransientNpxFailure({ error: etimedout })).toBe(true);
+  });
+
+  it("classifies network stderr as transient", async () => {
+    const { isTransientNpxFailure } = await import("./resolver-npx");
+    for (const stderr of [
+      "request to https://registry.npmjs.org failed, reason: getaddrinfo EAI_AGAIN",
+      "Error: socket hang up",
+      "npm ERR! 503 Service Unavailable",
+      "TypeError: fetch failed",
+      "npm ERR! code ECONNRESET",
+    ]) {
+      expect(isTransientNpxFailure({ status: 1, stderr })).toBe(true);
+    }
+  });
+
+  it("does not retry a repo/skill that does not exist", async () => {
+    const { isTransientNpxFailure } = await import("./resolver-npx");
+    for (const stderr of [
+      "Error: skill 'nope' not found in owner/repo",
+      "HTTP 404: Not Found (https://api.github.com/repos/owner/repo)",
+      "npm ERR! 403 Forbidden",
+    ]) {
+      expect(isTransientNpxFailure({ status: 1, stderr })).toBe(false);
+    }
+  });
+});
+
+describe("resolveNpxDetailed — tolerateFetchFailure", () => {
+  it("throws by default when a fetch fails (validate must still fail)", async () => {
+    const boom: NpxFetchFn = async () => {
+      throw new NpxFetchFailed("owner/repo", "exit 1");
+    };
+    await expect(
+      resolveNpxDetailed(profile([{ repo: "owner/repo", skills: ["a"] }]), {
+        repoRoot,
+        fetch: boom,
+      }),
+    ).rejects.toBeInstanceOf(NpxFetchFailed);
+  });
+
+  it("drops the unreachable repo and reports it instead of failing the launch", async () => {
+    const boom: NpxFetchFn = async () => {
+      throw new NpxFetchFailed("owner/down", "exit 1");
+    };
+
+    const { plans, failures } = await resolveNpxDetailed(
+      profile([
+        { repo: "owner/up", skills: ["good"] },
+        { repo: "owner/down", skills: ["gone"] },
+      ]),
+      {
+        repoRoot,
+        fetch: async (repo, pin, skill, destDir) => {
+          if (repo === "owner/down") return boom(repo, pin, skill, destDir);
+          return fakeFetcher()(repo, pin, skill, destDir);
+        },
+        tolerateFetchFailure: true,
+      },
+    );
+
+    expect(plans.map((p) => p.target)).toEqual([".claude/skills/good"]);
+    expect(failures).toHaveLength(1);
+    expect(failures[0]!.repo).toBe("owner/down");
+    expect(failures[0]!.skills).toEqual(["gone"]);
+    expect(failures[0]!.servedFromCache).toEqual([]);
+  });
+
+  it("serves the cached copy when the refetch of a partial slot fails", async () => {
+    // Slot holds `warm` but not `cold`; the repair fetch dies on the network.
+    const key = seedCache("owner/repo", undefined, ["warm"]);
+    const boom: NpxFetchFn = async () => {
+      throw new NpxFetchFailed("owner/repo", "getaddrinfo EAI_AGAIN");
+    };
+
+    const { plans, failures } = await resolveNpxDetailed(
+      profile([{ repo: "owner/repo", skills: ["warm", "cold"] }]),
+      { repoRoot, fetch: boom, tolerateFetchFailure: true },
+    );
+
+    expect(plans).toEqual([
+      {
+        source: cacheSkillPath({ repoRoot }, key, "warm"),
+        target: ".claude/skills/warm",
+        origin: "npx",
+      },
+    ]);
+    expect(failures[0]!.servedFromCache).toEqual(["warm"]);
+    expect(failures[0]!.skills).toEqual(["cold"]);
+  });
+});
+
+describe("isTransientNpxFailure — private/auth repos", () => {
+  it("treats a private-repo auth failure as permanent", async () => {
+    const { isTransientNpxFailure } = await import("./resolver-npx");
+    expect(
+      isTransientNpxFailure({
+        status: 1,
+        stderr:
+          "Authentication failed for https://github.com/xixu-me/skills.git.\n  - For private repos, ensure you have access",
+      }),
+    ).toBe(false);
+  });
+});
+
+// --- negative cache (remembered fetch failures) -----------------------------
+
+describe("negative cache", () => {
+  /** Fetcher that fails every time, counting attempts. */
+  function failingFetcher(): { fetch: NpxFetchFn; count: () => number } {
+    let n = 0;
+    return {
+      fetch: async (repo) => {
+        n++;
+        throw new NpxFetchFailed(repo, "spawnSync npx ETIMEDOUT");
+      },
+      count: () => n,
+    };
+  }
+
+  it("skips the second attempt while the cooldown is unexpired", async () => {
+    const f = failingFetcher();
+    const p = profile([{ repo: "github/awesome-copilot", skills: ["pytest-coverage"] }]);
+
+    const first = await resolveNpxDetailed(p, {
+      repoRoot,
+      fetch: f.fetch,
+      tolerateFetchFailure: true,
+    });
+    expect(f.count()).toBe(1);
+    expect(first.failures[0]?.skipped).toBeUndefined();
+
+    const second = await resolveNpxDetailed(p, {
+      repoRoot,
+      fetch: f.fetch,
+      tolerateFetchFailure: true,
+    });
+    // No new fetch: this is the whole point — a doomed repo must not cost the
+    // full retry budget on every single launch.
+    expect(f.count()).toBe(1);
+    expect(second.failures[0]?.skipped).toBe(true);
+    expect(second.failures[0]?.retryInMs).toBeGreaterThan(0);
+    expect(second.plans).toEqual([]);
+  });
+
+  it("retries once the cooldown has elapsed", async () => {
+    const f = failingFetcher();
+    const p = profile([{ repo: "a/b", skills: ["s"] }]);
+    const opts = { repoRoot, fetch: f.fetch, tolerateFetchFailure: true };
+
+    await resolveNpxDetailed(p, opts);
+    expect(f.count()).toBe(1);
+
+    // 0 disables the cooldown entirely, which is also how a user opts out.
+    process.env.CUE_NPX_RETRY_COOLDOWN_MS = "0";
+    try {
+      await resolveNpxDetailed(p, opts);
+    } finally {
+      delete process.env.CUE_NPX_RETRY_COOLDOWN_MS;
+    }
+    expect(f.count()).toBe(2);
+  });
+
+  it("force ignores the remembered failure", async () => {
+    const f = failingFetcher();
+    const p = profile([{ repo: "a/b", skills: ["s"] }]);
+
+    await resolveNpxDetailed(p, { repoRoot, fetch: f.fetch, tolerateFetchFailure: true });
+    await resolveNpxDetailed(p, {
+      repoRoot,
+      fetch: f.fetch,
+      tolerateFetchFailure: true,
+      force: true,
+    });
+    expect(f.count()).toBe(2);
+  });
+
+  it("does not suppress non-degrading callers (validate must see the truth)", async () => {
+    const f = failingFetcher();
+    const p = profile([{ repo: "a/b", skills: ["s"] }]);
+
+    await resolveNpxDetailed(p, { repoRoot, fetch: f.fetch, tolerateFetchFailure: true });
+    await expect(resolveNpxDetailed(p, { repoRoot, fetch: f.fetch })).rejects.toThrow(
+      NpxFetchFailed,
+    );
+    expect(f.count()).toBe(2);
+  });
+
+  it("a warm cache slot is served even while a marker is fresh", async () => {
+    const f = failingFetcher();
+    const p = profile([{ repo: "a/b", skills: ["s"] }]);
+
+    await resolveNpxDetailed(p, { repoRoot, fetch: f.fetch, tolerateFetchFailure: true });
+    seedCache("a/b", undefined, ["s"]);
+
+    const res = await resolveNpxDetailed(p, {
+      repoRoot,
+      fetch: explodingFetcher,
+      tolerateFetchFailure: true,
+    });
+    expect(res.failures).toEqual([]);
+    expect(res.plans).toHaveLength(1);
+  });
+
+  it("a later success clears the marker", async () => {
+    const f = failingFetcher();
+    const p = profile([{ repo: "a/b", skills: ["s"] }]);
+
+    await resolveNpxDetailed(p, { repoRoot, fetch: f.fetch, tolerateFetchFailure: true });
+    // Force past the cooldown with a working fetcher, then confirm the next
+    // (unforced) resolve is not suppressed by the stale marker.
+    await resolveNpxDetailed(p, {
+      repoRoot,
+      fetch: fakeFetcher(),
+      tolerateFetchFailure: true,
+      force: true,
+    });
+    rmSync(cachePath({ repoRoot }, cacheKey("a/b", undefined)), {
+      recursive: true,
+      force: true,
+    });
+    const after = await resolveNpxDetailed(p, {
+      repoRoot,
+      fetch: fakeFetcher(),
+      tolerateFetchFailure: true,
+    });
+    expect(after.failures).toEqual([]);
+    expect(after.plans).toHaveLength(1);
+  });
+});
+
+// --- cache convergence -----------------------------------------------------
+
+describe("cache eviction during a resolve", () => {
+  /**
+   * Regression: eviction runs from inside cachePut, so a profile with more
+   * entries than the cache cap used to evict the slots it had just written.
+   * The observable damage was twofold — the profile re-fetched everything on
+   * every launch, and half its resolved LinkPlan sources pointed at directories
+   * that no longer existed by the time the materializer read them.
+   *
+   * The cap is pinned low here on purpose: the invariant is that a resolve
+   * converges regardless of how the cap compares to the entry count.
+   */
+  const OVERSIZED = 12;
+
+  beforeEach(() => {
+    process.env.CUE_NPX_CACHE_MAX = "4";
+  });
+  afterEach(() => {
+    delete process.env.CUE_NPX_CACHE_MAX;
+  });
+
+  function bigProfile(): Profile {
+    return profile(
+      Array.from({ length: OVERSIZED }, (_, i) => ({
+        repo: `owner/repo-${i}`,
+        skills: ["s"],
+      })),
+    );
+  }
+
+  it("does not evict slots the same resolve just wrote", async () => {
+    const p = bigProfile();
+    const res = await resolveNpxDetailed(p, { repoRoot, fetch: fakeFetcher() });
+
+    expect(res.plans).toHaveLength(OVERSIZED);
+    const dangling = res.plans.filter((plan) => !existsSync(plan.source));
+    expect(dangling).toEqual([]);
+  });
+
+  it("a second resolve is a full cache hit", async () => {
+    const p = bigProfile();
+    await resolveNpxDetailed(p, { repoRoot, fetch: fakeFetcher() });
+    const before = calls.length;
+
+    const res = await resolveNpxDetailed(p, { repoRoot, fetch: explodingFetcher });
+    expect(calls.length).toBe(before);
+    expect(res.plans).toHaveLength(OVERSIZED);
+  });
+
+  it("still evicts unprotected slots from earlier runs", async () => {
+    await resolveNpxDetailed(profile([{ repo: "owner/stale", skills: ["s"] }]), {
+      repoRoot,
+      fetch: fakeFetcher(),
+    });
+    const stale = cachePath({ repoRoot }, cacheKey("owner/stale", undefined));
+    expect(existsSync(stale)).toBe(true);
+
+    await resolveNpxDetailed(bigProfile(), { repoRoot, fetch: fakeFetcher() });
+    // Not in the second resolve's protected set, and well past the cap.
+    expect(existsSync(stale)).toBe(false);
+  });
+});
+
+// --- offline mode ----------------------------------------------------------
+
+describe("offline mode and the negative cache", () => {
+  /**
+   * Regression: offline mode throws WITHOUT attempting a fetch. Recording that
+   * as a remote failure left a marker that outlived the offline session and
+   * suppressed real fetches for a whole cooldown after the network came back.
+   */
+  it("a cold offline miss leaves no marker", async () => {
+    const p = profile([{ repo: "a/b", skills: ["s"] }]);
+
+    const offlineRes = await resolveNpxDetailed(p, {
+      repoRoot,
+      fetch: explodingFetcher,
+      offline: true,
+      tolerateFetchFailure: true,
+    });
+    expect(offlineRes.failures).toHaveLength(1);
+
+    // Back online: the very next resolve must fetch for real, not skip.
+    const res = await resolveNpxDetailed(p, {
+      repoRoot,
+      fetch: fakeFetcher(),
+      tolerateFetchFailure: true,
+    });
+    expect(res.failures).toEqual([]);
+    expect(res.plans).toHaveLength(1);
+  });
+});
+
+// --- the marker is scoped to the skills that failed ------------------------
+
+describe("skill-scoped suppression", () => {
+  /**
+   * Regression: the cache key is only (repo, pin), so a failure caused by ONE
+   * bad skill name used to suppress every other skill from that repo — for a
+   * corrected profile and for unrelated profiles alike — until the cooldown
+   * expired.
+   */
+  function counting(): { fetch: NpxFetchFn; count: () => number } {
+    let n = 0;
+    return {
+      fetch: async (repo) => {
+        n++;
+        throw new NpxFetchFailed(repo, "exit 1");
+      },
+      count: () => n,
+    };
+  }
+
+  it("suppresses a repeat of the same request", async () => {
+    const f = counting();
+    const p = profile([{ repo: "a/b", skills: ["typo"] }]);
+    const opts = { repoRoot, fetch: f.fetch, tolerateFetchFailure: true };
+
+    await resolveNpxDetailed(p, opts);
+    await resolveNpxDetailed(p, opts);
+    expect(f.count()).toBe(1);
+  });
+
+  it("still fetches a skill the marker has never seen fail", async () => {
+    const f = counting();
+    const opts = { repoRoot, fetch: f.fetch, tolerateFetchFailure: true };
+
+    await resolveNpxDetailed(profile([{ repo: "a/b", skills: ["typo"] }]), opts);
+    // The name is corrected — that request is not covered by the marker.
+    await resolveNpxDetailed(profile([{ repo: "a/b", skills: ["real"] }]), opts);
+    expect(f.count()).toBe(2);
+  });
+
+  it("a partly-new request is not suppressed", async () => {
+    const f = counting();
+    const opts = { repoRoot, fetch: f.fetch, tolerateFetchFailure: true };
+
+    await resolveNpxDetailed(profile([{ repo: "a/b", skills: ["one"] }]), opts);
+    await resolveNpxDetailed(
+      profile([{ repo: "a/b", skills: ["one", "two"] }]),
+      opts,
+    );
+    expect(f.count()).toBe(2);
+  });
+
+  it("repeated failures widen what the marker covers", async () => {
+    const f = counting();
+    const opts = { repoRoot, fetch: f.fetch, tolerateFetchFailure: true };
+
+    await resolveNpxDetailed(profile([{ repo: "a/b", skills: ["one"] }]), opts);
+    await resolveNpxDetailed(profile([{ repo: "a/b", skills: ["two"] }]), opts);
+    expect(f.count()).toBe(2);
+
+    // Both are remembered now, together and separately.
+    await resolveNpxDetailed(profile([{ repo: "a/b", skills: ["one", "two"] }]), opts);
+    await resolveNpxDetailed(profile([{ repo: "a/b", skills: ["two"] }]), opts);
+    expect(f.count()).toBe(2);
+  });
+});
+
+// --- a cache hit is not evidence the network recovered ---------------------
+
+describe("clearing the marker", () => {
+  /**
+   * Regression: any successful ensureCacheForEntry cleared the marker, and a
+   * pure cache hit counts as successful. Two profiles sharing one repo+pin slot
+   * could therefore take turns dropping each other's marker and paying the full
+   * failed-fetch delay, which is exactly the stall the marker exists to avoid.
+   */
+  it("a pure cache hit does not clear a marker", async () => {
+    let fetches = 0;
+    const failing: NpxFetchFn = async (repo) => {
+      fetches++;
+      throw new NpxFetchFailed(repo, "spawnSync npx ETIMEDOUT");
+    };
+    const opts = { repoRoot, fetch: failing, tolerateFetchFailure: true };
+
+    // "wide" wants two skills; only one is cached, so the fetch of the other
+    // fails and is remembered.
+    seedCache("a/b", undefined, ["cached"]);
+    const wide = profile([{ repo: "a/b", skills: ["cached", "missing"] }]);
+    await resolveNpxDetailed(wide, opts);
+    expect(fetches).toBe(1);
+
+    // "narrow" is served entirely from cache — no fetch, no new evidence.
+    const narrow = profile([{ repo: "a/b", skills: ["cached"] }]);
+    const narrowRes = await resolveNpxDetailed(narrow, opts);
+    expect(narrowRes.failures).toEqual([]);
+    expect(fetches).toBe(1);
+
+    // The marker must have survived, so "wide" is still suppressed.
+    const again = await resolveNpxDetailed(wide, opts);
+    expect(fetches).toBe(1);
+    expect(again.failures[0]?.skipped).toBe(true);
+  });
+
+  it("a real fetch still clears it", async () => {
+    const failing: NpxFetchFn = async (repo) => {
+      throw new NpxFetchFailed(repo, "boom");
+    };
+    const p = profile([{ repo: "a/c", skills: ["s"] }]);
+
+    await resolveNpxDetailed(p, { repoRoot, fetch: failing, tolerateFetchFailure: true });
+    await resolveNpxDetailed(p, {
+      repoRoot,
+      fetch: fakeFetcher(),
+      tolerateFetchFailure: true,
+      force: true,
+    });
+    rmSync(cachePath({ repoRoot }, cacheKey("a/c", undefined)), {
+      recursive: true,
+      force: true,
+    });
+
+    const after = await resolveNpxDetailed(p, {
+      repoRoot,
+      fetch: fakeFetcher(),
+      tolerateFetchFailure: true,
+    });
+    expect(after.failures).toEqual([]);
+    expect(after.plans).toHaveLength(1);
+  });
+});
+
+describe("a missing skill name is never remembered", () => {
+  /**
+   * A PinNotFound is the opposite of the stall the marker exists to avoid: the
+   * fetch completed and one requested name simply is not in that repo. Blaming
+   * the whole batch suppressed the good names once the bad one was removed;
+   * blaming only the bad name meant an unchanged profile was never suppressed
+   * and refetched forever. Remembering nothing is right for both, and keeps a
+   * broken profile entry visible instead of silent for six hours.
+   */
+  it("neither the corrected nor the unchanged request is suppressed", async () => {
+    let attempts = 0;
+    // Produces "real" but never "typo", which is what PinNotFound reports.
+    const fetch: NpxFetchFn = async (repo, pin, skill, destDir) => {
+      attempts++;
+      if (skill === "typo") return;
+      mkdirSync(join(destDir, skill), { recursive: true });
+      writeFileSync(join(destDir, skill, "SKILL.md"), "# x\n");
+    };
+    const opts = { repoRoot, fetch, tolerateFetchFailure: true };
+
+    const bad = await resolveNpxDetailed(
+      profile([{ repo: "a/b", skills: ["real", "typo"] }]),
+      opts,
+    );
+    expect(bad.failures).toHaveLength(1);
+    let seen = attempts;
+
+    // Relaunching the UNCHANGED profile must still attempt, not sit in a
+    // cooldown — the user has to keep seeing that the entry is broken.
+    const again = await resolveNpxDetailed(
+      profile([{ repo: "a/b", skills: ["real", "typo"] }]),
+      opts,
+    );
+    expect(attempts).toBeGreaterThan(seen);
+    expect(again.failures[0]?.skipped).toBeUndefined();
+    seen = attempts;
+
+    // And once corrected, "real" alone is fetched rather than skipped.
+    const good = await resolveNpxDetailed(
+      profile([{ repo: "a/b", skills: ["real"] }]),
+      opts,
+    );
+    expect(attempts).toBeGreaterThan(seen);
+    expect(good.failures).toEqual([]);
+    expect(good.plans).toHaveLength(1);
+  });
+});
