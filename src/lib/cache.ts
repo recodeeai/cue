@@ -241,6 +241,18 @@ export interface FetchFailureMark {
    * cooldown. Reset by clearFetchFailure on the first success.
    */
   strikes: number;
+  /**
+   * The skills that were being requested when it failed, unioned across
+   * attempts.
+   *
+   * The cache key is only (repo, pin), but a failure is not always about the
+   * repo: asking for a skill that does not exist there fails too. Without this,
+   * one bad skill name would suppress every OTHER skill from the same repo —
+   * including after the name was corrected, and for unrelated profiles — for a
+   * whole cooldown. Suppression therefore applies only to a request this set
+   * already covers; anything new is evidence we do not have, so it is fetched.
+   */
+  skills: string[];
 }
 
 function failureRoot(layout: CacheLayout): string {
@@ -276,7 +288,15 @@ export function readFetchFailure(
       typeof parsed.strikes === "number" && Number.isFinite(parsed.strikes)
         ? Math.max(1, Math.floor(parsed.strikes))
         : 1; // marker written before strikes existed
-    return { at: parsed.at, reason: String(parsed.reason ?? "unknown"), strikes };
+    // A marker with no skill list carries no evidence about any specific
+    // request, so it suppresses nothing — fail open, never open-ended.
+    const skills = Array.isArray(parsed.skills) ? parsed.skills.map(String) : [];
+    return {
+      at: parsed.at,
+      reason: String(parsed.reason ?? "unknown"),
+      strikes,
+      skills,
+    };
   } catch {
     return null;
   }
@@ -289,11 +309,16 @@ export function readFetchFailure(
  * between, one strike means roughly one elapsed cooldown of continued failure —
  * which is what makes escalating backoff meaningful rather than a count of how
  * often the user happened to launch.
+ *
+ * `skills` is what was being requested. It is unioned with anything already
+ * remembered, so repeated failures widen the set the marker can suppress
+ * rather than replacing it.
  */
 export function recordFetchFailure(
   layout: CacheLayout,
   key: string,
   reason: string,
+  skills: readonly string[] = [],
 ): void {
   try {
     const path = failurePath(layout, key);
@@ -303,6 +328,7 @@ export function recordFetchFailure(
       at: Date.now(),
       reason,
       strikes: (previous?.strikes ?? 0) + 1,
+      skills: [...new Set([...(previous?.skills ?? []), ...skills])].sort(),
     };
     writeFileSync(path, JSON.stringify(mark), "utf8");
   } catch {
