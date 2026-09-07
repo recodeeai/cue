@@ -898,3 +898,39 @@ describe("clearing the marker", () => {
     expect(after.plans).toHaveLength(1);
   });
 });
+
+describe("a bad name in a batch does not blame the rest", () => {
+  /**
+   * Regression: a batch failure recorded every requested skill, so a cold
+   * request for ["real", "typo"] blamed "real" too. Removing "typo" left a
+   * request the marker still covered, and the corrected profile was suppressed
+   * for a full cooldown instead of fetching.
+   */
+  it("only the missing skill enters the marker", async () => {
+    let attempts = 0;
+    // Produces "real" but never "typo", which is what PinNotFound reports.
+    const fetch: NpxFetchFn = async (repo, pin, skill, destDir) => {
+      attempts++;
+      if (skill === "typo") return;
+      mkdirSync(join(destDir, skill), { recursive: true });
+      writeFileSync(join(destDir, skill, "SKILL.md"), "# x\n");
+    };
+    const opts = { repoRoot, fetch, tolerateFetchFailure: true };
+
+    const bad = await resolveNpxDetailed(
+      profile([{ repo: "a/b", skills: ["real", "typo"] }]),
+      opts,
+    );
+    expect(bad.failures).toHaveLength(1);
+    const afterBad = attempts;
+
+    // The profile is corrected: "real" alone must be fetched, not skipped.
+    const good = await resolveNpxDetailed(
+      profile([{ repo: "a/b", skills: ["real"] }]),
+      opts,
+    );
+    expect(attempts).toBeGreaterThan(afterBad);
+    expect(good.failures).toEqual([]);
+    expect(good.plans).toHaveLength(1);
+  });
+});
