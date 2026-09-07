@@ -78,7 +78,7 @@ describe.skipIf(!BUN_SPAWNABLE || !SKILLS_PRESENT)("cue launch e2e", () => {
     // Launch now resolves pinned npx skills before materializing. Keep this
     // e2e hermetic: exercise the real cache-hit path without relying on the
     // network or mutating the developer's shared cache.
-    await seedNpxCache(process.env.XDG_CACHE_HOME, ["core", "caveman-quick", "rust", "backend"]);
+    await seedNpxCache(process.env.XDG_CACHE_HOME, ["core", "ponytail", "caveman-quick", "rust", "backend"]);
   });
 
   afterEach(async () => {

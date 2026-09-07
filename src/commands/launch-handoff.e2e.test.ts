@@ -8,7 +8,7 @@
  * file is being edited concurrently.
  */
 import { describe, expect, test, beforeEach, afterEach } from "bun:test";
-import { chmod, mkdir, mkdtemp, rm, writeFile } from "node:fs/promises";
+import { chmod, mkdir, mkdtemp, readFile, rm, writeFile } from "node:fs/promises";
 import { existsSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
@@ -25,7 +25,8 @@ const BUN_SPAWNABLE = spawnSync("bun", ["--version"], { encoding: "utf8" }).stat
 const SKILLS_PRESENT = existsSync(join(import.meta.dir, "../../resources/skills/skills"));
 
 async function seedCoreNpxCache(cacheHome: string): Promise<void> {
-  const profile = await loadProfile("core");
+  // Ponytail inherits core and supplies the implicit Codex launch defaults.
+  const profile = await loadProfile("ponytail");
   for (const entry of profile.skills.npx) {
     const slot = join(cacheHome, "cue", "npx", cacheKey(entry.repo, entry.pin));
     for (const skill of entry.skills) {
@@ -71,11 +72,12 @@ describe.skipIf(!BUN_SPAWNABLE || !SKILLS_PRESENT)("cue launch --dry-run exec ha
     expect(p.runtimeDir).toBe(expected);
     expect(p.command).toEqual(["claude"]);
     expect(p.env.CODEX_HOME).toBeUndefined();
+    expect(existsSync(join(expected, "skills", "ponytail"))).toBe(false);
     // NOTE: CUE_LAUNCHING is intentionally absent from the dry-run JSON (only
     // env[envKey] is serialized); it's covered by the recursion-guard test.
   });
 
-  test("codex → CODEX_HOME points at the codex runtime", () => {
+  test("codex → CODEX_HOME stays on the selected profile with Ponytail enabled", async () => {
     const persistentCodexHome = join(xdg, "persistent-codex");
     const r = cue(["launch", "codex", "--cue-profile", "core", "--dry-run"], {
       XDG_CONFIG_HOME: xdg,
@@ -90,6 +92,11 @@ describe.skipIf(!BUN_SPAWNABLE || !SKILLS_PRESENT)("cue launch --dry-run exec ha
     expect(p.env.CUE_CANONICAL_CODEX_HOME).toBe(persistentCodexHome);
     expect(p.command).toEqual(["codex"]);
     expect(p.env.CLAUDE_CONFIG_DIR).toBeUndefined();
+    for (const skill of ["ponytail", "ponytail-review", "ponytail-audit", "ponytail-debt", "ponytail-gain", "ponytail-help"]) {
+      expect(existsSync(join(expected, "skills", skill, "SKILL.md"))).toBe(true);
+    }
+    const guidance = await readFile(join(expected, "AGENTS.md"), "utf8");
+    expect(guidance.match(/Use the ponytail skill for coding tasks/g)).toHaveLength(1);
   });
 
   test("passthrough args flow into the exec command", () => {
