@@ -2084,7 +2084,6 @@ function formatDuration(ms: number): string {
  */
 export function formatNpxDegraded(failures: NpxEntryFailure[]): string[] {
   const lines: string[] = [];
-  let anySkipped = false;
   for (const f of failures) {
     const reason = f.error.message.replace(
       /^npx fetch (?:failed|skipped) for \S+: /,
@@ -2095,7 +2094,6 @@ export function formatNpxDegraded(failures: NpxEntryFailure[]): string[] {
         ? `launching without ${f.skills.join(", ")}`
         : "using cached copy";
     if (f.skipped) {
-      anySkipped = true;
       const retry =
         f.retryInMs === undefined
           ? "auto-retry later"
@@ -2108,10 +2106,11 @@ export function formatNpxDegraded(failures: NpxEntryFailure[]): string[] {
     }
   }
   if (lines.length > 0) {
+    // Always the forcing form: a fetch that just failed has left a marker, so
+    // a plain `cue launch` would skip it rather than retry — advertising that
+    // command would send the user to a no-op.
     lines.push(
-      anySkipped
-        ? "[cue] force a retry now with: CUE_NPX_FORCE=1 cue launch (or cue doctor)"
-        : "[cue] retry the fetch any time with: cue launch (or cue doctor)",
+      "[cue] retry the fetch now with: CUE_NPX_FORCE=1 cue launch (or cue doctor)",
     );
   }
   return lines;

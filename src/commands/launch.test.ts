@@ -106,7 +106,8 @@ describe("resolveNpxSkillSources", () => {
     expect(lines[0]).toContain("launching without alpha, beta");
     expect(lines[1]).toContain("owner/warm unreachable (getaddrinfo EAI_AGAIN)");
     expect(lines[1]).toContain("using cached copy");
-    expect(lines[2]).toContain("retry");
+    // The advice must force past the marker this very failure just wrote.
+    expect(lines[2]).toContain("CUE_NPX_FORCE=1");
   });
 
   test("a skipped entry reports the cooldown, not a fresh failure", () => {
