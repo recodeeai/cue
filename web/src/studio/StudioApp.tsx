@@ -24,9 +24,12 @@ import { SettingsView } from "./views/Settings";
 import { ProfilesView } from "./views/Profiles";
 import { ApiView } from "./views/Api";
 import { OfflineBanner } from "./views/OfflineBanner";
+import { Welcome } from "./views/Welcome";
+import welcomeStyles from "./views/Welcome.module.css";
+import { isDemoMode } from "../lib/fetcher";
 
 export type View =
-  | "explorer" | "dashboard" | "profiles" | "search" | "merge"
+  | "welcome" | "explorer" | "dashboard" | "profiles" | "search" | "merge"
   | "workflows" | "mcps" | "plugins" | "market" | "hooks" | "permissions" | "env" | "api" | "settings";
 
 export interface OpenTarget { kind: "skill" | "mcp" | "plugin" | "command"; key: string; ts: number; highlightCli?: string }
@@ -122,12 +125,13 @@ function UpdatePill() {
  * exists.
  */
 function AccountMenu({
-  profiles, skills, mcps, offline, go,
+  profiles, skills, mcps, offline, connection, go,
 }: {
   profiles: number | string;
   skills: number | string;
   mcps: number | string;
   offline: boolean;
+  connection: string;
   go: (v: View) => void;
 }) {
   const [open, setOpen] = useState(false);
@@ -177,7 +181,7 @@ function AccountMenu({
             </button>
             <div className="acct-foot">
               <span className="acct-foot-dot" style={offline ? { background: "var(--red)", boxShadow: "0 0 6px var(--red)" } : undefined}></span>
-              {offline ? "offline" : "connected"}<span className="acct-foot-sep">·</span>127.0.0.1<span className="acct-foot-sep">·</span>cue {ver}
+              {connection}<span className="acct-foot-sep">·</span>cue {ver}
             </div>
           </div>
         </>
@@ -187,7 +191,8 @@ function AccountMenu({
 }
 
 export function StudioApp() {
-  const [view, setView] = useState<View>("explorer");
+  const publicMode = isDemoMode();
+  const [view, setView] = useState<View>(() => publicMode ? "welcome" : "explorer");
   const [railOpen, setRailOpen] = useState(false);
   const [pendingOpen, setPendingOpen] = useState<OpenTarget | null>(null);
   // The selected profile selector (e.g. "gstack+core"); null until /status loads.
@@ -195,6 +200,7 @@ export function StudioApp() {
 
   const status = useStatus();
   const offline = status.isError && (status.error as Error).message.startsWith("dashboard-server-unreachable");
+  const connection = publicMode ? "public · demo" : status.isSuccess ? "live · 127.0.0.1" : status.isError ? "local server unavailable" : "connecting to local Studio";
 
   // Default the selected profile to the resolved active one, once.
   useEffect(() => {
@@ -235,6 +241,7 @@ export function StudioApp() {
   // Top rail mirrors the design's `rail` array. hooks + permissions live in the
   // bottom group (next to settings), not here — see the rail-sp block below.
   const rail: [string, View, string][] = [
+    ["profiles", "welcome", "Getting started"],
     ["explorer", "explorer", "Explorer"], ["dashboard", "dashboard", "Dashboard"],
     ["profiles", "profiles", "Profiles"], ["search", "search", "Search"],
     ["merge", "merge", "Merge studio"], ["flow", "workflows", "Workflows"],
@@ -248,6 +255,7 @@ export function StudioApp() {
 
   const crumb = (() => {
     switch (view) {
+      case "welcome": return <>community · <b>getting started</b></>;
       case "explorer": return <>profile explorer · <b>{profileLabel}</b></>;
       case "profiles": return <>inspect · <b>profiles</b></>;
       case "mcps": return <>servers · <b>mcp</b></>;
@@ -266,7 +274,7 @@ export function StudioApp() {
   })();
 
   return (
-    <div className="app">
+    <div className={"app" + (publicMode ? ` ${welcomeStyles.publicShell}` : "")}>
       {/* ── title bar ── */}
       <div className="titlebar">
         <div className="tb-brand" onClick={() => setView("dashboard")} title="cue studio — overview">
@@ -283,9 +291,9 @@ export function StudioApp() {
         <div className="tb-spacer"></div>
         <div className="tb-right">
           <UpdatePill />
-          <div className="tb-host" title={offline ? "dashboard server unreachable" : "connected to local cue dashboard server"}>
-            <span className="tb-host-live" style={offline ? { background: "var(--red)", boxShadow: "0 0 6px var(--red)" } : undefined}></span>
-            {offline ? "offline" : "live"}<span className="tb-host-sep">·</span><span className="tb-host-ip">127.0.0.1</span>
+          <div className="tb-host" title={publicMode ? "Public demo — not connected to your computer" : connection}>
+            <span className="tb-host-live" style={publicMode || !status.isSuccess ? { background: "var(--violet)", boxShadow: "none" } : undefined}></span>
+            {connection}
           </div>
           <button className="tb-iconbtn" title="settings" onClick={() => setView("settings")}><Ico name="gear" /></button>
           <AccountMenu
@@ -293,6 +301,7 @@ export function StudioApp() {
             skills={counts?.skills ?? "—"}
             mcps={counts?.mcps ?? "—"}
             offline={offline}
+            connection={connection}
             go={setView}
           />
         </div>
@@ -306,11 +315,11 @@ export function StudioApp() {
             <span className="rail-label">close</span>
           </div>
           {rail.map(([ico, v, label]) => (
-            <div key={v} className={"rail-btn" + (view === v ? " on" : "")} data-label={label} onClick={() => setView(v)}>
+            <button key={v} style={{ background: "transparent", borderTop: 0, borderRight: 0, borderBottom: 0 }} className={"rail-btn" + (view === v ? " on" : "")} aria-label={label} aria-current={view === v ? "page" : undefined} data-label={label} onClick={() => setView(v)}>
               <Ico name={ico} />
               <span className="rail-label">{label}</span>
               {v === "mcps" && counts?.mcps ? <span className="rail-badge">{counts.mcps}</span> : null}
-            </div>
+            </button>
           ))}
           <div className="rail-sp"></div>
           <div className={"rail-btn" + (view === "hooks" ? " on" : "")} data-label="Hooks" onClick={() => setView("hooks")}><Ico name="hook" /><span className="rail-label">Hooks</span></div>
@@ -321,7 +330,11 @@ export function StudioApp() {
         </div>
 
         <div className="view">
-          {view === "api" ? (
+          {view === "welcome" ? (
+            <Welcome onBrowse={() => setView("market")} />
+          ) : view === "market" && (publicMode || offline) ? (
+            <MarketView />
+          ) : view === "api" ? (
             // Auth/token management is independent of the local dashboard
             // server, so it stays available even when that server is offline.
             <ApiView />
@@ -335,7 +348,7 @@ export function StudioApp() {
               {view === "dashboard" && <Dashboard profile={profile} status={status.data} />}
               {view === "profiles" && <ProfilesView active={profile} setProfile={setProfile} onOpen={handleOpen} />}
               {view === "merge" && <MergeView />}
-              {view === "workflows" && <WorkflowsView />}
+              {view === "workflows" && <WorkflowsView profile={profile} />}
               {view === "mcps" && <McpsView profile={profile} />}
               {view === "plugins" && <PluginsView profile={profile} />}
               {view === "market" && <MarketView />}
@@ -353,7 +366,7 @@ export function StudioApp() {
       <div className="statusbar">
         <div className="sb-seg accent">
           <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round"><path d="M6 3v12M6 21a3 3 0 100-6 3 3 0 000 6zM6 6a3 3 0 100-6 3 3 0 000 6zM18 9a3 3 0 100-6 3 3 0 000 6zM18 9c0 6-12 2-12 8" /></svg>
-          {status.data?.source && status.data.source !== "none" ? status.data.source : "workspace"}
+          {publicMode ? "public site · Studio previews use sample data" : status.data?.source && status.data.source !== "none" ? status.data.source : "workspace"}
         </div>
         <div className="sb-seg ok-seg">
           <span className="sb-dot" style={{ background: status.data?.gates?.overall === "fail" ? "var(--red)" : "var(--green)", boxShadow: "0 0 5px rgba(62,207,142,.7)" }}></span>

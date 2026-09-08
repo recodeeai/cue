@@ -6,8 +6,8 @@
  * Always talks to the same origin (Vercel function in prod, the Vite auth
  * proxy in dev). Auth is the BetterAuth session cookie, so `credentials:
  * "include"` is enough — the same token a `cue marketplace publish` call sends
- * as a Bearer header. Reads fail SOFT (empty list) so a local `cue dashboard`
- * that doesn't serve this route never breaks the Market view.
+ * as a Bearer header. Catalog failures are surfaced separately so browsing
+ * local profiles remains available without pretending the community is empty.
  */
 import { useQuery } from "@tanstack/react-query";
 
@@ -23,15 +23,13 @@ export interface PublishInput {
 
 type Envelope<T> = { ok: true; data: T } | { ok: false; error: string };
 
-/** Fetch the approved community catalog. Returns [] on any error. */
+/** Fetch the approved community catalog, distinguishing outages from no items. */
 export async function fetchCommunity(): Promise<MarketItem[]> {
-  try {
-    const res = await fetch("/api/v1/community", { credentials: "include" });
-    const env = (await res.json()) as Envelope<{ items: MarketItem[] }>;
-    return env.ok ? env.data.items : [];
-  } catch {
-    return [];
-  }
+  const res = await fetch("/api/v1/community", { credentials: "include" });
+  if (!res.ok) throw new Error(`Community catalog unavailable (HTTP ${res.status})`);
+  const env = (await res.json()) as Envelope<{ items: MarketItem[] }>;
+  if (!env.ok) throw new Error(env.error);
+  return env.data.items;
 }
 
 /** Publish one item. Throws with the server error message on failure. */

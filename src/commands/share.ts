@@ -96,7 +96,7 @@ function helpText(): string {
     "cue share — install, push, and discover community profiles",
     "",
     "Usage:",
-    "  cue share install <user>/<repo>[@ref][:subpath]",
+    "  cue share install <user>/<repo>[@ref][:subpath] [--yes]",
     "  cue share install https://github.com/<user>/<repo>",
     "  cue share list    [--json]",
     "  cue share remove  <user>/<repo>",
@@ -116,6 +116,9 @@ function helpText(): string {
     "can never silently shadow a builtin. Use them like any other profile:",
     "  cue use jane-medusa-shop",
     "  cue use jane-medusa-shop+backend",
+    "",
+    "Install only downloads and validates YAML; it does not activate profiles or run hooks.",
+    "Review the source first. Non-interactive installs require --yes.",
     "",
     "Env overrides:",
     "  CUE_REGISTRY_URL   index.json source for `search` (default opencue/claude-code-skills-profiles)",
@@ -143,6 +146,11 @@ async function runInstall(args: ParsedArgs): Promise<number> {
     return 1;
   }
 
+  if (!args.yes && !process.stdin.isTTY) {
+    process.stderr.write("cue share install: non-interactive installs require --yes. Review the GitHub profile source before opting in; installation does not activate it or approve hooks.\n");
+    return 1;
+  }
+
   const spinner = p.spinner();
   spinner.start(`Fetching ${ref.user}/${ref.repo}…`);
   let result;
@@ -161,7 +169,7 @@ async function runInstall(args: ParsedArgs): Promise<number> {
   if (!args.yes && process.stdin.isTTY) {
     const ok = await p.confirm({
       message: `Install ${ref.user}/${ref.repo} as "${sharedProfileName(ref)}"?`,
-      initialValue: true,
+      initialValue: false,
     });
     if (p.isCancel(ok) || !ok) {
       p.cancel("Cancelled.");
@@ -169,19 +177,29 @@ async function runInstall(args: ParsedArgs): Promise<number> {
     }
   }
 
-  const { dir, namespacedName } = writeInstall(ref, result.body, {
-    source_url: result.source,
-    installed_at: new Date().toISOString(),
-    sha: result.sha,
-  });
+  let installed: ReturnType<typeof writeInstall>;
+  try {
+    installed = writeInstall(ref, result.body, {
+      source_url: result.source,
+      installed_at: new Date().toISOString(),
+      sha: result.sha,
+    });
+  } catch (error) {
+    process.stderr.write(`cue share install: ${(error as Error).message}\n`);
+    return 1;
+  }
+  const { dir, namespacedName } = installed;
 
   process.stdout.write(`\n✓ Installed ${namespacedName}\n`);
   process.stdout.write(`  Source: ${result.source}\n`);
   process.stdout.write(`  Local:  ${dir}\n`);
   process.stdout.write(`\n  Audit before launch:\n`);
-  process.stdout.write(`    cat ${dir}/profile.yaml\n`);
-  process.stdout.write(`\n  Use it:\n`);
+  process.stdout.write(`    cat ${JSON.stringify(join(dir, "profile.yaml"))}\n`);
+  process.stdout.write(`    cue validate ${namespacedName}\n`);
+  process.stdout.write(`\n  After reviewing hooks, MCPs, and dependencies, use it:\n`);
   process.stdout.write(`    cue use ${namespacedName}\n`);
+  process.stdout.write(`    cue launch codex\n`);
+  process.stdout.write(`  Installed only: no agent started and no hooks approved or executed.\n`);
   return 0;
 }
 
@@ -376,7 +394,7 @@ async function runPush(args: ParsedArgs): Promise<number> {
   const prUrl = prRes.stdout.trim();
   process.stdout.write(`\n✓ Opened PR: ${prUrl}\n`);
   process.stdout.write(
-    `  Once merged, anyone can install with:\n    cue share install ${ghUser}/${profileName}\n`,
+    `  Once merged, anyone can install with:\n    cue share install ${registry}@${baseBranch}:profiles/${ghUser}/${profileName}\n`,
   );
   return 0;
 }

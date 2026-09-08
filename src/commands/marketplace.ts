@@ -1199,9 +1199,15 @@ async function cmdPublish(args: string[], json: boolean): Promise<number> {
       `  <type>  one of: ${PUBLISH_TYPES.join(", ")}\n` +
       "  <name>  the profile / skill / mcp name to publish\n\n" +
       "Examples:\n" +
-      "  cue marketplace publish profile ship-fast --tags build,review\n" +
+      "  cue marketplace publish profile ship-fast --source-url https://github.com/me/profiles/tree/main/ship-fast --tags build,review\n" +
       "  cue marketplace publish skill seo-audit --source-url https://github.com/me/skills\n",
     );
+    return 1;
+  }
+
+  const sourceUrl = flagValue(args, "--source-url")?.trim() || undefined;
+  if (type === "profile" && !sourceUrl) {
+    process.stderr.write("Profiles need a public GitHub source: --source-url https://github.com/owner/repo/tree/ref/profile-directory\n");
     return 1;
   }
 
@@ -1218,7 +1224,6 @@ async function cmdPublish(args: string[], json: boolean): Promise<number> {
   let description = flagValue(args, "--desc") ?? "";
   if (!description && type === "profile") description = await deriveProfileDescription(name);
   const tags = (flagValue(args, "--tags") ?? "").split(",").map((t) => t.trim()).filter(Boolean);
-  const sourceUrl = flagValue(args, "--source-url") ?? undefined;
 
   if (!json) process.stdout.write(`Publishing ${bold(type)} "${bold(name)}" to ${apiUrl}…\n`);
 
@@ -1292,7 +1297,7 @@ Examples:
   cue marketplace install-mcp exa
   cue marketplace search-skills "kubernetes"
   cue marketplace login --token cue_sk_…
-  cue marketplace publish profile ship-fast --tags build,review
+  cue marketplace publish profile ship-fast --source-url https://github.com/me/profiles/tree/main/ship-fast --tags build,review
 `);
     return 0;
   }

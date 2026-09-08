@@ -24,7 +24,7 @@
   <img src="https://img.shields.io/badge/telemetry-none-success?style=for-the-badge" alt="zero telemetry">
 </p>
 
-[Install](#install) · [How it works](#how-it-works) · [Profiles](#85-ready-made-cuecards) · [Multi-agent](#one-cuecard-ten-agents) · [FAQ](#faq) · [Contributing](#contributing)
+[Community](https://cuecards.cc) · [Install](#install) · [How it works](#how-it-works) · [Profiles](#85-ready-made-cuecards) · [Multi-agent](#one-cuecard-ten-agents) · [FAQ](#faq) · [Contributing](#contributing)
 
 </div>
 
@@ -412,7 +412,7 @@ bun run src/index.ts --help       # run locally
 
 <div align="center">
 
-Built by [Viktor Nagy](https://github.com/NagyVikt) at [opencue](https://github.com/opencue) · [opencue.github.io/cuecards](https://opencue.github.io/cuecards/)
+Built by [Viktor Nagy](https://github.com/NagyVikt) at [opencue](https://github.com/opencue) · [cuecards.cc](https://cuecards.cc)
 
 **If cue saves you tokens, star it — that's how other people find it.**
 
