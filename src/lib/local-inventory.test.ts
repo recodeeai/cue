@@ -60,9 +60,11 @@ test("catalog entries are not installations and plugin MCP JSON is discovered", 
   const { root, put } = fixture();
   put("catalog.json", '{"servers":{"catalog":{"command":"unused"}}}');
   put("plugins/demo/.mcp.json", '{"mcpServers":{"plugin-server":{"command":"unused"}}}');
+  put("plugins/direct/.mcp.json", '{"direct-server":{"command":"unused"}}');
   const data = await scanLocalInventory({ skillRoots: [join(root, "plugins")], profiles: [], mcpFiles: [join(root, "catalog.json")], catalogFiles: [join(root, "catalog.json")] });
   expect(data.items.find(x => x.name === "catalog")?.state).toBe("available");
   expect(data.items.find(x => x.name === "plugin-server")?.state).toBe("configured");
+  expect(data.items.find(x => x.name === "direct-server")?.state).toBe("configured");
 });
 
 test("inventory HTTP route rejects writes, foreign sites, and arbitrary path input", async () => {

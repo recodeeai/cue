@@ -113,7 +113,7 @@ export async function scanLocalInventory(options: ScanOptions): Promise<LocalInv
         const raw: unknown = JSON.parse(text);
         if (!raw || typeof raw !== "object" || Array.isArray(raw)) throw new Error("invalid-config");
         const obj = raw as Record<string, unknown>;
-        const servers = obj.mcpServers ?? obj.servers ?? {};
+        const servers = obj.mcpServers ?? obj.servers ?? (basename(file) === ".mcp.json" ? obj : {});
         if (!servers || typeof servers !== "object" || Array.isArray(servers)) throw new Error("invalid-servers");
         names = Object.keys(servers).filter(name => {
           const value = (servers as Record<string, unknown>)[name];
