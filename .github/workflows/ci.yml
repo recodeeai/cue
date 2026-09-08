@@ -22,7 +22,11 @@ jobs:
         run: bun install --frozen-lockfile
 
       - name: Run tests
-        run: bun test --timeout 30000
+        # Dashboard render tests import React and TanStack Query from web/.
+        # Keep the root install frozen; web dependencies have a separate manifest.
+        run: |
+          (cd web && bun install)
+          bun test --timeout 30000
 
       - name: Enforce critical-path coverage
         run: bun run test:critical:coverage
