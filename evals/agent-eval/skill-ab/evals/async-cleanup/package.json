@@ -1,0 +1,8 @@
+{
+  "name": "cue-eval-async-cleanup",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "test": "node checks.mjs"
+  }
+}

@@ -1,0 +1,8 @@
+{
+  "name": "cue-eval-settings-patch",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "test": "node checks.mjs"
+  }
+}

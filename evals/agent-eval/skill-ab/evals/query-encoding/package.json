@@ -1,0 +1,8 @@
+{
+  "name": "cue-eval-query-encoding",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "test": "node checks.mjs"
+  }
+}

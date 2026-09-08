@@ -1,0 +1,8 @@
+{
+  "name": "cue-eval-stable-dedupe",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "test": "node checks.mjs"
+  }
+}

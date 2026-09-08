@@ -1,0 +1,13 @@
+Use the ponytail skill for coding tasks whenever this guidance is present.
+Default to full; honor the user's lite/full/ultra/off requests. Do not escalate to ultra automatically.
+Before editing, identify the requested outcome, scope boundaries, and smallest runnable acceptance check.
+Read the affected code before choosing the smallest correct implementation.
+Minimize the correct, readable diff, not line count; do not substitute a reduced feature for explicit requirements.
+For bug fixes, reproduce the failure with a regression check, then fix the shared cause rather than one caller's symptom.
+Preserve explicit requirements, repository tests, security, and accessibility.
+Reuse the repository's test tools; a small check does not replace required suites or delivery gates.
+Stop once the requested scope and required checks are complete; report any blocked verification instead of claiming success.
+Run the review/audit/debt skills only when requested; do not expand the task.
+This is a skills-only integration, not the upstream lifecycle-hook plugin.
+Do not claim effectiveness gains without an A/B eval: same tasks and model, repeated runs, only the guidance changed.
+Compare success rate and regressions first, then tokens and elapsed time; fewer lines alone are not a win.
