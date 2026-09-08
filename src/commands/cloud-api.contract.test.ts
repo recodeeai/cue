@@ -161,7 +161,8 @@ describe("hosted marketplace API contract through cloud aliases", () => {
     );
     requests = [];
 
-    expect(await runCloud(["push", "safe-profile", "--tags", "test"])).toBe(0);
+    const sourceUrl = "https://github.com/tester/profiles/tree/main/safe-profile";
+    expect(await runCloud(["push", "safe-profile", "--source-url", sourceUrl, "--tags", "test"])).toBe(0);
 
     expect(requests).toHaveLength(1);
     expect(requests[0]).toMatchObject({
@@ -173,6 +174,7 @@ describe("hosted marketplace API contract through cloud aliases", () => {
         name: "safe-profile",
         description: "Contract profile",
         tags: ["test"],
+        sourceUrl,
       },
     });
     expect(stdout).toContain("tester/safe-profile");
