@@ -34,7 +34,7 @@ test("missing token/model evidence is unknown, not zero or verified", () => {
 test("report rejects missing, unequal, and differently configured samples", () => {
   expect(() => compareRuns([], runs("after"))).toThrow();
   expect(() => compareRuns(runs("before").slice(1), runs("after"))).toThrow();
-  for (const field of ["model", "skillSha256", "taskSha256", "guidanceSha256", "instructionsSha256"] as const) {
+  for (const field of ["model", "skillSha256", "taskSha256", "guidanceSha256", "instructionsSha256", "executionSha256"] as const) {
     const after = runs("after");
     after[0]!.metadata[field] = "different";
     expect(() => compareRuns(runs("before"), after)).toThrow();

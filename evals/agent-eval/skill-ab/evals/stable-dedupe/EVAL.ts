@@ -19,9 +19,13 @@ test("empty and falsy/object keys preserve Set equality", () => {
   const key = {};
   assert.deepEqual(uniqueBy([], (x) => x), []);
   assert.deepEqual(uniqueBy([0, "", false, undefined, 0, "", false, undefined], (x) => x), [0, "", false, undefined]);
-  const a = { key }, b = { key };
-  assert.equal(uniqueBy([a, b], (item) => item.key)[0], a);
-  assert.equal(uniqueBy([a, b], (item) => item.key).length, 1);
+  const a = { key }, b = { key }, c = { key: {} };
+  const result = uniqueBy([a, b, c], (item) => item.key);
+  assert.equal(result.length, 2);
+  assert.equal(result[0], a);
+  assert.equal(result[1], c);
+  assert.deepEqual(uniqueBy([0, "0", 0, "0"], (item) => item), [0, "0"]);
+  assert.deepEqual(uniqueBy([NaN, NaN], (item) => item), [NaN]);
 });
 
 test("existing checks, package contract and helpers remain intact", () => {
