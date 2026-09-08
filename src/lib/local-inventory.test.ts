@@ -46,14 +46,35 @@ test("MCP inventory never returns config values, commands, URLs, env or parse er
   expect(data.sources.find(x => x.path.endsWith("missing"))?.state).toBe("missing");
 });
 
-test("same MCP name in different configs remains separate, not reported running", async () => {
+test("same MCP name is listed once with every source and profile relationship", async () => {
   const { root, put } = fixture();
   put("a.json", '{"mcpServers":{"same":{"command":"a"}}}');
   put("b.json", '{"mcpServers":{"same":{"command":"b"}}}');
-  const data = await scanLocalInventory({ skillRoots: [], profiles: [], mcpFiles: [join(root, "a.json"), join(root, "b.json")] });
-  expect(data.items).toHaveLength(2);
-  expect(new Set(data.items.map(x => x.id)).size).toBe(2);
-  expect(data.items.every(x => x.state === "configured")).toBe(true);
+  put("catalog.json", '{"servers":{"same":{"command":"unused"},"catalog-only":{}}}');
+  const a = join(root, "a.json"), b = join(root, "b.json"), catalog = join(root, "catalog.json");
+  const profiles = [
+    { name: "backend", description: "", skills: [], mcps: ["same", "same", "missing"] },
+    { name: "frontend", description: "", skills: [], mcps: ["same", "missing"] },
+  ];
+  const scan = (mcpFiles: string[]) => scanLocalInventory({ skillRoots: [], profiles, mcpFiles, catalogFiles: [catalog] });
+  const data = await scan([catalog, a, b, a]);
+  const mcps = data.items.filter(x => x.kind === "mcp");
+  expect(mcps.map(x => x.name)).toEqual(["catalog-only", "missing", "same"]);
+  const same = mcps.find(x => x.name === "same")!;
+  expect(same.sources).toEqual([catalog, a, b]);
+  expect(same.state).toBe("configured");
+  expect(same.description).toBe("Configuration found · availability not probed");
+  expect(same.related).toEqual(["profile:backend", "profile:frontend"]);
+  for (const profile of data.items.filter(x => x.kind === "profile")) {
+    expect(profile.related.filter(id => id === same.id)).toHaveLength(1);
+  }
+  expect(mcps.find(x => x.name === "catalog-only")?.state).toBe("available");
+  expect(mcps.find(x => x.name === "missing")?.related).toHaveLength(2);
+  const reversed = (await scan([b, a, catalog])).items.find(x => x.name === "same")!;
+  expect(reversed.id).toBe(same.id);
+  expect(reversed.state).toBe(same.state);
+  expect(reversed.description).toBe(same.description);
+  expect(reversed.sources).toHaveLength(3);
 });
 
 test("catalog entries are not installations and plugin MCP JSON is discovered", async () => {
