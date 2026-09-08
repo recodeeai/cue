@@ -2,7 +2,7 @@
 title: "richfrem/agent-plugins-skills — Claude Code skill discovered by cue"
 description: "repo for reusable plugins and skills"
 layout: page
-updated: 2026-08-28
+updated: 2026-09-08
 tags: [claude-code, skill, core]
 ---
 
@@ -16,7 +16,7 @@ tags: [claude-code, skill, core]
 
 cue ran [GitHub Code Search](https://docs.github.com/en/search-github/searching-on-github/searching-code) for `filename:SKILL.md` and found this repo. It scored 9.7 based on:
 - ⭐ 6 stars
-- 🗓️ Last pushed: 2026-08-28
+- 🗓️ Last pushed: 2026-09-08
 - 🏷️ Tags: agent-skills, agentic-framework, agentic-harness, agentic-os, claude-code-skill, claude-plugins, claude-skills, self-improving-agent-skills, self-improving-agents, self-improving-ai, self-improving-loops, superpowers
 
 ## Best fit cue profiles

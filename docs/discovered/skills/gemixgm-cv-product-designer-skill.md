@@ -2,7 +2,7 @@
 title: "GemixGM/cv-product-designer-skill — Claude Code skill discovered by cue"
 description: "Skill de Claude Code para crear, auditar y adaptar CVs de Product Designer / UX"
 layout: page
-updated: 2026-09-02
+updated: 2026-09-08
 tags: [claude-code, skill, core]
 ---
 
@@ -16,7 +16,7 @@ tags: [claude-code, skill, core]
 
 cue ran [GitHub Code Search](https://docs.github.com/en/search-github/searching-on-github/searching-code) for `filename:SKILL.md` and found this repo. It scored 8.3 based on:
 - ⭐ 1 stars
-- 🗓️ Last pushed: 2026-09-02
+- 🗓️ Last pushed: 2026-09-08
 - 🏷️ Tags: agent-skills, ats, claude-code, claude-skill, cv, job-search, product-design, resume, ux, ux-design
 
 ## Best fit cue profiles

@@ -2,7 +2,7 @@
 title: "Claude Code Skills for video"
 description: "2 community Claude Code skills curated by cue for the video profile. Hidden-gem repos with SKILL.md, MCP servers, and CLI integrations."
 layout: page
-updated: 2026-09-01
+updated: 2026-09-08
 tags: [claude-code, video, skills, mcp, ai-agents]
 ---
 
@@ -15,28 +15,30 @@ tags: [claude-code, video, skills, mcp, ai-agents]
 
 ---
 
-<a id="expropriationhoorayhenry64-social-media-scraper-skill"></a>
-## 💎 [expropriationhoorayhenry64/social-media-scraper-skill](https://github.com/expropriationhoorayhenry64/social-media-scraper-skill)
+<a id="nkapila6-roto"></a>
+## 💎 [nkapila6/roto](https://github.com/nkapila6/roto)
 
-**★ 6** · exceptional (score 11.6) · tags: ai, automation, claude-code, claude-skill, content-analysis
+**★ 0** · exceptional (score 13) · JavaScript · tags: claude-code, claude-skill, ffmpeg, hyperframes, motion-graphics
 
-Extract and summarize social media content from platforms like Instagram, TikTok, X, and YouTube using Claude Code.
+You have a video. You want the same video with your words in it. roto erases the original text frame by frame, keeps every bit of the motion, and writes yours back in.
+
+✅ SKILL.md
 
 ```bash
-cue skills add expropriationhoorayhenry64/social-media-scraper-skill --profile video
+cue skills add nkapila6/roto --profile video
 ```
 
 ---
 
-<a id="augustusw-audio-tldr-skill"></a>
-## 💎 [AugustusW/audio-tldr-skill](https://github.com/AugustusW/audio-tldr-skill)
+<a id="nooticr-nooticr-mcp"></a>
+## ✨ [Nooticr/nooticr-mcp](https://github.com/Nooticr/nooticr-mcp)
 
-**★ 35** · exceptional (score 9.8) · Python · tags: ai-agents, claude-code, claude-skill, podcast, speech-to-text
+**★ 0** · strong (score 5) · TypeScript · tags: ai, instagram, mcp, mcp-server, model-context-protocol
 
-Claude Code skill: summarize videos, audio & podcasts with local cached transcription
+Social intelligence MCP server for Claude — read posts, transcripts, comments, creators, sounds and hashtags across 8 networks, then write hooks, create variants, score drafts and repurpose. 24 tools, OAuth 2.1, prepaid credits.
 
 ```bash
-cue skills add AugustusW/audio-tldr-skill --profile video
+cue skills add Nooticr/nooticr-mcp --profile video
 ```
 
 ---

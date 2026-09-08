@@ -2,7 +2,7 @@
 title: "JulienMicrofacto/deep-clean-skill — Claude Code skill discovered by cue"
 description: "Full-spectrum consolidation for Claude Code config files. Audits CLAUDE.md, rules, skills, and memory — not just memory. Detects dead paths, stack mismatches, d"
 layout: page
-updated: 2026-09-07
+updated: 2026-09-08
 tags: [claude-code, skill, core]
 ---
 

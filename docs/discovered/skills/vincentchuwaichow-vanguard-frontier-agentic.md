@@ -2,21 +2,21 @@
 title: "VincentChuWaiChow/vanguard-frontier-agentic — Claude Code skill discovered by cue"
 description: "Curated marketplace of AI skills, agents, and rules for cloud, zero-trust, and compliance-aware engineering - works with Claude Code, Codex, Cursor, Copilot, an"
 layout: page
-updated: 2026-09-01
+updated: 2026-09-08
 tags: [claude-code, skill, core]
 ---
 
 # 💎 [VincentChuWaiChow/vanguard-frontier-agentic](https://github.com/VincentChuWaiChow/vanguard-frontier-agentic)
 
-**★ 21** · exceptional (score 12.4) · Rust · agent-skills, ai-agents-framework, asia-cloud-provider, azure, claude-code-skill
+**★ 22** · exceptional (score 12.4) · Rust · agent-skills, ai-agents-framework, asia-cloud-provider, azure, claude-code-skill
 
 > Curated marketplace of AI skills, agents, and rules for cloud, zero-trust, and compliance-aware engineering - works with Claude Code, Codex, Cursor, Copilot, and more.
 
 ## Why cue indexed it
 
 cue ran [GitHub Code Search](https://docs.github.com/en/search-github/searching-on-github/searching-code) for `filename:SKILL.md` and found this repo. It scored 12.4 based on:
-- ⭐ 21 stars
-- 🗓️ Last pushed: 2026-09-01
+- ⭐ 22 stars
+- 🗓️ Last pushed: 2026-09-08
 - 🏷️ Tags: agent-skills, ai-agents-framework, asia-cloud-provider, azure, claude-code-skill, claude-skill, cloud-security, codex-skill, cursor-skill, eu-cloud-provider, finops, istio, kubernetes, kyverno, nvidia, oci, opencode-skill, terraform, zero-trust-architecture
 
 ## Best fit cue profiles

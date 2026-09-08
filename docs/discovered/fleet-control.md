@@ -1,31 +1,42 @@
 ---
 title: "Claude Code Skills for fleet-control"
-description: "2 community Claude Code skills curated by cue for the fleet-control profile. Hidden-gem repos with SKILL.md, MCP servers, and CLI integrations."
+description: "3 community Claude Code skills curated by cue for the fleet-control profile. Hidden-gem repos with SKILL.md, MCP servers, and CLI integrations."
 layout: page
-updated: 2026-09-07
+updated: 2026-09-08
 tags: [claude-code, fleet-control, skills, mcp, ai-agents]
 ---
 
 # Claude Code Skills for `fleet-control`
 
-> 2 community-built skills curated by [cue](https://github.com/opencue/cuecards) for the **fleet-control** profile.
+> 3 community-built skills curated by [cue](https://github.com/opencue/cuecards) for the **fleet-control** profile.
 > Each one was discovered via GitHub Code Search, scored on signal quality, and mapped to this profile by keyword overlap.
 
 **[← back to all discovered skills](./index.md)**
 
 ---
 
-<a id="ruvnet-ruflo"></a>
-## 💎 [ruvnet/ruflo](https://github.com/ruvnet/ruflo)
+<a id="aadiieee-multi-agent-revenue-orchestrator"></a>
+## 💎 [aadiieee/multi-agent-revenue-orchestrator](https://github.com/aadiieee/multi-agent-revenue-orchestrator)
 
-**★ 71156** · exceptional (score 23.5) · TypeScript · tags: agentic-ai, agentic-framework, agentic-workflow, agents, ai-agents
+**★ 1** · exceptional (score 9.3) · HTML · tags: agents, ai-agents, ai-sdr, apollo-io, business-development
 
-🌊 The original agent meta-harness. Deploy intelligent multi-player swarms, coordinate autonomous workflows, and build conversational AI systems. Features adaptive memory, self-learning intelligence, RAG integration, and native Claude Code / Codex / Hermes and many more Integrated
-
-✅ SKILL.md
+2026 Multi-Agent BD Orchestrator – Apollo, Notion, Gmail & Slack Integration
 
 ```bash
-cue skills add ruvnet/ruflo --profile fleet-control
+cue skills add aadiieee/multi-agent-revenue-orchestrator --profile fleet-control
+```
+
+---
+
+<a id="komsamoilenko-council"></a>
+## 💎 [komsamoilenko/council](https://github.com/komsamoilenko/council)
+
+**★ 0** · exceptional (score 8.5) · tags: ai-agents, claude, claude-code, codex, gemini
+
+An MCP server that lets the AI assistant you are talking to consult a different vendors assistant, under your own subscriptions, and records what it cost.
+
+```bash
+cue skills add komsamoilenko/council --profile fleet-control
 ```
 
 ---

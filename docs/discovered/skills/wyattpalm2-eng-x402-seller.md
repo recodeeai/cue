@@ -2,21 +2,21 @@
 title: "wyattpalm2-eng/x402-seller — Claude Code skill discovered by cue"
 description: "Rug protection for AI trading agents — composite honeypot score + liquidity-drain detector, paid per-call in USDC via x402 (no signup, no API key). Free demo + "
 layout: page
-updated: 2026-08-01
+updated: 2026-09-08
 tags: [claude-code, skill, backend]
 ---
 
 # ✨ [wyattpalm2-eng/x402-seller](https://github.com/wyattpalm2-eng/x402-seller)
 
-**★ 2** · strong (score 5.5) · TypeScript · ai-agents, base, crypto-api, honeypot-detector, mcp
+**★ 3** · strong (score 5.7) · TypeScript · ai-agents, base, crypto-api, honeypot-detector, mcp
 
 > Rug protection for AI trading agents — composite honeypot score + liquidity-drain detector, paid per-call in USDC via x402 (no signup, no API key). Free demo + public self-graded track record. MCP server included.
 
 ## Why cue indexed it
 
-cue ran [GitHub Code Search](https://docs.github.com/en/search-github/searching-on-github/searching-code) for `filename:SKILL.md` and found this repo. It scored 5.5 based on:
-- ⭐ 2 stars
-- 🗓️ Last pushed: 2026-08-01
+cue ran [GitHub Code Search](https://docs.github.com/en/search-github/searching-on-github/searching-code) for `filename:SKILL.md` and found this repo. It scored 5.7 based on:
+- ⭐ 3 stars
+- 🗓️ Last pushed: 2026-09-08
 - 🏷️ Tags: ai-agents, base, crypto-api, honeypot-detector, mcp, mcp-server, rug-check, solana, usdc, x402
 
 ## Best fit cue profiles

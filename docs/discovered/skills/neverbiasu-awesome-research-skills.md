@@ -2,7 +2,7 @@
 title: "neverbiasu/awesome-research-skills — Claude Code skill discovered by cue"
 description: "137 Agent Skills (SKILL.md) for academic and scientific research, curated one directory at a time — literature, study design, experiments, statistics, figures, "
 layout: page
-updated: 2026-09-07
+updated: 2026-09-08
 tags: [claude-code, skill, research]
 ---
 

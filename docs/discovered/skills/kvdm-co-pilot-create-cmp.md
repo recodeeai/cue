@@ -2,7 +2,7 @@
 title: "kvdm-co-pilot/create-cmp — Claude Code skill discovered by cue"
 description: "Create production mobile apps (Android + iOS, one Kotlin codebase) with AI — deterministic Compose Multiplatform scaffold, proven-green builds, machine-enforced"
 layout: page
-updated: 2026-08-27
+updated: 2026-09-08
 tags: [claude-code, skill, core]
 ---
 
@@ -16,7 +16,7 @@ tags: [claude-code, skill, core]
 
 cue ran [GitHub Code Search](https://docs.github.com/en/search-github/searching-on-github/searching-code) for `filename:SKILL.md` and found this repo. It scored 7 based on:
 - ⭐ 0 stars
-- 🗓️ Last pushed: 2026-08-27
+- 🗓️ Last pushed: 2026-09-08
 - 🏷️ Tags: agent-skills, ai-agents, android, app-generator, claude-code, claude-code-plugin, claude-skill, cli, compose-multiplatform, cross-platform, flutter-alternative, ios, kmp, kotlin, kotlin-multiplatform, mcp, mobile-app, project-generator, react-native-alternative, scaffold
 
 ## Best fit cue profiles

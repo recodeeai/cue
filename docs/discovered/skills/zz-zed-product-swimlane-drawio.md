@@ -2,7 +2,7 @@
 title: "zz-zed/product-swimlane-drawio — Claude Code skill discovered by cue"
 description: "Create and safely update native, editable Draw.io vertical swimlane diagrams with deterministic layout, orthogonal routing, and strict validation."
 layout: page
-updated: 2026-09-02
+updated: 2026-09-08
 tags: [claude-code, skill, core]
 ---
 
@@ -16,7 +16,7 @@ tags: [claude-code, skill, core]
 
 cue ran [GitHub Code Search](https://docs.github.com/en/search-github/searching-on-github/searching-code) for `filename:SKILL.md` and found this repo. It scored 6.7 based on:
 - ⭐ 3 stars
-- 🗓️ Last pushed: 2026-09-02
+- 🗓️ Last pushed: 2026-09-08
 - 🏷️ Tags: agent-skills, claude-code-skill, codex, diagrams-net, drawio, process-diagram, swimlane, swimlane-diagram
 
 ## Best fit cue profiles

@@ -2,7 +2,7 @@
 title: "gerrict/ghost-token-hunter — Claude Code skill discovered by cue"
 description: "Token Optimizer 2026: Eliminate Ghost Tokens, Fix Context Decay & Survive Compaction"
 layout: page
-updated: 2026-09-07
+updated: 2026-09-08
 tags: [claude-code, skill, core]
 ---
 
@@ -16,7 +16,7 @@ tags: [claude-code, skill, core]
 
 cue ran [GitHub Code Search](https://docs.github.com/en/search-github/searching-on-github/searching-code) for `filename:SKILL.md` and found this repo. It scored 9 based on:
 - ⭐ 0 stars
-- 🗓️ Last pushed: 2026-09-07
+- 🗓️ Last pushed: 2026-09-08
 - 🏷️ Tags: agentskills, claude-code, claude-code-skill, claude-plugin, context-engineering, context-window, ghost-tokens, token-optimization, token-optimizer, token-usage
 
 ## Best fit cue profiles

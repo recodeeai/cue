@@ -2,21 +2,21 @@
 title: "codingjoe/esupgrade — Claude Code skill discovered by cue"
 description: "Auto-upgrade your JavaScript syntax"
 layout: page
-updated: 2026-07-06
+updated: 2026-09-08
 tags: [claude-code, skill, core]
 ---
 
 # 💎 [codingjoe/esupgrade](https://github.com/codingjoe/esupgrade)
 
-**★ 13** · exceptional (score 9.1) · JavaScript · ai, claude-code-skill, ecmascript, es6, husky
+**★ 13** · exceptional (score 9.2) · JavaScript · ai, claude-code-skill, ecmascript, es6, husky
 
 > Auto-upgrade your JavaScript syntax
 
 ## Why cue indexed it
 
-cue ran [GitHub Code Search](https://docs.github.com/en/search-github/searching-on-github/searching-code) for `filename:SKILL.md` and found this repo. It scored 9.1 based on:
+cue ran [GitHub Code Search](https://docs.github.com/en/search-github/searching-on-github/searching-code) for `filename:SKILL.md` and found this repo. It scored 9.2 based on:
 - ⭐ 13 stars
-- 🗓️ Last pushed: 2026-07-06
+- 🗓️ Last pushed: 2026-09-08
 - 🏷️ Tags: ai, claude-code-skill, ecmascript, es6, husky, javascript, linter, pre-commit, pre-commit-hook, skills, typescript, upgrade-tool
 
 ## Best fit cue profiles

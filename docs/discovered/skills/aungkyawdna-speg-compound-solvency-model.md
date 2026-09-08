@@ -2,7 +2,7 @@
 title: "Aungkyawdna/sPEG-compound-solvency-model — Claude Code skill discovered by cue"
 description: "sPEG Framework 2026: AI-Powered Scarcity-Adjusted Equity Valuation Tool – GitHub"
 layout: page
-updated: 2026-08-31
+updated: 2026-09-08
 tags: [claude-code, skill, core]
 ---
 
@@ -16,7 +16,7 @@ tags: [claude-code, skill, core]
 
 cue ran [GitHub Code Search](https://docs.github.com/en/search-github/searching-on-github/searching-code) for `filename:SKILL.md` and found this repo. It scored 7 based on:
 - ⭐ 0 stars
-- 🗓️ Last pushed: 2026-08-31
+- 🗓️ Last pushed: 2026-09-08
 - 🏷️ Tags: ai-infrastructure, claude, claude-plugin, claude-skill, equity-research, finance, peg-ratio, semiconductors, valuation
 
 ## Best fit cue profiles

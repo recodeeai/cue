@@ -2,7 +2,7 @@
 title: "muchandresh/Vibe-Map — Claude Code skill discovered by cue"
 description: "Vibe Map: Codebase Cartographer for Vibe Coders."
 layout: page
-updated: 2026-09-01
+updated: 2026-09-08
 tags: [claude-code, skill, core]
 ---
 
@@ -17,7 +17,7 @@ tags: [claude-code, skill, core]
 cue ran [GitHub Code Search](https://docs.github.com/en/search-github/searching-on-github/searching-code) for `filename:SKILL.md` and found this repo. It scored 13 based on:
 - ✅ Contains SKILL.md
 - ⭐ 0 stars
-- 🗓️ Last pushed: 2026-09-01
+- 🗓️ Last pushed: 2026-09-08
 - 🏷️ Tags: ai-agents, ai-tools, antigravity-cli, antigravity-extension, antigravity-ide, antigravity-skills, antigravity-tools, claude-code, claude-code-skill, claude-skills, codebase-visualization, codebase-visualizer, cursor, dependency-graph, impact-analysis, vibe-coding, windsurf, windsurf-rules
 
 ## Best fit cue profiles

@@ -2,7 +2,7 @@
 title: "rolling-codes/-the-better-skill-creator-skill- — Claude Code skill discovered by cue"
 description: "A fork of Anthropic's skill-creator that fixes what the original got wrong: scripts Claude couldn't see, thin trigger tests, and a grader with no path to the te"
 layout: page
-updated: 2026-09-07
+updated: 2026-09-08
 tags: [claude-code, skill, core]
 ---
 
@@ -16,7 +16,7 @@ tags: [claude-code, skill, core]
 
 cue ran [GitHub Code Search](https://docs.github.com/en/search-github/searching-on-github/searching-code) for `filename:SKILL.md` and found this repo. It scored 6.5 based on:
 - ⭐ 2 stars
-- 🗓️ Last pushed: 2026-09-05
+- 🗓️ Last pushed: 2026-09-07
 - 🏷️ Tags: claude-code, meta-skill, prompt-engineering, quality-assurance, skill-builder, skills
 
 ## Best fit cue profiles

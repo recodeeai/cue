@@ -2,21 +2,21 @@
 title: "zexuanw958-svg/travel-plan-viz — Claude Code skill discovered by cue"
 description: "Migo · 旅行领航 —— 把旅行行程生成为单文件、可离线、手机优先的 HTML（交互地图+每日时间轴+出发前提醒）。Claude Code / Codex 通用 Skill（travel-plan-viz）。"
 layout: page
-updated: 2026-09-02
+updated: 2026-09-08
 tags: [claude-code, skill, core]
 ---
 
 # 💎 [zexuanw958-svg/travel-plan-viz](https://github.com/zexuanw958-svg/travel-plan-viz)
 
-**★ 359** · exceptional (score 16.7) · JavaScript · agent-skill, claude-code, claude-skill, codex, html
+**★ 365** · exceptional (score 16.7) · JavaScript · agent-skill, claude-code, claude-skill, codex, html
 
 > Migo · 旅行领航 —— 把旅行行程生成为单文件、可离线、手机优先的 HTML（交互地图+每日时间轴+出发前提醒）。Claude Code / Codex 通用 Skill（travel-plan-viz）。
 
 ## Why cue indexed it
 
 cue ran [GitHub Code Search](https://docs.github.com/en/search-github/searching-on-github/searching-code) for `filename:SKILL.md` and found this repo. It scored 16.7 based on:
-- ⭐ 359 stars
-- 🗓️ Last pushed: 2026-09-02
+- ⭐ 365 stars
+- 🗓️ Last pushed: 2026-09-08
 - 🏷️ Tags: agent-skill, claude-code, claude-skill, codex, html, itinerary, migo, mobile-first, offline-first, travel, trip-planner
 
 ## Best fit cue profiles

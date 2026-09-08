@@ -2,7 +2,7 @@
 title: "PepinoRancio1/sticky-switcher-funnel-playbook — Claude Code skill discovered by cue"
 description: "Modern Web Design Playbook 2026 – Niche Tokens, Sticky Switcher & Conversion Funnel"
 layout: page
-updated: 2026-09-06
+updated: 2026-09-08
 tags: [claude-code, skill, marketing, frontend]
 ---
 
@@ -16,7 +16,7 @@ tags: [claude-code, skill, marketing, frontend]
 
 cue ran [GitHub Code Search](https://docs.github.com/en/search-github/searching-on-github/searching-code) for `filename:SKILL.md` and found this repo. It scored 9 based on:
 - ⭐ 0 stars
-- 🗓️ Last pushed: 2026-09-06
+- 🗓️ Last pushed: 2026-09-08
 - 🏷️ Tags: agency-toolkit, ai-coding-agent, claude-code, claude-code-skill, conversion-optimization, cursor, design-system, design-tokens, fiverr, framer-motion, freelance, landing-page, nextjs, playbook, react, react-three-fiber, tailwindcss, upwork, vercel, website-design
 
 ## Best fit cue profiles

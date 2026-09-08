@@ -2,21 +2,21 @@
 title: "triggerdotdev/trigger.dev — Claude Code skill discovered by cue"
 description: "Trigger.dev – build and deploy fully‑managed AI agents and workflows"
 layout: page
-updated: 2026-06-26
+updated: 2026-09-08
 tags: [claude-code, skill, backend]
 ---
 
 # 💎 [triggerdotdev/trigger.dev](https://github.com/triggerdotdev/trigger.dev)
 
-**★ 15478** · exceptional (score 16) · TypeScript · ai, ai-agent-framework, ai-agents, automation, background-jobs
+**★ 16230** · exceptional (score 16) · TypeScript · ai, ai-agent-framework, ai-agents, automation, background-jobs
 
 > Trigger.dev – build and deploy fully‑managed AI agents and workflows
 
 ## Why cue indexed it
 
 cue ran [GitHub Code Search](https://docs.github.com/en/search-github/searching-on-github/searching-code) for `filename:SKILL.md` and found this repo. It scored 16 based on:
-- ⭐ 15478 stars
-- 🗓️ Last pushed: 2026-06-26
+- ⭐ 16230 stars
+- 🗓️ Last pushed: 2026-09-08
 - 🏷️ Tags: ai, ai-agent-framework, ai-agents, automation, background-jobs, mcp, mcp-server, nextjs, orchestration, scheduler, serverless, workflow-automation, workflows
 
 ## Best fit cue profiles

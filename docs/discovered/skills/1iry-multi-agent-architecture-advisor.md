@@ -2,7 +2,7 @@
 title: "1iry/multi-agent-architecture-advisor — Claude Code skill discovered by cue"
 description: "Advanced AI Code Strategy Advisor for Developer Agents (2026)"
 layout: page
-updated: 2026-09-06
+updated: 2026-09-08
 tags: [claude-code, skill, core]
 ---
 
@@ -16,7 +16,7 @@ tags: [claude-code, skill, core]
 
 cue ran [GitHub Code Search](https://docs.github.com/en/search-github/searching-on-github/searching-code) for `filename:SKILL.md` and found this repo. It scored 15.3 based on:
 - ⭐ 115 stars
-- 🗓️ Last pushed: 2026-09-06
+- 🗓️ Last pushed: 2026-09-08
 - 🏷️ Tags: advisor-strategy, ai-coding, anthropic, claude-advisor, claude-code, claude-code-plugin, claude-code-skill, claude-opus, claude-skill, cline, coding-agent, gemini-cli, multi-model, vibe-coding
 
 ## Best fit cue profiles

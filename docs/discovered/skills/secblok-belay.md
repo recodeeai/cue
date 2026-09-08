@@ -2,7 +2,7 @@
 title: "SECBLOK/belay — Claude Code skill discovered by cue"
 description: "Belay is an open-source, local-first security layer for AI coding agents (Claude Code, Codex, Cursor, OpenClaw, Hermes Agent and MCP) that blocks dangerous comm"
 layout: page
-updated: 2026-09-07
+updated: 2026-09-08
 tags: [claude-code, skill, cybersecurity]
 ---
 
@@ -16,7 +16,7 @@ tags: [claude-code, skill, cybersecurity]
 
 cue ran [GitHub Code Search](https://docs.github.com/en/search-github/searching-on-github/searching-code) for `filename:SKILL.md` and found this repo. It scored 5.8 based on:
 - ⭐ 4 stars
-- 🗓️ Last pushed: 2026-09-07
+- 🗓️ Last pushed: 2026-09-08
 - 🏷️ Tags: ai-agents, ai-safety, ai-security, ai-security-tool, claude-code, cybersecurity, devsecops, firewall, llm-security, mcp, model-context-protocol, owasp, prompt-injection, prompt-injection-defense, rust, sast, security, self-hosted, supply-chain-security, vulnerability-scanner
 
 ## Best fit cue profiles

@@ -1,8 +1,8 @@
 ---
 title: "Discovered Claude Code Skills"
-description: "100 community Claude Code skills curated by cue across 9 profiles. Find skills for backend, frontend, marketing, cybersecurity, and more."
+description: "100 community Claude Code skills curated by cue across 12 profiles. Find skills for backend, frontend, marketing, cybersecurity, and more."
 layout: page
-updated: 2026-09-07
+updated: 2026-09-08
 tags: [claude-code, skills, mcp, ai-agents, marketplace]
 ---
 
@@ -10,22 +10,25 @@ tags: [claude-code, skills, mcp, ai-agents, marketplace]
 
 These are community-built skills for Claude Code, Codex, and other AI coding agents, discovered by cue via GitHub Code Search and scored on signal quality (stars, recency, structure). Updated automatically.
 
-> **100 hidden-gem skills** discovered by [cue](https://github.com/opencue/cuecards) across **9 profiles**.
-> Last updated: 2026-09-07 · refreshed nightly via GitHub Code Search.
+> **100 hidden-gem skills** discovered by [cue](https://github.com/opencue/cuecards) across **12 profiles**.
+> Last updated: 2026-09-08 · refreshed nightly via GitHub Code Search.
 
 ## Browse by profile
 
 | Profile | Skills | Sample |
 |---|---|---|
-| [**core**](./core.md) | 67 | `storybloq`, `activepieces`, `trace-mcp` |
-| [**backend**](./backend.md) | 17 | `ruflo`, `vexa`, `notebooklm-skill` |
-| [**research**](./research.md) | 6 | `notebooklm-skill`, `boyue`, `popper-scope` |
-| [**cybersecurity**](./cybersecurity.md) | 5 | `Claude-OSINT`, `claude-security-research-skill`, `sanctuary-framework` |
-| [**frontend**](./frontend.md) | 4 | `google-fonts-skill`, `awesome-claude-ui-armory`, `claude-react-kit` |
-| [**docs-writer**](./docs-writer.md) | 3 | `mneme`, `llm-wiki`, `llm-knowledge-base` |
-| [**fleet-control**](./fleet-control.md) | 2 | `ruflo`, `rolepod` |
+| [**core**](./core.md) | 71 | `storybloq`, `activepieces`, `trace-mcp` |
+| [**backend**](./backend.md) | 12 | `trigger.dev`, `sendmux-sdk`, `systemprompt-core` |
+| [**cybersecurity**](./cybersecurity.md) | 4 | `Claude-OSINT`, `sanctuary-framework`, `rust-intel` |
+| [**creative-media**](./creative-media.md) | 3 | `archify`, `apimage-skills`, `redesigned-pancake` |
+| [**fleet-control**](./fleet-control.md) | 3 | `multi-agent-revenue-orchestrator`, `council`, `rolepod` |
+| [**video**](./video.md) | 2 | `roto`, `nooticr-mcp` |
+| [**frontend**](./frontend.md) | 2 | `awesome-claude-ui-armory`, `sticky-switcher-funnel-playbook` |
+| [**marketing**](./marketing.md) | 2 | `sticky-switcher-funnel-playbook`, `claude-outreach` |
+| [**research**](./research.md) | 2 | `awesome-research-skills`, `skillassay` |
+| [**rust**](./rust.md) | 1 | `systemprompt-core` |
+| [**docs-writer**](./docs-writer.md) | 1 | `mneme` |
 | [**python**](./python.md) | 1 | `alfred` |
-| [**creative-media**](./creative-media.md) | 1 | `redesigned-pancake` |
 
 ## How scoring works
 

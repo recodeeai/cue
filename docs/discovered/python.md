@@ -2,7 +2,7 @@
 title: "Claude Code Skills for python"
 description: "1 community Claude Code skills curated by cue for the python profile. Hidden-gem repos with SKILL.md, MCP servers, and CLI integrations."
 layout: page
-updated: 2026-09-07
+updated: 2026-09-08
 tags: [claude-code, python, skills, mcp, ai-agents]
 ---
 

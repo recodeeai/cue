@@ -2,7 +2,7 @@
 title: "HunLuanZhiZhu/ZCode-Game-Studios — Claude Code skill discovered by cue"
 description: "Turn ZCode into a full AI game dev studio - 49 specialized agents, 73 workflow skills, path-scoped coding standards, and an optional hooks plugin for commit val"
 layout: page
-updated: 2026-09-07
+updated: 2026-09-08
 tags: [claude-code, skill, core]
 ---
 

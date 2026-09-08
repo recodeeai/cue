@@ -1,8 +1,8 @@
 ---
 title: "YuanpingSong/embassy — Claude Code skill discovered by cue"
-description: " Local, single-user message gateway between Claude Code sessions and Codex desktop tasks — bidirectional, consent-first pairing, bounded delivery with receipts,"
+description: "Claude Code sessions and Codex CLI agents message one another by name, on one Mac or across your Macs over SSH. Native wake, receipts for every delivery."
 layout: page
-updated: 2026-09-06
+updated: 2026-09-08
 tags: [claude-code, skill, core]
 ---
 
@@ -10,13 +10,13 @@ tags: [claude-code, skill, core]
 
 **★ 4** · exceptional (score 9.3) · TypeScript · agent-collaboration, ai-agent, anthropic-claude, claude-ai, claude-code-skill
 
->  Local, single-user message gateway between Claude Code sessions and Codex desktop tasks — bidirectional, consent-first pairing, bounded delivery with receipts, bilingual live dashboard
+> Claude Code sessions and Codex CLI agents message one another by name, on one Mac or across your Macs over SSH. Native wake, receipts for every delivery.
 
 ## Why cue indexed it
 
 cue ran [GitHub Code Search](https://docs.github.com/en/search-github/searching-on-github/searching-code) for `filename:SKILL.md` and found this repo. It scored 9.3 based on:
 - ⭐ 4 stars
-- 🗓️ Last pushed: 2026-09-06
+- 🗓️ Last pushed: 2026-09-08
 - 🏷️ Tags: agent-collaboration, ai-agent, anthropic-claude, claude-ai, claude-code-skill, cli-tool, codex-skill, developer-tool, local-first-ai, macosx, message-brokers, multi-agents, openai-codex
 
 ## Best fit cue profiles

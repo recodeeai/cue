@@ -2,7 +2,7 @@
 title: "j0yen/build-skill — Claude Code skill discovered by cue"
 description: "Claude Code skill: continuous PRD implementation loop. Pairs with j0yen/dream-skill."
 layout: page
-updated: 2026-09-06
+updated: 2026-09-08
 tags: [claude-code, skill, core]
 ---
 
@@ -17,7 +17,7 @@ tags: [claude-code, skill, core]
 cue ran [GitHub Code Search](https://docs.github.com/en/search-github/searching-on-github/searching-code) for `filename:SKILL.md` and found this repo. It scored 14.5 based on:
 - ✅ Contains SKILL.md
 - ⭐ 0 stars
-- 🗓️ Last pushed: 2026-09-06
+- 🗓️ Last pushed: 2026-09-08
 - 🏷️ Tags: automation, claude-code, claude-code-skill, codegen, prd
 
 ## Best fit cue profiles

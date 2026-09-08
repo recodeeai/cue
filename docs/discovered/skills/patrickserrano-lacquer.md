@@ -2,7 +2,7 @@
 title: "patrickserrano/lacquer — Claude Code skill discovered by cue"
 description: "Go CLI + profile templates that standardize how Claude Code works across every project"
 layout: page
-updated: 2026-08-28
+updated: 2026-09-08
 tags: [claude-code, skill, core]
 ---
 
@@ -16,7 +16,7 @@ tags: [claude-code, skill, core]
 
 cue ran [GitHub Code Search](https://docs.github.com/en/search-github/searching-on-github/searching-code) for `filename:SKILL.md` and found this repo. It scored 10.7 based on:
 - ⭐ 3 stars
-- 🗓️ Last pushed: 2026-08-28
+- 🗓️ Last pushed: 2026-09-08
 - 🏷️ Tags: antigravity, automation, claude, claude-ai, claude-code, claude-code-plugin, claude-code-skill, claude-plugin, claude-skills, cli, codex, codex-plugin, codex-skill, codex-skills, developer-tools, golang, harness, ios, skill-md, skills
 
 ## Best fit cue profiles

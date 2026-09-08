@@ -2,7 +2,7 @@
 title: "hmennen90/claude-code-win32 — Claude Code skill discovered by cue"
 description: "Claude Code Plugin: hybrid bash→PowerShell transpiler for Windows. POSIX pass-through, targeted PS rewrites, MSYS path translation, per-command deny hints."
 layout: page
-updated: 2026-09-07
+updated: 2026-09-08
 tags: [claude-code, skill, core]
 ---
 

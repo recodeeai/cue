@@ -2,7 +2,7 @@
 title: "sl-builds/sharpen-Claude-Prompt-Refiner — Claude Code skill discovered by cue"
 description: "A Claude skill that rewrites vague prompts into tight specs before any work starts. Locks the target, kills hallucinated facts, forces the shortest correct path"
 layout: page
-updated: 2026-09-07
+updated: 2026-09-08
 tags: [claude-code, skill, core]
 ---
 

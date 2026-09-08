@@ -2,7 +2,7 @@
 title: "opencue/cuecards — Claude Code skill discovered by cue"
 description: "Agent profile manager for Claude Code & Codex. Per-directory profiles select which skills, MCP servers, and plugins load — automatically, before launch. Install"
 layout: page
-updated: 2026-09-07
+updated: 2026-09-08
 tags: [claude-code, skill, core]
 ---
 
@@ -16,7 +16,7 @@ tags: [claude-code, skill, core]
 
 cue ran [GitHub Code Search](https://docs.github.com/en/search-github/searching-on-github/searching-code) for `filename:SKILL.md` and found this repo. It scored 13 based on:
 - ⭐ 5 stars
-- 🗓️ Last pushed: 2026-09-07
+- 🗓️ Last pushed: 2026-09-08
 - 🏷️ Tags: agent-framework, agent-skill, ai-agents, ai-coding, anthropic, claude, claude-cli, claude-code, claude-skill, cli, codex, codex-cli, developer-tools, mcp, mcp-server, mcp-tools, openai, plugins, profile-manager, skills
 
 ## Best fit cue profiles
