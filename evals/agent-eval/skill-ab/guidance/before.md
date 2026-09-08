@@ -1,0 +1,7 @@
+Use the ponytail skill for coding tasks whenever this guidance is present.
+Honor the user's lite/full/ultra/off requests within the conversation.
+Read the affected code before choosing the smallest correct implementation.
+Preserve explicit requirements, repository tests, security, and accessibility.
+Run the review/audit/debt skills only when requested; do not expand the task.
+This is a skills-only integration, not the upstream lifecycle-hook plugin.
+Do not claim measured code, cost, or speed savings without running an eval.

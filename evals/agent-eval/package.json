@@ -7,10 +7,15 @@
   "scripts": {
     "dry": "agent-eval --dry",
     "smoke": "agent-eval --smoke",
-    "eval": "agent-eval"
+    "eval": "agent-eval",
+    "skill:dry": "bun skill-ab/experiment.ts && cd skill-ab && agent-eval run-all --dry --force ponytail-before ponytail-after",
+    "skill:smoke": "bun skill-ab/experiment.ts --require-key && cd skill-ab && agent-eval run-all --smoke --force ponytail-before ponytail-after",
+    "skill:eval": "bun skill-ab/experiment.ts --require-key && cd skill-ab && agent-eval run-all --force ponytail-before ponytail-after",
+    "skill:report": "bun skill-ab/report.ts",
+    "skill:test": "bun test skill-ab/contract.test.ts skill-ab/report.test.ts"
   },
   "devDependencies": {
-    "@vercel/agent-eval": "^1.2.0",
+    "@vercel/agent-eval": "1.2.0",
     "@types/node": "^22.0.0",
     "typescript": "^5.6.0",
     "vitest": "^2.1.0"
