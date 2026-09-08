@@ -54,6 +54,33 @@ describe.skipIf(!database)("workspace PostgreSQL isolation", () => {
     await expect(run("eve", { action: "disconnectRepo", workspaceId: team, repositoryId: randomUUID() })).rejects.toMatchObject({ code: "NOT_FOUND" });
     await expect(service.detail("eve", team)).rejects.toMatchObject({ code: "NOT_FOUND" });
   });
+  test("invitations that expire while acceptance waits for a lock are rejected", async () => {
+    const isolated = (await run("alice", { action: "create", name: "Expiry test" })).id;
+    const invite = await run("alice", { action: "invite", workspaceId: isolated, role: "member" });
+    const locker = await pool.connect();
+    let acceptance: Promise<unknown> | undefined;
+    try {
+      await locker.query("BEGIN");
+      await locker.query("SELECT id FROM cue_workspace WHERE id=$1 FOR UPDATE", [isolated]);
+      const pid = (await locker.query("SELECT pg_backend_pid() AS pid")).rows[0].pid;
+      acceptance = run("bob", { action: "acceptInvite", token: invite.token }).catch(error => error);
+      let waiting = false;
+      for (let attempt = 0; attempt < 100; attempt++) {
+        waiting = (await pool.query("SELECT EXISTS(SELECT 1 FROM pg_stat_activity WHERE $1=ANY(pg_blocking_pids(pid))) AS waiting", [pid])).rows[0].waiting;
+        if (waiting) break;
+        await new Promise(resolve => setTimeout(resolve, 10));
+      }
+      expect(waiting).toBe(true);
+      await locker.query("UPDATE cue_workspace_invite SET expires_at=clock_timestamp() WHERE id=$1", [invite.id]);
+      await locker.query("COMMIT");
+      expect(await acceptance).toMatchObject({ code: "INVITE_UNAVAILABLE" });
+      await expect(service.detail("bob", isolated as string)).rejects.toMatchObject({ code: "NOT_FOUND" });
+    } finally {
+      await locker.query("ROLLBACK");
+      locker.release();
+      await acceptance;
+    }
+  });
   test("expired, revoked and concurrently consumed invitations fail closed", async () => {
     const expired = await run("alice", { action: "invite", workspaceId: team, role: "member" });
     await pool.query("UPDATE cue_workspace_invite SET expires_at=now()-interval '1 second' WHERE id=$1", [expired.id]);
