@@ -6,7 +6,8 @@
  * from the proxy via the hooks in ./api.
  */
 
-import { useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useState, type Dispatch, type SetStateAction } from "react";
+import { LocalInventory } from "./LocalInventory";
 
 import { useStatus, useProfileDetail, useVersion } from "./api";
 import { Explorer } from "./views/Explorer";
@@ -29,6 +30,7 @@ import welcomeStyles from "./views/Welcome.module.css";
 import { isDemoMode } from "../lib/fetcher";
 
 export type View =
+  | "inventory"
   | "welcome" | "explorer" | "dashboard" | "profiles" | "search" | "merge"
   | "workflows" | "mcps" | "plugins" | "market" | "hooks" | "permissions" | "env" | "api" | "settings";
 
@@ -190,9 +192,26 @@ function AccountMenu({
   );
 }
 
-export function StudioApp() {
+export interface StudioAppProps {
+  view?: View;
+  onViewChange?: (view: View) => void;
+}
+
+/** Optional controlled navigation lets the hosted router own the URL. */
+export function StudioApp({ view: controlledView, onViewChange }: StudioAppProps = {}) {
+  const [localView, setLocalView] = useState<View>(() => isDemoMode() ? "welcome" : "inventory");
+  const view = controlledView ?? localView;
+  const setView = useCallback<Dispatch<SetStateAction<View>>>((next) => {
+    const value = typeof next === "function" ? next(view) : next;
+    if (controlledView === undefined) setLocalView(value);
+    onViewChange?.(value);
+  }, [controlledView, onViewChange, view]);
+  if (view === "inventory") return <LocalInventory onAdvanced={() => setView("explorer")} />;
+  return <StudioWorkspace view={view} setView={setView} />;
+}
+
+function StudioWorkspace({ view, setView }: { view: View; setView: Dispatch<SetStateAction<View>> }) {
   const publicMode = isDemoMode();
-  const [view, setView] = useState<View>(() => publicMode ? "welcome" : "explorer");
   const [railOpen, setRailOpen] = useState(false);
   const [pendingOpen, setPendingOpen] = useState<OpenTarget | null>(null);
   // The selected profile selector (e.g. "gstack+core"); null until /status loads.
@@ -231,7 +250,7 @@ export function StudioApp() {
     };
     window.addEventListener("keydown", onKey);
     return () => window.removeEventListener("keydown", onKey);
-  }, []);
+  }, [setView]);
 
   const handleOpen = (kind: OpenTarget["kind"], key: string, highlightCli?: string) => {
     setPendingOpen({ kind, key, ts: Date.now(), highlightCli });
@@ -241,6 +260,7 @@ export function StudioApp() {
   // Top rail mirrors the design's `rail` array. hooks + permissions live in the
   // bottom group (next to settings), not here — see the rail-sp block below.
   const rail: [string, View, string][] = [
+    ...(!publicMode ? [["dashboard", "inventory", "Local inventory"] as [string, View, string]] : []),
     ["profiles", "welcome", "Getting started"],
     ["explorer", "explorer", "Explorer"], ["dashboard", "dashboard", "Dashboard"],
     ["profiles", "profiles", "Profiles"], ["search", "search", "Search"],

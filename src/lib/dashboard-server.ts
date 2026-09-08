@@ -18,6 +18,7 @@ import { homedir } from "node:os";
 import { join, resolve, sep } from "node:path";
 
 import { configDir } from "./config-paths";
+import { collectLocalInventory } from "./local-inventory";
 import { computeStats, computeDailyActivity, sessionDurationSummary } from "./analytics";
 import { discoverInstalledPlugins } from "./plugin-discovery";
 import { listWorkflows, loadWorkflow, saveWorkflow } from "./workflow-store";
@@ -1836,6 +1837,18 @@ function contentTypeFor(path: string): string {
 export function createHandler(): (req: Request) => Promise<Response> {
   return async (req: Request): Promise<Response> => {
     const url = new URL(req.url);
+
+    if (url.pathname === "/api/v1/inventory") {
+      if (req.method !== "GET") return Response.json({ ok: false, error: "method-not-allowed" }, { status: 405, headers: { Allow: "GET" } });
+      const site = req.headers.get("sec-fetch-site");
+      if (site === "cross-site" || site === "same-site") return Response.json({ ok: false, error: "inventory-cross-origin-blocked" }, { status: 403 });
+      if (url.search) return Response.json({ ok: false, error: "inventory-invalid-query" }, { status: 400 });
+      try {
+        return Response.json({ ok: true, data: await collectLocalInventory() }, { headers: { "Cache-Control": "no-store" } });
+      } catch {
+        return Response.json({ ok: false, error: "inventory-unavailable" }, { status: 500 });
+      }
+    }
 
     // Write-side endpoints (POST). Kept on a small, explicit allowlist so
     // the read-only GET surface stays clearly separated. 127.0.0.1 binding
