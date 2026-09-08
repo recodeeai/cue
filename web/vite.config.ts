@@ -14,6 +14,10 @@ export default defineConfig({
     // still hits the dashboard server. Override the auth target with
     // AUTH_TARGET when running on a non-default port.
     proxy: {
+      "/api/v1/workspaces": {
+        target: process.env.AUTH_TARGET ?? "http://127.0.0.1:3000",
+        changeOrigin: true,
+      },
       "/api/auth": {
         target: process.env.AUTH_TARGET ?? "http://127.0.0.1:3000",
         changeOrigin: true,

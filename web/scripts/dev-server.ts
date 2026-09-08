@@ -12,6 +12,8 @@
  * Run:  bun scripts/dev-server.ts
  */
 import { auth } from "../lib/auth.js";
+import { workspaceRequest } from "../api/v1/workspaces.js";
+import { githubWebhook } from "../api/gx-hook.js";
 import { getMe } from "../lib/me.js";
 import { getMarket, publishMarket, type PublishInput } from "../lib/market.js";
 
@@ -22,6 +24,8 @@ const server = Bun.serve({
   async fetch(req) {
     const url = new URL(req.url);
     const { pathname } = url;
+    if (pathname === "/api/v1/workspaces") return workspaceRequest(req);
+    if (pathname === "/api/gx-hook") return githubWebhook(req);
     if (pathname.startsWith("/api/auth")) {
       return auth.handler(req);
     }

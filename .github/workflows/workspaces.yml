@@ -1,0 +1,49 @@
+name: Workspace isolation
+on:
+  pull_request:
+    paths: ["web/**", ".github/workflows/workspaces.yml"]
+  push:
+    branches: [main]
+    paths: ["web/**", ".github/workflows/workspaces.yml"]
+permissions:
+  contents: read
+jobs:
+  workspace-isolation:
+    runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: postgres:17
+        env:
+          POSTGRES_HOST_AUTH_METHOD: trust
+        ports: ["5432:5432"]
+        options: >-
+          --health-cmd pg_isready --health-interval 5s
+          --health-timeout 5s --health-retries 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: 1.3.13
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - run: npm ci --prefix web
+      - run: bun test web/lib/workspaces.test.ts web/lib/workspace-http.test.ts web/lib/gx.test.ts web/vercel-routing.test.ts
+        env:
+          WORKSPACES_TEST_DATABASE_URL: postgresql://postgres@localhost:5432/postgres
+      - run: web/node_modules/.bin/tsc --noEmit --strict --skipLibCheck --moduleResolution bundler --module esnext --target es2022 web/lib/workspaces.ts web/lib/workspace-http.ts web/lib/gx.ts web/api/v1/workspaces.ts web/api/gx-hook.ts
+      - name: Verify real auth migration and two-user HTTP flow
+        env:
+          DATABASE_URL: postgresql://postgres@localhost:5432/postgres
+          BETTER_AUTH_URL: http://localhost:3000
+        run: |
+          export BETTER_AUTH_SECRET="$(openssl rand -hex 32)"
+          (cd web && npm run auth:migrate && npm run workspaces:migrate)
+          bun web/scripts/dev-server.ts > /tmp/cuecards-auth.log 2>&1 &
+          server=$!
+          trap 'kill "$server" 2>/dev/null || true' EXIT
+          for attempt in $(seq 1 30); do
+            if curl -fsS http://localhost:3000/api/auth/ok >/dev/null; then break; fi
+            sleep 1
+          done
+          bun web/scripts/check-workspaces-flow.ts
