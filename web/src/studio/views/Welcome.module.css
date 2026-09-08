@@ -16,6 +16,8 @@
 .publicShell { grid-template-columns: minmax(0, 1fr); width: 100%; }
 .publicShell :global(.titlebar), .publicShell :global(.statusbar) { min-width: 0; }
 .publicShell :global(.mk-grid), .publicShell :global(.mk-featgrid) { grid-template-columns: repeat(auto-fit, minmax(min(340px, 100%), 1fr)); }
+.publicShell :global(.mk-card) a { color: #c4b6ff; text-underline-offset: 3px; }
+.publicShell :is(a, button):focus-visible { outline: 2px solid #c4b6ff; outline-offset: 3px; }
 @media (max-width: 900px) { .steps { grid-template-columns: 1fr; } }
 @media (max-width: 600px) {
   .publicShell :global(.titlebar) { padding: 0 8px; gap: 8px; }
