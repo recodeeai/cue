@@ -10,6 +10,12 @@ test("valid patches trim names, preserve false and leave inputs unchanged", () =
   assert.notEqual(result.value, current);
   assert.deepEqual(patchSettings(current, {}), { ok: true, value: current });
   assert.equal(patchSettings(current, { displayName: "x".repeat(80) }).ok, true);
+  assert.deepEqual(patchSettings(current, { notifications: false }), {
+    ok: true, value: { displayName: "Old", notifications: false, role: "reader" },
+  });
+  assert.deepEqual(patchSettings({ ...current, notifications: false }, { displayName: "  New  " }), {
+    ok: true, value: { displayName: "New", notifications: false, role: "reader" },
+  });
 });
 test("invalid patches are rejected atomically with structured errors", () => {
   const invalid = { ok: false, error: { code: "INVALID_PATCH" } };
