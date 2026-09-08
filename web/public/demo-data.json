@@ -4,37 +4,51 @@
     "data": {
       "profile": {
         "name": "medusa-vite+backend",
-        "description": "Medusa v2 + Vite + TanStack storefront, with backend conventions",
-        "skills": 47,
-        "mcps": 3,
-        "plugins": 1
+        "description": "Demo composite — Medusa storefront and backend workflows.",
+        "skills": 3,
+        "mcps": 1,
+        "plugins": 0,
+        "commands": 0,
+        "subagents": 0,
+        "clis": 0
       },
       "parts": [
         {
           "name": "medusa-vite",
           "description": "Medusa v2 + Vite + TanStack storefront",
-          "skills": 31,
-          "mcps": 2,
-          "plugins": 1
+          "skills": 2,
+          "mcps": 1,
+          "plugins": 0,
+          "commands": 0,
+          "subagents": 0,
+          "clis": 0
         },
         {
           "name": "backend",
-          "description": "Server-side conventions, APIs, deploys",
-          "skills": 22,
+          "description": "APIs, webhooks, security review, CI, deploy",
+          "skills": 2,
           "mcps": 1,
-          "plugins": 0
+          "plugins": 0,
+          "commands": 0,
+          "subagents": 0,
+          "clis": 0
         }
       ],
       "source": "pin-file",
       "warnings": [],
       "gates": {
-        "ts": "2026-05-30T10:14:04.213Z",
+        "ts": "2026-09-08T10:45:29.067Z",
         "overall": "pass",
         "failed": []
       },
-      "totalProfiles": 53,
-      "totalSessions": 128,
-      "telemetryEnabled": true
+      "totalProfiles": 8,
+      "totalSessions": 295,
+      "telemetryEnabled": true,
+      "durations": {
+        "avgS": 720,
+        "totalS": 212400,
+        "ended": 295
+      }
     }
   },
   "/profiles": {
@@ -89,76 +103,22 @@
       "windowDays": 30,
       "rows": [
         {
-          "id": "design/screenshot",
-          "hits": 47,
-          "lastUsed": "2026-05-30T11:14:04.213Z",
+          "id": "core/getting-started",
+          "hits": 30,
+          "lastUsed": "2026-09-08T12:45:29.070Z",
           "zombie": false
         },
         {
-          "id": "design/design-taste-frontend",
+          "id": "medusa-vite/sample-workflow",
           "hits": 31,
-          "lastUsed": "2026-05-30T09:14:04.213Z",
+          "lastUsed": "2026-09-08T12:45:29.070Z",
           "zombie": false
         },
         {
-          "id": "browser/playwright",
-          "hits": 22,
-          "lastUsed": "2026-05-29T12:14:04.213Z",
+          "id": "backend/sample-workflow",
+          "hits": 32,
+          "lastUsed": "2026-09-08T12:45:29.070Z",
           "zombie": false
-        },
-        {
-          "id": "medusa/db-migrate",
-          "hits": 15,
-          "lastUsed": "2026-05-28T12:14:04.213Z",
-          "zombie": false
-        },
-        {
-          "id": "design/image-to-code",
-          "hits": 9,
-          "lastUsed": "2026-05-25T12:14:04.213Z",
-          "zombie": false
-        },
-        {
-          "id": "design/ui-ux-pro-max",
-          "hits": 0,
-          "lastUsed": null,
-          "zombie": true
-        },
-        {
-          "id": "design/minimalist-ui",
-          "hits": 0,
-          "lastUsed": null,
-          "zombie": true
-        },
-        {
-          "id": "medusa/woocommerce-to-medusa-import",
-          "hits": 0,
-          "lastUsed": null,
-          "zombie": true
-        },
-        {
-          "id": "medusa/new-admin-via-api",
-          "hits": 0,
-          "lastUsed": null,
-          "zombie": true
-        },
-        {
-          "id": "medusa/gh-submodule-publish",
-          "hits": 0,
-          "lastUsed": null,
-          "zombie": true
-        },
-        {
-          "id": "medusa/db-generate",
-          "hits": 0,
-          "lastUsed": null,
-          "zombie": true
-        },
-        {
-          "id": "medusa/new-user",
-          "hits": 0,
-          "lastUsed": null,
-          "zombie": true
         }
       ]
     }
@@ -222,7 +182,7 @@
     "ok": true,
     "data": [
       {
-        "ts": "2026-05-30T10:14:04.213Z",
+        "ts": "2026-09-08T10:45:29.067Z",
         "profile": "medusa-vite+backend",
         "overall": "pass",
         "results": [
@@ -247,7 +207,7 @@
         ]
       },
       {
-        "ts": "2026-05-30T06:14:04.213Z",
+        "ts": "2026-09-08T06:45:29.067Z",
         "profile": "skill-writer",
         "overall": "fail",
         "results": [
@@ -266,7 +226,7 @@
         ]
       },
       {
-        "ts": "2026-05-29T12:14:04.213Z",
+        "ts": "2026-09-07T12:45:29.067Z",
         "profile": "designer",
         "overall": "pass",
         "results": [
@@ -333,28 +293,28 @@
           "profile": "medusa-vite+backend",
           "agent": "claude",
           "cwd": "/home/jane/code/lifted-shop",
-          "startedAt": "2026-05-30T12:02:04.213Z"
+          "startedAt": "2026-09-08T12:33:29.067Z"
         },
         {
           "pid": 38540,
           "profile": "medusa-vite+backend",
           "agent": "claude",
           "cwd": "/home/jane/code/brand-2-shop",
-          "startedAt": "2026-05-30T12:06:04.213Z"
+          "startedAt": "2026-09-08T12:37:29.067Z"
         },
         {
           "pid": 41552,
           "profile": "designer",
           "agent": "claude",
           "cwd": "/home/jane/design/landing-v3",
-          "startedAt": "2026-05-30T12:10:04.213Z"
+          "startedAt": "2026-09-08T12:41:29.067Z"
         },
         {
           "pid": 43001,
           "profile": "skill-writer",
           "agent": "claude",
           "cwd": "/home/jane/Documents/cue",
-          "startedAt": "2026-05-30T12:13:34.213Z"
+          "startedAt": "2026-09-08T12:44:59.067Z"
         }
       ]
     }
@@ -363,21 +323,168 @@
     "ok": true,
     "data": {
       "windowDays": 30,
-      "profiles": [
+      "daily": [
         {
-          "profile": "medusa-vite+backend",
-          "sessions": 47,
-          "lastUsed": "2026-05-30T11:14:04.213Z"
+          "date": "2026-08-10",
+          "sessions": 3
         },
         {
-          "profile": "skill-writer",
-          "sessions": 31,
-          "lastUsed": "2026-05-30T08:14:04.213Z"
+          "date": "2026-08-11",
+          "sessions": 0
+        },
+        {
+          "date": "2026-08-12",
+          "sessions": 4
+        },
+        {
+          "date": "2026-08-13",
+          "sessions": 2
+        },
+        {
+          "date": "2026-08-14",
+          "sessions": 5
+        },
+        {
+          "date": "2026-08-15",
+          "sessions": 1
+        },
+        {
+          "date": "2026-08-16",
+          "sessions": 8
+        },
+        {
+          "date": "2026-08-17",
+          "sessions": 3
+        },
+        {
+          "date": "2026-08-18",
+          "sessions": 0
+        },
+        {
+          "date": "2026-08-19",
+          "sessions": 4
+        },
+        {
+          "date": "2026-08-20",
+          "sessions": 2
+        },
+        {
+          "date": "2026-08-21",
+          "sessions": 5
+        },
+        {
+          "date": "2026-08-22",
+          "sessions": 1
+        },
+        {
+          "date": "2026-08-23",
+          "sessions": 8
+        },
+        {
+          "date": "2026-08-24",
+          "sessions": 3
+        },
+        {
+          "date": "2026-08-25",
+          "sessions": 0
+        },
+        {
+          "date": "2026-08-26",
+          "sessions": 4
+        },
+        {
+          "date": "2026-08-27",
+          "sessions": 2
+        },
+        {
+          "date": "2026-08-28",
+          "sessions": 5
+        },
+        {
+          "date": "2026-08-29",
+          "sessions": 1
+        },
+        {
+          "date": "2026-08-30",
+          "sessions": 8
+        },
+        {
+          "date": "2026-08-31",
+          "sessions": 3
+        },
+        {
+          "date": "2026-09-01",
+          "sessions": 0
+        },
+        {
+          "date": "2026-09-02",
+          "sessions": 4
+        },
+        {
+          "date": "2026-09-03",
+          "sessions": 2
+        },
+        {
+          "date": "2026-09-04",
+          "sessions": 5
+        },
+        {
+          "date": "2026-09-05",
+          "sessions": 1
+        },
+        {
+          "date": "2026-09-06",
+          "sessions": 8
+        },
+        {
+          "date": "2026-09-07",
+          "sessions": 3
+        },
+        {
+          "date": "2026-09-08",
+          "sessions": 0
+        }
+      ],
+      "profiles": [
+        {
+          "profile": "medusa-dev",
+          "sessions": 17,
+          "lastUsed": "2026-09-07"
+        },
+        {
+          "profile": "medusa-vite",
+          "sessions": 12,
+          "lastUsed": "2026-08-31"
+        },
+        {
+          "profile": "medusa-next",
+          "sessions": 11,
+          "lastUsed": "2026-08-24"
         },
         {
           "profile": "designer",
-          "sessions": 18,
-          "lastUsed": "2026-05-29T12:14:04.213Z"
+          "sessions": 7,
+          "lastUsed": "2026-09-02"
+        },
+        {
+          "profile": "backend",
+          "sessions": 9,
+          "lastUsed": "2026-09-03"
+        },
+        {
+          "profile": "stripe",
+          "sessions": 11,
+          "lastUsed": "2026-09-04"
+        },
+        {
+          "profile": "marketing",
+          "sessions": 12,
+          "lastUsed": "2026-09-05"
+        },
+        {
+          "profile": "core",
+          "sessions": 16,
+          "lastUsed": "2026-09-06"
         }
       ]
     }
@@ -389,109 +496,141 @@
         "name": "medusa-dev",
         "icon": "🦊",
         "description": "Medusa v2 backend, storefront, admin, migration",
-        "skills": 15,
-        "npx": 2,
-        "mcps": 2,
-        "plugins": 1,
+        "skills": 2,
+        "npx": 0,
+        "mcps": 1,
+        "plugins": 0,
         "bundles": [],
         "conflicts": [],
         "inheritsCore": true,
-        "error": null
+        "error": null,
+        "commands": 0,
+        "subagents": 0,
+        "clis": 0,
+        "iconImage": null
       },
       {
         "name": "medusa-vite",
         "icon": "⚡",
         "description": "Medusa v2 + Vite + TanStack storefront",
-        "skills": 22,
-        "npx": 1,
-        "mcps": 2,
-        "plugins": 1,
+        "skills": 2,
+        "npx": 0,
+        "mcps": 1,
+        "plugins": 0,
         "bundles": [],
         "conflicts": [
           "medusa-next"
         ],
         "inheritsCore": true,
-        "error": null
+        "error": null,
+        "commands": 0,
+        "subagents": 0,
+        "clis": 0,
+        "iconImage": null
       },
       {
         "name": "medusa-next",
         "icon": "▲",
         "description": "Medusa v2 + Next.js storefront",
-        "skills": 21,
-        "npx": 1,
-        "mcps": 2,
-        "plugins": 1,
+        "skills": 2,
+        "npx": 0,
+        "mcps": 1,
+        "plugins": 0,
         "bundles": [],
         "conflicts": [
           "medusa-vite"
         ],
         "inheritsCore": true,
-        "error": null
+        "error": null,
+        "commands": 0,
+        "subagents": 0,
+        "clis": 0,
+        "iconImage": null
       },
       {
         "name": "designer",
         "icon": "🎨",
         "description": "Premium UI/UX design, brand kits, image-to-code",
-        "skills": 18,
-        "npx": 2,
+        "skills": 2,
+        "npx": 0,
         "mcps": 1,
-        "plugins": 2,
+        "plugins": 0,
         "bundles": [],
         "conflicts": [],
         "inheritsCore": true,
-        "error": null
+        "error": null,
+        "commands": 0,
+        "subagents": 0,
+        "clis": 0,
+        "iconImage": null
       },
       {
         "name": "backend",
         "icon": "🐻",
         "description": "APIs, webhooks, security review, CI, deploy",
-        "skills": 14,
+        "skills": 2,
         "npx": 0,
         "mcps": 1,
         "plugins": 0,
         "bundles": [],
         "conflicts": [],
         "inheritsCore": true,
-        "error": null
+        "error": null,
+        "commands": 0,
+        "subagents": 0,
+        "clis": 0,
+        "iconImage": null
       },
       {
         "name": "stripe",
         "icon": "💳",
         "description": "Stripe payments, Checkout, webhooks",
-        "skills": 4,
-        "npx": 1,
-        "mcps": 0,
+        "skills": 2,
+        "npx": 0,
+        "mcps": 1,
         "plugins": 0,
         "bundles": [],
         "conflicts": [],
         "inheritsCore": true,
-        "error": null
+        "error": null,
+        "commands": 0,
+        "subagents": 0,
+        "clis": 0,
+        "iconImage": null
       },
       {
         "name": "marketing",
         "icon": "📣",
         "description": "Copywriting, SEO, CRO, growth, channels",
-        "skills": 12,
+        "skills": 2,
         "npx": 0,
-        "mcps": 0,
+        "mcps": 1,
         "plugins": 0,
         "bundles": [],
         "conflicts": [],
         "inheritsCore": true,
-        "error": null
+        "error": null,
+        "commands": 0,
+        "subagents": 0,
+        "clis": 0,
+        "iconImage": null
       },
       {
         "name": "core",
         "icon": "🐣",
         "description": "Always-on baseline",
-        "skills": 22,
+        "skills": 1,
         "npx": 0,
         "mcps": 1,
-        "plugins": 1,
+        "plugins": 0,
         "bundles": [],
         "conflicts": [],
         "inheritsCore": true,
-        "error": null
+        "error": null,
+        "commands": 0,
+        "subagents": 0,
+        "clis": 0,
+        "iconImage": null
       }
     ]
   },
@@ -528,12 +667,12 @@
           {
             "id": "design/brandkit",
             "references": 31,
-            "lastSeen": "2026-05-30T11:14:04.213Z"
+            "lastSeen": "2026-09-08T11:45:29.067Z"
           },
           {
             "id": "medusa/db-migrate",
             "references": 6,
-            "lastSeen": "2026-05-29T12:14:04.213Z"
+            "lastSeen": "2026-09-07T12:45:29.067Z"
           }
         ],
         "estTokens": 40000,
@@ -546,6 +685,2539 @@
         "static": "name: commerce\nicon: \"🦊\"\ndescription: \"Merged loadout — medusa-dev + designer\"\ninherits: core\nbundles:\n  - medusa-dev\n  - designer\nskills:\n  local:\n    - medusa/medusa-reference\n    - design/brandkit\n",
         "alias": "name: commerce\nicon: \"🦊\"\ndescription: \"Merged loadout — medusa-dev + designer\"\ninherits:\n  - medusa-dev\n  - designer\nbundles:\n  - medusa-dev\n  - designer\n"
       }
+    }
+  },
+  "/profile-detail?profile=medusa-dev": {
+    "ok": true,
+    "data": {
+      "profile": "medusa-dev",
+      "parts": [
+        "medusa-dev"
+      ],
+      "skills": [
+        {
+          "id": "core/getting-started",
+          "ns": "core",
+          "name": "getting-started",
+          "desc": "Demo workflow — sample content only.",
+          "body": "# getting-started\n\nDemo skill for the Studio preview, not an installed skill.\n\n## Workflow\n\n1. Inspect the task.\n2. Make a focused change.\n3. Verify the result.\n",
+          "sizeK": 0.1572265625,
+          "uses": [
+            "context7"
+          ],
+          "missing": false
+        },
+        {
+          "id": "medusa-dev/sample-workflow",
+          "ns": "medusa-dev",
+          "name": "sample-workflow",
+          "desc": "Demo workflow — sample content only.",
+          "body": "# sample-workflow\n\nDemo skill for the Studio preview, not an installed skill.\n\n## Workflow\n\n1. Inspect the task.\n2. Make a focused change.\n3. Verify the result.\n",
+          "sizeK": 0.1572265625,
+          "uses": [
+            "context7"
+          ],
+          "missing": false
+        }
+      ],
+      "mcps": [
+        {
+          "id": "context7",
+          "status": "demo"
+        }
+      ],
+      "plugins": [],
+      "commands": [],
+      "subagents": [],
+      "clis": [],
+      "recommends": [],
+      "playbooks": [
+        {
+          "id": "demo-medusa-dev",
+          "name": "demo-medusa-dev",
+          "title": "Demo verification workflow",
+          "emoji": "🧪",
+          "trigger": "demo",
+          "est": "3 steps",
+          "desc": "Sample workflow; does not execute commands.",
+          "steps": [
+            {
+              "name": "Inspect",
+              "detail": "Demo step — illustration only."
+            },
+            {
+              "name": "Implement",
+              "detail": "Demo step — illustration only."
+            },
+            {
+              "name": "Verify",
+              "detail": "Demo step — illustration only."
+            }
+          ]
+        }
+      ],
+      "counts": {
+        "skills": 2,
+        "mcps": 1,
+        "plugins": 0,
+        "commands": 0,
+        "subagents": 0,
+        "clis": 0
+      }
+    }
+  },
+  "/hooks?profile=medusa-dev": {
+    "ok": true,
+    "data": {
+      "profile": "medusa-dev",
+      "total": 0,
+      "events": []
+    }
+  },
+  "/repos?profile=medusa-dev": {
+    "ok": true,
+    "data": {
+      "profile": "medusa-dev",
+      "repos": []
+    }
+  },
+  "/skill-report?profile=medusa-dev&since=7": {
+    "ok": true,
+    "data": {
+      "profile": "medusa-dev",
+      "windowDays": 7,
+      "rows": [
+        {
+          "id": "core/getting-started",
+          "hits": 7,
+          "lastUsed": "2026-09-08T12:45:29.068Z",
+          "zombie": false
+        },
+        {
+          "id": "medusa-dev/sample-workflow",
+          "hits": 8,
+          "lastUsed": "2026-09-08T12:45:29.068Z",
+          "zombie": false
+        }
+      ]
+    }
+  },
+  "/skill-report?profile=medusa-dev&since=30": {
+    "ok": true,
+    "data": {
+      "profile": "medusa-dev",
+      "windowDays": 30,
+      "rows": [
+        {
+          "id": "core/getting-started",
+          "hits": 30,
+          "lastUsed": "2026-09-08T12:45:29.068Z",
+          "zombie": false
+        },
+        {
+          "id": "medusa-dev/sample-workflow",
+          "hits": 31,
+          "lastUsed": "2026-09-08T12:45:29.068Z",
+          "zombie": false
+        }
+      ]
+    }
+  },
+  "/skill-report?profile=medusa-dev": {
+    "ok": true,
+    "data": {
+      "profile": "medusa-dev",
+      "windowDays": 30,
+      "rows": [
+        {
+          "id": "core/getting-started",
+          "hits": 30,
+          "lastUsed": "2026-09-08T12:45:29.068Z",
+          "zombie": false
+        },
+        {
+          "id": "medusa-dev/sample-workflow",
+          "hits": 31,
+          "lastUsed": "2026-09-08T12:45:29.068Z",
+          "zombie": false
+        }
+      ]
+    }
+  },
+  "/skill-report?profile=medusa-dev&since=90": {
+    "ok": true,
+    "data": {
+      "profile": "medusa-dev",
+      "windowDays": 90,
+      "rows": [
+        {
+          "id": "core/getting-started",
+          "hits": 90,
+          "lastUsed": "2026-09-08T12:45:29.068Z",
+          "zombie": false
+        },
+        {
+          "id": "medusa-dev/sample-workflow",
+          "hits": 91,
+          "lastUsed": "2026-09-08T12:45:29.068Z",
+          "zombie": false
+        }
+      ]
+    }
+  },
+  "/profile-detail?profile=medusa-vite": {
+    "ok": true,
+    "data": {
+      "profile": "medusa-vite",
+      "parts": [
+        "medusa-vite"
+      ],
+      "skills": [
+        {
+          "id": "core/getting-started",
+          "ns": "core",
+          "name": "getting-started",
+          "desc": "Demo workflow — sample content only.",
+          "body": "# getting-started\n\nDemo skill for the Studio preview, not an installed skill.\n\n## Workflow\n\n1. Inspect the task.\n2. Make a focused change.\n3. Verify the result.\n",
+          "sizeK": 0.1572265625,
+          "uses": [
+            "context7"
+          ],
+          "missing": false
+        },
+        {
+          "id": "medusa-vite/sample-workflow",
+          "ns": "medusa-vite",
+          "name": "sample-workflow",
+          "desc": "Demo workflow — sample content only.",
+          "body": "# sample-workflow\n\nDemo skill for the Studio preview, not an installed skill.\n\n## Workflow\n\n1. Inspect the task.\n2. Make a focused change.\n3. Verify the result.\n",
+          "sizeK": 0.1572265625,
+          "uses": [
+            "context7"
+          ],
+          "missing": false
+        }
+      ],
+      "mcps": [
+        {
+          "id": "context7",
+          "status": "demo"
+        }
+      ],
+      "plugins": [],
+      "commands": [],
+      "subagents": [],
+      "clis": [],
+      "recommends": [],
+      "playbooks": [
+        {
+          "id": "demo-medusa-vite",
+          "name": "demo-medusa-vite",
+          "title": "Demo verification workflow",
+          "emoji": "🧪",
+          "trigger": "demo",
+          "est": "3 steps",
+          "desc": "Sample workflow; does not execute commands.",
+          "steps": [
+            {
+              "name": "Inspect",
+              "detail": "Demo step — illustration only."
+            },
+            {
+              "name": "Implement",
+              "detail": "Demo step — illustration only."
+            },
+            {
+              "name": "Verify",
+              "detail": "Demo step — illustration only."
+            }
+          ]
+        }
+      ],
+      "counts": {
+        "skills": 2,
+        "mcps": 1,
+        "plugins": 0,
+        "commands": 0,
+        "subagents": 0,
+        "clis": 0
+      }
+    }
+  },
+  "/hooks?profile=medusa-vite": {
+    "ok": true,
+    "data": {
+      "profile": "medusa-vite",
+      "total": 0,
+      "events": []
+    }
+  },
+  "/repos?profile=medusa-vite": {
+    "ok": true,
+    "data": {
+      "profile": "medusa-vite",
+      "repos": []
+    }
+  },
+  "/skill-report?profile=medusa-vite&since=7": {
+    "ok": true,
+    "data": {
+      "profile": "medusa-vite",
+      "windowDays": 7,
+      "rows": [
+        {
+          "id": "core/getting-started",
+          "hits": 7,
+          "lastUsed": "2026-09-08T12:45:29.068Z",
+          "zombie": false
+        },
+        {
+          "id": "medusa-vite/sample-workflow",
+          "hits": 8,
+          "lastUsed": "2026-09-08T12:45:29.068Z",
+          "zombie": false
+        }
+      ]
+    }
+  },
+  "/skill-report?profile=medusa-vite&since=30": {
+    "ok": true,
+    "data": {
+      "profile": "medusa-vite",
+      "windowDays": 30,
+      "rows": [
+        {
+          "id": "core/getting-started",
+          "hits": 30,
+          "lastUsed": "2026-09-08T12:45:29.068Z",
+          "zombie": false
+        },
+        {
+          "id": "medusa-vite/sample-workflow",
+          "hits": 31,
+          "lastUsed": "2026-09-08T12:45:29.068Z",
+          "zombie": false
+        }
+      ]
+    }
+  },
+  "/skill-report?profile=medusa-vite": {
+    "ok": true,
+    "data": {
+      "profile": "medusa-vite",
+      "windowDays": 30,
+      "rows": [
+        {
+          "id": "core/getting-started",
+          "hits": 30,
+          "lastUsed": "2026-09-08T12:45:29.068Z",
+          "zombie": false
+        },
+        {
+          "id": "medusa-vite/sample-workflow",
+          "hits": 31,
+          "lastUsed": "2026-09-08T12:45:29.068Z",
+          "zombie": false
+        }
+      ]
+    }
+  },
+  "/skill-report?profile=medusa-vite&since=90": {
+    "ok": true,
+    "data": {
+      "profile": "medusa-vite",
+      "windowDays": 90,
+      "rows": [
+        {
+          "id": "core/getting-started",
+          "hits": 90,
+          "lastUsed": "2026-09-08T12:45:29.068Z",
+          "zombie": false
+        },
+        {
+          "id": "medusa-vite/sample-workflow",
+          "hits": 91,
+          "lastUsed": "2026-09-08T12:45:29.068Z",
+          "zombie": false
+        }
+      ]
+    }
+  },
+  "/profile-detail?profile=medusa-next": {
+    "ok": true,
+    "data": {
+      "profile": "medusa-next",
+      "parts": [
+        "medusa-next"
+      ],
+      "skills": [
+        {
+          "id": "core/getting-started",
+          "ns": "core",
+          "name": "getting-started",
+          "desc": "Demo workflow — sample content only.",
+          "body": "# getting-started\n\nDemo skill for the Studio preview, not an installed skill.\n\n## Workflow\n\n1. Inspect the task.\n2. Make a focused change.\n3. Verify the result.\n",
+          "sizeK": 0.1572265625,
+          "uses": [
+            "context7"
+          ],
+          "missing": false
+        },
+        {
+          "id": "medusa-next/sample-workflow",
+          "ns": "medusa-next",
+          "name": "sample-workflow",
+          "desc": "Demo workflow — sample content only.",
+          "body": "# sample-workflow\n\nDemo skill for the Studio preview, not an installed skill.\n\n## Workflow\n\n1. Inspect the task.\n2. Make a focused change.\n3. Verify the result.\n",
+          "sizeK": 0.1572265625,
+          "uses": [
+            "context7"
+          ],
+          "missing": false
+        }
+      ],
+      "mcps": [
+        {
+          "id": "context7",
+          "status": "demo"
+        }
+      ],
+      "plugins": [],
+      "commands": [],
+      "subagents": [],
+      "clis": [],
+      "recommends": [],
+      "playbooks": [
+        {
+          "id": "demo-medusa-next",
+          "name": "demo-medusa-next",
+          "title": "Demo verification workflow",
+          "emoji": "🧪",
+          "trigger": "demo",
+          "est": "3 steps",
+          "desc": "Sample workflow; does not execute commands.",
+          "steps": [
+            {
+              "name": "Inspect",
+              "detail": "Demo step — illustration only."
+            },
+            {
+              "name": "Implement",
+              "detail": "Demo step — illustration only."
+            },
+            {
+              "name": "Verify",
+              "detail": "Demo step — illustration only."
+            }
+          ]
+        }
+      ],
+      "counts": {
+        "skills": 2,
+        "mcps": 1,
+        "plugins": 0,
+        "commands": 0,
+        "subagents": 0,
+        "clis": 0
+      }
+    }
+  },
+  "/hooks?profile=medusa-next": {
+    "ok": true,
+    "data": {
+      "profile": "medusa-next",
+      "total": 0,
+      "events": []
+    }
+  },
+  "/repos?profile=medusa-next": {
+    "ok": true,
+    "data": {
+      "profile": "medusa-next",
+      "repos": []
+    }
+  },
+  "/skill-report?profile=medusa-next&since=7": {
+    "ok": true,
+    "data": {
+      "profile": "medusa-next",
+      "windowDays": 7,
+      "rows": [
+        {
+          "id": "core/getting-started",
+          "hits": 7,
+          "lastUsed": "2026-09-08T12:45:29.068Z",
+          "zombie": false
+        },
+        {
+          "id": "medusa-next/sample-workflow",
+          "hits": 8,
+          "lastUsed": "2026-09-08T12:45:29.068Z",
+          "zombie": false
+        }
+      ]
+    }
+  },
+  "/skill-report?profile=medusa-next&since=30": {
+    "ok": true,
+    "data": {
+      "profile": "medusa-next",
+      "windowDays": 30,
+      "rows": [
+        {
+          "id": "core/getting-started",
+          "hits": 30,
+          "lastUsed": "2026-09-08T12:45:29.068Z",
+          "zombie": false
+        },
+        {
+          "id": "medusa-next/sample-workflow",
+          "hits": 31,
+          "lastUsed": "2026-09-08T12:45:29.068Z",
+          "zombie": false
+        }
+      ]
+    }
+  },
+  "/skill-report?profile=medusa-next": {
+    "ok": true,
+    "data": {
+      "profile": "medusa-next",
+      "windowDays": 30,
+      "rows": [
+        {
+          "id": "core/getting-started",
+          "hits": 30,
+          "lastUsed": "2026-09-08T12:45:29.068Z",
+          "zombie": false
+        },
+        {
+          "id": "medusa-next/sample-workflow",
+          "hits": 31,
+          "lastUsed": "2026-09-08T12:45:29.068Z",
+          "zombie": false
+        }
+      ]
+    }
+  },
+  "/skill-report?profile=medusa-next&since=90": {
+    "ok": true,
+    "data": {
+      "profile": "medusa-next",
+      "windowDays": 90,
+      "rows": [
+        {
+          "id": "core/getting-started",
+          "hits": 90,
+          "lastUsed": "2026-09-08T12:45:29.068Z",
+          "zombie": false
+        },
+        {
+          "id": "medusa-next/sample-workflow",
+          "hits": 91,
+          "lastUsed": "2026-09-08T12:45:29.068Z",
+          "zombie": false
+        }
+      ]
+    }
+  },
+  "/profile-detail?profile=designer": {
+    "ok": true,
+    "data": {
+      "profile": "designer",
+      "parts": [
+        "designer"
+      ],
+      "skills": [
+        {
+          "id": "core/getting-started",
+          "ns": "core",
+          "name": "getting-started",
+          "desc": "Demo workflow — sample content only.",
+          "body": "# getting-started\n\nDemo skill for the Studio preview, not an installed skill.\n\n## Workflow\n\n1. Inspect the task.\n2. Make a focused change.\n3. Verify the result.\n",
+          "sizeK": 0.1572265625,
+          "uses": [
+            "context7"
+          ],
+          "missing": false
+        },
+        {
+          "id": "designer/sample-workflow",
+          "ns": "designer",
+          "name": "sample-workflow",
+          "desc": "Demo workflow — sample content only.",
+          "body": "# sample-workflow\n\nDemo skill for the Studio preview, not an installed skill.\n\n## Workflow\n\n1. Inspect the task.\n2. Make a focused change.\n3. Verify the result.\n",
+          "sizeK": 0.1572265625,
+          "uses": [
+            "context7"
+          ],
+          "missing": false
+        }
+      ],
+      "mcps": [
+        {
+          "id": "context7",
+          "status": "demo"
+        }
+      ],
+      "plugins": [],
+      "commands": [],
+      "subagents": [],
+      "clis": [],
+      "recommends": [],
+      "playbooks": [
+        {
+          "id": "demo-designer",
+          "name": "demo-designer",
+          "title": "Demo verification workflow",
+          "emoji": "🧪",
+          "trigger": "demo",
+          "est": "3 steps",
+          "desc": "Sample workflow; does not execute commands.",
+          "steps": [
+            {
+              "name": "Inspect",
+              "detail": "Demo step — illustration only."
+            },
+            {
+              "name": "Implement",
+              "detail": "Demo step — illustration only."
+            },
+            {
+              "name": "Verify",
+              "detail": "Demo step — illustration only."
+            }
+          ]
+        }
+      ],
+      "counts": {
+        "skills": 2,
+        "mcps": 1,
+        "plugins": 0,
+        "commands": 0,
+        "subagents": 0,
+        "clis": 0
+      }
+    }
+  },
+  "/hooks?profile=designer": {
+    "ok": true,
+    "data": {
+      "profile": "designer",
+      "total": 0,
+      "events": []
+    }
+  },
+  "/repos?profile=designer": {
+    "ok": true,
+    "data": {
+      "profile": "designer",
+      "repos": []
+    }
+  },
+  "/skill-report?profile=designer&since=7": {
+    "ok": true,
+    "data": {
+      "profile": "designer",
+      "windowDays": 7,
+      "rows": [
+        {
+          "id": "core/getting-started",
+          "hits": 7,
+          "lastUsed": "2026-09-08T12:45:29.068Z",
+          "zombie": false
+        },
+        {
+          "id": "designer/sample-workflow",
+          "hits": 8,
+          "lastUsed": "2026-09-08T12:45:29.068Z",
+          "zombie": false
+        }
+      ]
+    }
+  },
+  "/skill-report?profile=designer&since=30": {
+    "ok": true,
+    "data": {
+      "profile": "designer",
+      "windowDays": 30,
+      "rows": [
+        {
+          "id": "core/getting-started",
+          "hits": 30,
+          "lastUsed": "2026-09-08T12:45:29.068Z",
+          "zombie": false
+        },
+        {
+          "id": "designer/sample-workflow",
+          "hits": 31,
+          "lastUsed": "2026-09-08T12:45:29.068Z",
+          "zombie": false
+        }
+      ]
+    }
+  },
+  "/skill-report?profile=designer": {
+    "ok": true,
+    "data": {
+      "profile": "designer",
+      "windowDays": 30,
+      "rows": [
+        {
+          "id": "core/getting-started",
+          "hits": 30,
+          "lastUsed": "2026-09-08T12:45:29.068Z",
+          "zombie": false
+        },
+        {
+          "id": "designer/sample-workflow",
+          "hits": 31,
+          "lastUsed": "2026-09-08T12:45:29.068Z",
+          "zombie": false
+        }
+      ]
+    }
+  },
+  "/skill-report?profile=designer&since=90": {
+    "ok": true,
+    "data": {
+      "profile": "designer",
+      "windowDays": 90,
+      "rows": [
+        {
+          "id": "core/getting-started",
+          "hits": 90,
+          "lastUsed": "2026-09-08T12:45:29.068Z",
+          "zombie": false
+        },
+        {
+          "id": "designer/sample-workflow",
+          "hits": 91,
+          "lastUsed": "2026-09-08T12:45:29.068Z",
+          "zombie": false
+        }
+      ]
+    }
+  },
+  "/profile-detail?profile=backend": {
+    "ok": true,
+    "data": {
+      "profile": "backend",
+      "parts": [
+        "backend"
+      ],
+      "skills": [
+        {
+          "id": "core/getting-started",
+          "ns": "core",
+          "name": "getting-started",
+          "desc": "Demo workflow — sample content only.",
+          "body": "# getting-started\n\nDemo skill for the Studio preview, not an installed skill.\n\n## Workflow\n\n1. Inspect the task.\n2. Make a focused change.\n3. Verify the result.\n",
+          "sizeK": 0.1572265625,
+          "uses": [
+            "context7"
+          ],
+          "missing": false
+        },
+        {
+          "id": "backend/sample-workflow",
+          "ns": "backend",
+          "name": "sample-workflow",
+          "desc": "Demo workflow — sample content only.",
+          "body": "# sample-workflow\n\nDemo skill for the Studio preview, not an installed skill.\n\n## Workflow\n\n1. Inspect the task.\n2. Make a focused change.\n3. Verify the result.\n",
+          "sizeK": 0.1572265625,
+          "uses": [
+            "context7"
+          ],
+          "missing": false
+        }
+      ],
+      "mcps": [
+        {
+          "id": "context7",
+          "status": "demo"
+        }
+      ],
+      "plugins": [],
+      "commands": [],
+      "subagents": [],
+      "clis": [],
+      "recommends": [],
+      "playbooks": [
+        {
+          "id": "demo-backend",
+          "name": "demo-backend",
+          "title": "Demo verification workflow",
+          "emoji": "🧪",
+          "trigger": "demo",
+          "est": "3 steps",
+          "desc": "Sample workflow; does not execute commands.",
+          "steps": [
+            {
+              "name": "Inspect",
+              "detail": "Demo step — illustration only."
+            },
+            {
+              "name": "Implement",
+              "detail": "Demo step — illustration only."
+            },
+            {
+              "name": "Verify",
+              "detail": "Demo step — illustration only."
+            }
+          ]
+        }
+      ],
+      "counts": {
+        "skills": 2,
+        "mcps": 1,
+        "plugins": 0,
+        "commands": 0,
+        "subagents": 0,
+        "clis": 0
+      }
+    }
+  },
+  "/hooks?profile=backend": {
+    "ok": true,
+    "data": {
+      "profile": "backend",
+      "total": 0,
+      "events": []
+    }
+  },
+  "/repos?profile=backend": {
+    "ok": true,
+    "data": {
+      "profile": "backend",
+      "repos": []
+    }
+  },
+  "/skill-report?profile=backend&since=7": {
+    "ok": true,
+    "data": {
+      "profile": "backend",
+      "windowDays": 7,
+      "rows": [
+        {
+          "id": "core/getting-started",
+          "hits": 7,
+          "lastUsed": "2026-09-08T12:45:29.069Z",
+          "zombie": false
+        },
+        {
+          "id": "backend/sample-workflow",
+          "hits": 8,
+          "lastUsed": "2026-09-08T12:45:29.069Z",
+          "zombie": false
+        }
+      ]
+    }
+  },
+  "/skill-report?profile=backend&since=30": {
+    "ok": true,
+    "data": {
+      "profile": "backend",
+      "windowDays": 30,
+      "rows": [
+        {
+          "id": "core/getting-started",
+          "hits": 30,
+          "lastUsed": "2026-09-08T12:45:29.069Z",
+          "zombie": false
+        },
+        {
+          "id": "backend/sample-workflow",
+          "hits": 31,
+          "lastUsed": "2026-09-08T12:45:29.069Z",
+          "zombie": false
+        }
+      ]
+    }
+  },
+  "/skill-report?profile=backend": {
+    "ok": true,
+    "data": {
+      "profile": "backend",
+      "windowDays": 30,
+      "rows": [
+        {
+          "id": "core/getting-started",
+          "hits": 30,
+          "lastUsed": "2026-09-08T12:45:29.069Z",
+          "zombie": false
+        },
+        {
+          "id": "backend/sample-workflow",
+          "hits": 31,
+          "lastUsed": "2026-09-08T12:45:29.069Z",
+          "zombie": false
+        }
+      ]
+    }
+  },
+  "/skill-report?profile=backend&since=90": {
+    "ok": true,
+    "data": {
+      "profile": "backend",
+      "windowDays": 90,
+      "rows": [
+        {
+          "id": "core/getting-started",
+          "hits": 90,
+          "lastUsed": "2026-09-08T12:45:29.069Z",
+          "zombie": false
+        },
+        {
+          "id": "backend/sample-workflow",
+          "hits": 91,
+          "lastUsed": "2026-09-08T12:45:29.069Z",
+          "zombie": false
+        }
+      ]
+    }
+  },
+  "/profile-detail?profile=stripe": {
+    "ok": true,
+    "data": {
+      "profile": "stripe",
+      "parts": [
+        "stripe"
+      ],
+      "skills": [
+        {
+          "id": "core/getting-started",
+          "ns": "core",
+          "name": "getting-started",
+          "desc": "Demo workflow — sample content only.",
+          "body": "# getting-started\n\nDemo skill for the Studio preview, not an installed skill.\n\n## Workflow\n\n1. Inspect the task.\n2. Make a focused change.\n3. Verify the result.\n",
+          "sizeK": 0.1572265625,
+          "uses": [
+            "context7"
+          ],
+          "missing": false
+        },
+        {
+          "id": "stripe/sample-workflow",
+          "ns": "stripe",
+          "name": "sample-workflow",
+          "desc": "Demo workflow — sample content only.",
+          "body": "# sample-workflow\n\nDemo skill for the Studio preview, not an installed skill.\n\n## Workflow\n\n1. Inspect the task.\n2. Make a focused change.\n3. Verify the result.\n",
+          "sizeK": 0.1572265625,
+          "uses": [
+            "context7"
+          ],
+          "missing": false
+        }
+      ],
+      "mcps": [
+        {
+          "id": "context7",
+          "status": "demo"
+        }
+      ],
+      "plugins": [],
+      "commands": [],
+      "subagents": [],
+      "clis": [],
+      "recommends": [],
+      "playbooks": [
+        {
+          "id": "demo-stripe",
+          "name": "demo-stripe",
+          "title": "Demo verification workflow",
+          "emoji": "🧪",
+          "trigger": "demo",
+          "est": "3 steps",
+          "desc": "Sample workflow; does not execute commands.",
+          "steps": [
+            {
+              "name": "Inspect",
+              "detail": "Demo step — illustration only."
+            },
+            {
+              "name": "Implement",
+              "detail": "Demo step — illustration only."
+            },
+            {
+              "name": "Verify",
+              "detail": "Demo step — illustration only."
+            }
+          ]
+        }
+      ],
+      "counts": {
+        "skills": 2,
+        "mcps": 1,
+        "plugins": 0,
+        "commands": 0,
+        "subagents": 0,
+        "clis": 0
+      }
+    }
+  },
+  "/hooks?profile=stripe": {
+    "ok": true,
+    "data": {
+      "profile": "stripe",
+      "total": 0,
+      "events": []
+    }
+  },
+  "/repos?profile=stripe": {
+    "ok": true,
+    "data": {
+      "profile": "stripe",
+      "repos": []
+    }
+  },
+  "/skill-report?profile=stripe&since=7": {
+    "ok": true,
+    "data": {
+      "profile": "stripe",
+      "windowDays": 7,
+      "rows": [
+        {
+          "id": "core/getting-started",
+          "hits": 7,
+          "lastUsed": "2026-09-08T12:45:29.069Z",
+          "zombie": false
+        },
+        {
+          "id": "stripe/sample-workflow",
+          "hits": 8,
+          "lastUsed": "2026-09-08T12:45:29.069Z",
+          "zombie": false
+        }
+      ]
+    }
+  },
+  "/skill-report?profile=stripe&since=30": {
+    "ok": true,
+    "data": {
+      "profile": "stripe",
+      "windowDays": 30,
+      "rows": [
+        {
+          "id": "core/getting-started",
+          "hits": 30,
+          "lastUsed": "2026-09-08T12:45:29.069Z",
+          "zombie": false
+        },
+        {
+          "id": "stripe/sample-workflow",
+          "hits": 31,
+          "lastUsed": "2026-09-08T12:45:29.069Z",
+          "zombie": false
+        }
+      ]
+    }
+  },
+  "/skill-report?profile=stripe": {
+    "ok": true,
+    "data": {
+      "profile": "stripe",
+      "windowDays": 30,
+      "rows": [
+        {
+          "id": "core/getting-started",
+          "hits": 30,
+          "lastUsed": "2026-09-08T12:45:29.069Z",
+          "zombie": false
+        },
+        {
+          "id": "stripe/sample-workflow",
+          "hits": 31,
+          "lastUsed": "2026-09-08T12:45:29.069Z",
+          "zombie": false
+        }
+      ]
+    }
+  },
+  "/skill-report?profile=stripe&since=90": {
+    "ok": true,
+    "data": {
+      "profile": "stripe",
+      "windowDays": 90,
+      "rows": [
+        {
+          "id": "core/getting-started",
+          "hits": 90,
+          "lastUsed": "2026-09-08T12:45:29.069Z",
+          "zombie": false
+        },
+        {
+          "id": "stripe/sample-workflow",
+          "hits": 91,
+          "lastUsed": "2026-09-08T12:45:29.069Z",
+          "zombie": false
+        }
+      ]
+    }
+  },
+  "/profile-detail?profile=marketing": {
+    "ok": true,
+    "data": {
+      "profile": "marketing",
+      "parts": [
+        "marketing"
+      ],
+      "skills": [
+        {
+          "id": "core/getting-started",
+          "ns": "core",
+          "name": "getting-started",
+          "desc": "Demo workflow — sample content only.",
+          "body": "# getting-started\n\nDemo skill for the Studio preview, not an installed skill.\n\n## Workflow\n\n1. Inspect the task.\n2. Make a focused change.\n3. Verify the result.\n",
+          "sizeK": 0.1572265625,
+          "uses": [
+            "context7"
+          ],
+          "missing": false
+        },
+        {
+          "id": "marketing/sample-workflow",
+          "ns": "marketing",
+          "name": "sample-workflow",
+          "desc": "Demo workflow — sample content only.",
+          "body": "# sample-workflow\n\nDemo skill for the Studio preview, not an installed skill.\n\n## Workflow\n\n1. Inspect the task.\n2. Make a focused change.\n3. Verify the result.\n",
+          "sizeK": 0.1572265625,
+          "uses": [
+            "context7"
+          ],
+          "missing": false
+        }
+      ],
+      "mcps": [
+        {
+          "id": "context7",
+          "status": "demo"
+        }
+      ],
+      "plugins": [],
+      "commands": [],
+      "subagents": [],
+      "clis": [],
+      "recommends": [],
+      "playbooks": [
+        {
+          "id": "demo-marketing",
+          "name": "demo-marketing",
+          "title": "Demo verification workflow",
+          "emoji": "🧪",
+          "trigger": "demo",
+          "est": "3 steps",
+          "desc": "Sample workflow; does not execute commands.",
+          "steps": [
+            {
+              "name": "Inspect",
+              "detail": "Demo step — illustration only."
+            },
+            {
+              "name": "Implement",
+              "detail": "Demo step — illustration only."
+            },
+            {
+              "name": "Verify",
+              "detail": "Demo step — illustration only."
+            }
+          ]
+        }
+      ],
+      "counts": {
+        "skills": 2,
+        "mcps": 1,
+        "plugins": 0,
+        "commands": 0,
+        "subagents": 0,
+        "clis": 0
+      }
+    }
+  },
+  "/hooks?profile=marketing": {
+    "ok": true,
+    "data": {
+      "profile": "marketing",
+      "total": 0,
+      "events": []
+    }
+  },
+  "/repos?profile=marketing": {
+    "ok": true,
+    "data": {
+      "profile": "marketing",
+      "repos": []
+    }
+  },
+  "/skill-report?profile=marketing&since=7": {
+    "ok": true,
+    "data": {
+      "profile": "marketing",
+      "windowDays": 7,
+      "rows": [
+        {
+          "id": "core/getting-started",
+          "hits": 7,
+          "lastUsed": "2026-09-08T12:45:29.069Z",
+          "zombie": false
+        },
+        {
+          "id": "marketing/sample-workflow",
+          "hits": 8,
+          "lastUsed": "2026-09-08T12:45:29.069Z",
+          "zombie": false
+        }
+      ]
+    }
+  },
+  "/skill-report?profile=marketing&since=30": {
+    "ok": true,
+    "data": {
+      "profile": "marketing",
+      "windowDays": 30,
+      "rows": [
+        {
+          "id": "core/getting-started",
+          "hits": 30,
+          "lastUsed": "2026-09-08T12:45:29.069Z",
+          "zombie": false
+        },
+        {
+          "id": "marketing/sample-workflow",
+          "hits": 31,
+          "lastUsed": "2026-09-08T12:45:29.069Z",
+          "zombie": false
+        }
+      ]
+    }
+  },
+  "/skill-report?profile=marketing": {
+    "ok": true,
+    "data": {
+      "profile": "marketing",
+      "windowDays": 30,
+      "rows": [
+        {
+          "id": "core/getting-started",
+          "hits": 30,
+          "lastUsed": "2026-09-08T12:45:29.069Z",
+          "zombie": false
+        },
+        {
+          "id": "marketing/sample-workflow",
+          "hits": 31,
+          "lastUsed": "2026-09-08T12:45:29.069Z",
+          "zombie": false
+        }
+      ]
+    }
+  },
+  "/skill-report?profile=marketing&since=90": {
+    "ok": true,
+    "data": {
+      "profile": "marketing",
+      "windowDays": 90,
+      "rows": [
+        {
+          "id": "core/getting-started",
+          "hits": 90,
+          "lastUsed": "2026-09-08T12:45:29.069Z",
+          "zombie": false
+        },
+        {
+          "id": "marketing/sample-workflow",
+          "hits": 91,
+          "lastUsed": "2026-09-08T12:45:29.069Z",
+          "zombie": false
+        }
+      ]
+    }
+  },
+  "/profile-detail?profile=core": {
+    "ok": true,
+    "data": {
+      "profile": "core",
+      "parts": [
+        "core"
+      ],
+      "skills": [
+        {
+          "id": "core/getting-started",
+          "ns": "core",
+          "name": "getting-started",
+          "desc": "Demo workflow — sample content only.",
+          "body": "# getting-started\n\nDemo skill for the Studio preview, not an installed skill.\n\n## Workflow\n\n1. Inspect the task.\n2. Make a focused change.\n3. Verify the result.\n",
+          "sizeK": 0.1572265625,
+          "uses": [
+            "context7"
+          ],
+          "missing": false
+        }
+      ],
+      "mcps": [
+        {
+          "id": "context7",
+          "status": "demo"
+        }
+      ],
+      "plugins": [],
+      "commands": [],
+      "subagents": [],
+      "clis": [],
+      "recommends": [],
+      "playbooks": [
+        {
+          "id": "demo-core",
+          "name": "demo-core",
+          "title": "Demo verification workflow",
+          "emoji": "🧪",
+          "trigger": "demo",
+          "est": "3 steps",
+          "desc": "Sample workflow; does not execute commands.",
+          "steps": [
+            {
+              "name": "Inspect",
+              "detail": "Demo step — illustration only."
+            },
+            {
+              "name": "Implement",
+              "detail": "Demo step — illustration only."
+            },
+            {
+              "name": "Verify",
+              "detail": "Demo step — illustration only."
+            }
+          ]
+        }
+      ],
+      "counts": {
+        "skills": 1,
+        "mcps": 1,
+        "plugins": 0,
+        "commands": 0,
+        "subagents": 0,
+        "clis": 0
+      }
+    }
+  },
+  "/hooks?profile=core": {
+    "ok": true,
+    "data": {
+      "profile": "core",
+      "total": 0,
+      "events": []
+    }
+  },
+  "/repos?profile=core": {
+    "ok": true,
+    "data": {
+      "profile": "core",
+      "repos": []
+    }
+  },
+  "/skill-report?profile=core&since=7": {
+    "ok": true,
+    "data": {
+      "profile": "core",
+      "windowDays": 7,
+      "rows": [
+        {
+          "id": "core/getting-started",
+          "hits": 7,
+          "lastUsed": "2026-09-08T12:45:29.069Z",
+          "zombie": false
+        }
+      ]
+    }
+  },
+  "/skill-report?profile=core&since=30": {
+    "ok": true,
+    "data": {
+      "profile": "core",
+      "windowDays": 30,
+      "rows": [
+        {
+          "id": "core/getting-started",
+          "hits": 30,
+          "lastUsed": "2026-09-08T12:45:29.069Z",
+          "zombie": false
+        }
+      ]
+    }
+  },
+  "/skill-report?profile=core": {
+    "ok": true,
+    "data": {
+      "profile": "core",
+      "windowDays": 30,
+      "rows": [
+        {
+          "id": "core/getting-started",
+          "hits": 30,
+          "lastUsed": "2026-09-08T12:45:29.069Z",
+          "zombie": false
+        }
+      ]
+    }
+  },
+  "/skill-report?profile=core&since=90": {
+    "ok": true,
+    "data": {
+      "profile": "core",
+      "windowDays": 90,
+      "rows": [
+        {
+          "id": "core/getting-started",
+          "hits": 90,
+          "lastUsed": "2026-09-08T12:45:29.069Z",
+          "zombie": false
+        }
+      ]
+    }
+  },
+  "/profile-detail?profile=medusa-vite%2Bbackend": {
+    "ok": true,
+    "data": {
+      "profile": "medusa-vite+backend",
+      "parts": [
+        "medusa-vite",
+        "backend"
+      ],
+      "skills": [
+        {
+          "id": "core/getting-started",
+          "ns": "core",
+          "name": "getting-started",
+          "desc": "Demo workflow — sample content only.",
+          "body": "# getting-started\n\nDemo skill for the Studio preview, not an installed skill.\n\n## Workflow\n\n1. Inspect the task.\n2. Make a focused change.\n3. Verify the result.\n",
+          "sizeK": 0.1572265625,
+          "uses": [
+            "context7"
+          ],
+          "missing": false
+        },
+        {
+          "id": "medusa-vite/sample-workflow",
+          "ns": "medusa-vite",
+          "name": "sample-workflow",
+          "desc": "Demo workflow — sample content only.",
+          "body": "# sample-workflow\n\nDemo skill for the Studio preview, not an installed skill.\n\n## Workflow\n\n1. Inspect the task.\n2. Make a focused change.\n3. Verify the result.\n",
+          "sizeK": 0.1572265625,
+          "uses": [
+            "context7"
+          ],
+          "missing": false
+        },
+        {
+          "id": "backend/sample-workflow",
+          "ns": "backend",
+          "name": "sample-workflow",
+          "desc": "Demo workflow — sample content only.",
+          "body": "# sample-workflow\n\nDemo skill for the Studio preview, not an installed skill.\n\n## Workflow\n\n1. Inspect the task.\n2. Make a focused change.\n3. Verify the result.\n",
+          "sizeK": 0.1572265625,
+          "uses": [
+            "context7"
+          ],
+          "missing": false
+        }
+      ],
+      "mcps": [
+        {
+          "id": "context7",
+          "status": "demo"
+        }
+      ],
+      "plugins": [],
+      "commands": [],
+      "subagents": [],
+      "clis": [],
+      "recommends": [],
+      "playbooks": [
+        {
+          "id": "demo-medusa-vite",
+          "name": "demo-medusa-vite",
+          "title": "Demo verification workflow",
+          "emoji": "🧪",
+          "trigger": "demo",
+          "est": "3 steps",
+          "desc": "Sample workflow; does not execute commands.",
+          "steps": [
+            {
+              "name": "Inspect",
+              "detail": "Demo step — illustration only."
+            },
+            {
+              "name": "Implement",
+              "detail": "Demo step — illustration only."
+            },
+            {
+              "name": "Verify",
+              "detail": "Demo step — illustration only."
+            }
+          ]
+        }
+      ],
+      "counts": {
+        "skills": 3,
+        "mcps": 1,
+        "plugins": 0,
+        "commands": 0,
+        "subagents": 0,
+        "clis": 0
+      }
+    }
+  },
+  "/hooks?profile=medusa-vite%2Bbackend": {
+    "ok": true,
+    "data": {
+      "profile": "medusa-vite+backend",
+      "total": 0,
+      "events": []
+    }
+  },
+  "/repos?profile=medusa-vite%2Bbackend": {
+    "ok": true,
+    "data": {
+      "profile": "medusa-vite+backend",
+      "repos": []
+    }
+  },
+  "/skill-report?profile=medusa-vite%2Bbackend&since=7": {
+    "ok": true,
+    "data": {
+      "profile": "medusa-vite+backend",
+      "windowDays": 7,
+      "rows": [
+        {
+          "id": "core/getting-started",
+          "hits": 7,
+          "lastUsed": "2026-09-08T12:45:29.069Z",
+          "zombie": false
+        },
+        {
+          "id": "medusa-vite/sample-workflow",
+          "hits": 8,
+          "lastUsed": "2026-09-08T12:45:29.069Z",
+          "zombie": false
+        },
+        {
+          "id": "backend/sample-workflow",
+          "hits": 9,
+          "lastUsed": "2026-09-08T12:45:29.069Z",
+          "zombie": false
+        }
+      ]
+    }
+  },
+  "/skill-report?profile=medusa-vite%2Bbackend&since=30": {
+    "ok": true,
+    "data": {
+      "profile": "medusa-vite+backend",
+      "windowDays": 30,
+      "rows": [
+        {
+          "id": "core/getting-started",
+          "hits": 30,
+          "lastUsed": "2026-09-08T12:45:29.069Z",
+          "zombie": false
+        },
+        {
+          "id": "medusa-vite/sample-workflow",
+          "hits": 31,
+          "lastUsed": "2026-09-08T12:45:29.069Z",
+          "zombie": false
+        },
+        {
+          "id": "backend/sample-workflow",
+          "hits": 32,
+          "lastUsed": "2026-09-08T12:45:29.069Z",
+          "zombie": false
+        }
+      ]
+    }
+  },
+  "/skill-report?profile=medusa-vite%2Bbackend": {
+    "ok": true,
+    "data": {
+      "profile": "medusa-vite+backend",
+      "windowDays": 30,
+      "rows": [
+        {
+          "id": "core/getting-started",
+          "hits": 30,
+          "lastUsed": "2026-09-08T12:45:29.069Z",
+          "zombie": false
+        },
+        {
+          "id": "medusa-vite/sample-workflow",
+          "hits": 31,
+          "lastUsed": "2026-09-08T12:45:29.069Z",
+          "zombie": false
+        },
+        {
+          "id": "backend/sample-workflow",
+          "hits": 32,
+          "lastUsed": "2026-09-08T12:45:29.069Z",
+          "zombie": false
+        }
+      ]
+    }
+  },
+  "/skill-report?profile=medusa-vite%2Bbackend&since=90": {
+    "ok": true,
+    "data": {
+      "profile": "medusa-vite+backend",
+      "windowDays": 90,
+      "rows": [
+        {
+          "id": "core/getting-started",
+          "hits": 90,
+          "lastUsed": "2026-09-08T12:45:29.070Z",
+          "zombie": false
+        },
+        {
+          "id": "medusa-vite/sample-workflow",
+          "hits": 91,
+          "lastUsed": "2026-09-08T12:45:29.070Z",
+          "zombie": false
+        },
+        {
+          "id": "backend/sample-workflow",
+          "hits": 92,
+          "lastUsed": "2026-09-08T12:45:29.070Z",
+          "zombie": false
+        }
+      ]
+    }
+  },
+  "/profile-detail": {
+    "ok": true,
+    "data": {
+      "profile": "medusa-vite+backend",
+      "parts": [
+        "medusa-vite",
+        "backend"
+      ],
+      "skills": [
+        {
+          "id": "core/getting-started",
+          "ns": "core",
+          "name": "getting-started",
+          "desc": "Demo workflow — sample content only.",
+          "body": "# getting-started\n\nDemo skill for the Studio preview, not an installed skill.\n\n## Workflow\n\n1. Inspect the task.\n2. Make a focused change.\n3. Verify the result.\n",
+          "sizeK": 0.1572265625,
+          "uses": [
+            "context7"
+          ],
+          "missing": false
+        },
+        {
+          "id": "medusa-vite/sample-workflow",
+          "ns": "medusa-vite",
+          "name": "sample-workflow",
+          "desc": "Demo workflow — sample content only.",
+          "body": "# sample-workflow\n\nDemo skill for the Studio preview, not an installed skill.\n\n## Workflow\n\n1. Inspect the task.\n2. Make a focused change.\n3. Verify the result.\n",
+          "sizeK": 0.1572265625,
+          "uses": [
+            "context7"
+          ],
+          "missing": false
+        },
+        {
+          "id": "backend/sample-workflow",
+          "ns": "backend",
+          "name": "sample-workflow",
+          "desc": "Demo workflow — sample content only.",
+          "body": "# sample-workflow\n\nDemo skill for the Studio preview, not an installed skill.\n\n## Workflow\n\n1. Inspect the task.\n2. Make a focused change.\n3. Verify the result.\n",
+          "sizeK": 0.1572265625,
+          "uses": [
+            "context7"
+          ],
+          "missing": false
+        }
+      ],
+      "mcps": [
+        {
+          "id": "context7",
+          "status": "demo"
+        }
+      ],
+      "plugins": [],
+      "commands": [],
+      "subagents": [],
+      "clis": [],
+      "recommends": [],
+      "playbooks": [
+        {
+          "id": "demo-medusa-vite",
+          "name": "demo-medusa-vite",
+          "title": "Demo verification workflow",
+          "emoji": "🧪",
+          "trigger": "demo",
+          "est": "3 steps",
+          "desc": "Sample workflow; does not execute commands.",
+          "steps": [
+            {
+              "name": "Inspect",
+              "detail": "Demo step — illustration only."
+            },
+            {
+              "name": "Implement",
+              "detail": "Demo step — illustration only."
+            },
+            {
+              "name": "Verify",
+              "detail": "Demo step — illustration only."
+            }
+          ]
+        }
+      ],
+      "counts": {
+        "skills": 3,
+        "mcps": 1,
+        "plugins": 0,
+        "commands": 0,
+        "subagents": 0,
+        "clis": 0
+      }
+    }
+  },
+  "/hooks": {
+    "ok": true,
+    "data": {
+      "profile": "medusa-vite+backend",
+      "total": 0,
+      "events": []
+    }
+  },
+  "/repos": {
+    "ok": true,
+    "data": {
+      "profile": "medusa-vite+backend",
+      "repos": []
+    }
+  },
+  "/skill-report?since=7": {
+    "ok": true,
+    "data": {
+      "profile": "medusa-vite+backend",
+      "windowDays": 7,
+      "rows": [
+        {
+          "id": "core/getting-started",
+          "hits": 7,
+          "lastUsed": "2026-09-08T12:45:29.070Z",
+          "zombie": false
+        },
+        {
+          "id": "medusa-vite/sample-workflow",
+          "hits": 8,
+          "lastUsed": "2026-09-08T12:45:29.070Z",
+          "zombie": false
+        },
+        {
+          "id": "backend/sample-workflow",
+          "hits": 9,
+          "lastUsed": "2026-09-08T12:45:29.070Z",
+          "zombie": false
+        }
+      ]
+    }
+  },
+  "/skill-report?since=30": {
+    "ok": true,
+    "data": {
+      "profile": "medusa-vite+backend",
+      "windowDays": 30,
+      "rows": [
+        {
+          "id": "core/getting-started",
+          "hits": 30,
+          "lastUsed": "2026-09-08T12:45:29.070Z",
+          "zombie": false
+        },
+        {
+          "id": "medusa-vite/sample-workflow",
+          "hits": 31,
+          "lastUsed": "2026-09-08T12:45:29.070Z",
+          "zombie": false
+        },
+        {
+          "id": "backend/sample-workflow",
+          "hits": 32,
+          "lastUsed": "2026-09-08T12:45:29.070Z",
+          "zombie": false
+        }
+      ]
+    }
+  },
+  "/skill-report?since=90": {
+    "ok": true,
+    "data": {
+      "profile": "medusa-vite+backend",
+      "windowDays": 90,
+      "rows": [
+        {
+          "id": "core/getting-started",
+          "hits": 90,
+          "lastUsed": "2026-09-08T12:45:29.070Z",
+          "zombie": false
+        },
+        {
+          "id": "medusa-vite/sample-workflow",
+          "hits": 91,
+          "lastUsed": "2026-09-08T12:45:29.070Z",
+          "zombie": false
+        },
+        {
+          "id": "backend/sample-workflow",
+          "hits": 92,
+          "lastUsed": "2026-09-08T12:45:29.070Z",
+          "zombie": false
+        }
+      ]
+    }
+  },
+  "/telemetry/timeline?since=7": {
+    "ok": true,
+    "data": {
+      "windowDays": 7,
+      "daily": [
+        {
+          "date": "2026-09-02",
+          "sessions": 4
+        },
+        {
+          "date": "2026-09-03",
+          "sessions": 2
+        },
+        {
+          "date": "2026-09-04",
+          "sessions": 5
+        },
+        {
+          "date": "2026-09-05",
+          "sessions": 1
+        },
+        {
+          "date": "2026-09-06",
+          "sessions": 8
+        },
+        {
+          "date": "2026-09-07",
+          "sessions": 3
+        },
+        {
+          "date": "2026-09-08",
+          "sessions": 0
+        }
+      ],
+      "profiles": [
+        {
+          "profile": "medusa-dev",
+          "sessions": 3,
+          "lastUsed": "2026-09-07"
+        },
+        {
+          "profile": "designer",
+          "sessions": 4,
+          "lastUsed": "2026-09-02"
+        },
+        {
+          "profile": "backend",
+          "sessions": 2,
+          "lastUsed": "2026-09-03"
+        },
+        {
+          "profile": "stripe",
+          "sessions": 5,
+          "lastUsed": "2026-09-04"
+        },
+        {
+          "profile": "marketing",
+          "sessions": 1,
+          "lastUsed": "2026-09-05"
+        },
+        {
+          "profile": "core",
+          "sessions": 8,
+          "lastUsed": "2026-09-06"
+        }
+      ]
+    }
+  },
+  "/telemetry/timeline?since=30": {
+    "ok": true,
+    "data": {
+      "windowDays": 30,
+      "daily": [
+        {
+          "date": "2026-08-10",
+          "sessions": 3
+        },
+        {
+          "date": "2026-08-11",
+          "sessions": 0
+        },
+        {
+          "date": "2026-08-12",
+          "sessions": 4
+        },
+        {
+          "date": "2026-08-13",
+          "sessions": 2
+        },
+        {
+          "date": "2026-08-14",
+          "sessions": 5
+        },
+        {
+          "date": "2026-08-15",
+          "sessions": 1
+        },
+        {
+          "date": "2026-08-16",
+          "sessions": 8
+        },
+        {
+          "date": "2026-08-17",
+          "sessions": 3
+        },
+        {
+          "date": "2026-08-18",
+          "sessions": 0
+        },
+        {
+          "date": "2026-08-19",
+          "sessions": 4
+        },
+        {
+          "date": "2026-08-20",
+          "sessions": 2
+        },
+        {
+          "date": "2026-08-21",
+          "sessions": 5
+        },
+        {
+          "date": "2026-08-22",
+          "sessions": 1
+        },
+        {
+          "date": "2026-08-23",
+          "sessions": 8
+        },
+        {
+          "date": "2026-08-24",
+          "sessions": 3
+        },
+        {
+          "date": "2026-08-25",
+          "sessions": 0
+        },
+        {
+          "date": "2026-08-26",
+          "sessions": 4
+        },
+        {
+          "date": "2026-08-27",
+          "sessions": 2
+        },
+        {
+          "date": "2026-08-28",
+          "sessions": 5
+        },
+        {
+          "date": "2026-08-29",
+          "sessions": 1
+        },
+        {
+          "date": "2026-08-30",
+          "sessions": 8
+        },
+        {
+          "date": "2026-08-31",
+          "sessions": 3
+        },
+        {
+          "date": "2026-09-01",
+          "sessions": 0
+        },
+        {
+          "date": "2026-09-02",
+          "sessions": 4
+        },
+        {
+          "date": "2026-09-03",
+          "sessions": 2
+        },
+        {
+          "date": "2026-09-04",
+          "sessions": 5
+        },
+        {
+          "date": "2026-09-05",
+          "sessions": 1
+        },
+        {
+          "date": "2026-09-06",
+          "sessions": 8
+        },
+        {
+          "date": "2026-09-07",
+          "sessions": 3
+        },
+        {
+          "date": "2026-09-08",
+          "sessions": 0
+        }
+      ],
+      "profiles": [
+        {
+          "profile": "medusa-dev",
+          "sessions": 17,
+          "lastUsed": "2026-09-07"
+        },
+        {
+          "profile": "medusa-vite",
+          "sessions": 12,
+          "lastUsed": "2026-08-31"
+        },
+        {
+          "profile": "medusa-next",
+          "sessions": 11,
+          "lastUsed": "2026-08-24"
+        },
+        {
+          "profile": "designer",
+          "sessions": 7,
+          "lastUsed": "2026-09-02"
+        },
+        {
+          "profile": "backend",
+          "sessions": 9,
+          "lastUsed": "2026-09-03"
+        },
+        {
+          "profile": "stripe",
+          "sessions": 11,
+          "lastUsed": "2026-09-04"
+        },
+        {
+          "profile": "marketing",
+          "sessions": 12,
+          "lastUsed": "2026-09-05"
+        },
+        {
+          "profile": "core",
+          "sessions": 16,
+          "lastUsed": "2026-09-06"
+        }
+      ]
+    }
+  },
+  "/telemetry/timeline?since=90": {
+    "ok": true,
+    "data": {
+      "windowDays": 90,
+      "daily": [
+        {
+          "date": "2026-06-11",
+          "sessions": 2
+        },
+        {
+          "date": "2026-06-12",
+          "sessions": 5
+        },
+        {
+          "date": "2026-06-13",
+          "sessions": 1
+        },
+        {
+          "date": "2026-06-14",
+          "sessions": 8
+        },
+        {
+          "date": "2026-06-15",
+          "sessions": 3
+        },
+        {
+          "date": "2026-06-16",
+          "sessions": 0
+        },
+        {
+          "date": "2026-06-17",
+          "sessions": 4
+        },
+        {
+          "date": "2026-06-18",
+          "sessions": 2
+        },
+        {
+          "date": "2026-06-19",
+          "sessions": 5
+        },
+        {
+          "date": "2026-06-20",
+          "sessions": 1
+        },
+        {
+          "date": "2026-06-21",
+          "sessions": 8
+        },
+        {
+          "date": "2026-06-22",
+          "sessions": 3
+        },
+        {
+          "date": "2026-06-23",
+          "sessions": 0
+        },
+        {
+          "date": "2026-06-24",
+          "sessions": 4
+        },
+        {
+          "date": "2026-06-25",
+          "sessions": 2
+        },
+        {
+          "date": "2026-06-26",
+          "sessions": 5
+        },
+        {
+          "date": "2026-06-27",
+          "sessions": 1
+        },
+        {
+          "date": "2026-06-28",
+          "sessions": 8
+        },
+        {
+          "date": "2026-06-29",
+          "sessions": 3
+        },
+        {
+          "date": "2026-06-30",
+          "sessions": 0
+        },
+        {
+          "date": "2026-07-01",
+          "sessions": 4
+        },
+        {
+          "date": "2026-07-02",
+          "sessions": 2
+        },
+        {
+          "date": "2026-07-03",
+          "sessions": 5
+        },
+        {
+          "date": "2026-07-04",
+          "sessions": 1
+        },
+        {
+          "date": "2026-07-05",
+          "sessions": 8
+        },
+        {
+          "date": "2026-07-06",
+          "sessions": 3
+        },
+        {
+          "date": "2026-07-07",
+          "sessions": 0
+        },
+        {
+          "date": "2026-07-08",
+          "sessions": 4
+        },
+        {
+          "date": "2026-07-09",
+          "sessions": 2
+        },
+        {
+          "date": "2026-07-10",
+          "sessions": 5
+        },
+        {
+          "date": "2026-07-11",
+          "sessions": 1
+        },
+        {
+          "date": "2026-07-12",
+          "sessions": 8
+        },
+        {
+          "date": "2026-07-13",
+          "sessions": 3
+        },
+        {
+          "date": "2026-07-14",
+          "sessions": 0
+        },
+        {
+          "date": "2026-07-15",
+          "sessions": 4
+        },
+        {
+          "date": "2026-07-16",
+          "sessions": 2
+        },
+        {
+          "date": "2026-07-17",
+          "sessions": 5
+        },
+        {
+          "date": "2026-07-18",
+          "sessions": 1
+        },
+        {
+          "date": "2026-07-19",
+          "sessions": 8
+        },
+        {
+          "date": "2026-07-20",
+          "sessions": 3
+        },
+        {
+          "date": "2026-07-21",
+          "sessions": 0
+        },
+        {
+          "date": "2026-07-22",
+          "sessions": 4
+        },
+        {
+          "date": "2026-07-23",
+          "sessions": 2
+        },
+        {
+          "date": "2026-07-24",
+          "sessions": 5
+        },
+        {
+          "date": "2026-07-25",
+          "sessions": 1
+        },
+        {
+          "date": "2026-07-26",
+          "sessions": 8
+        },
+        {
+          "date": "2026-07-27",
+          "sessions": 3
+        },
+        {
+          "date": "2026-07-28",
+          "sessions": 0
+        },
+        {
+          "date": "2026-07-29",
+          "sessions": 4
+        },
+        {
+          "date": "2026-07-30",
+          "sessions": 2
+        },
+        {
+          "date": "2026-07-31",
+          "sessions": 5
+        },
+        {
+          "date": "2026-08-01",
+          "sessions": 1
+        },
+        {
+          "date": "2026-08-02",
+          "sessions": 8
+        },
+        {
+          "date": "2026-08-03",
+          "sessions": 3
+        },
+        {
+          "date": "2026-08-04",
+          "sessions": 0
+        },
+        {
+          "date": "2026-08-05",
+          "sessions": 4
+        },
+        {
+          "date": "2026-08-06",
+          "sessions": 2
+        },
+        {
+          "date": "2026-08-07",
+          "sessions": 5
+        },
+        {
+          "date": "2026-08-08",
+          "sessions": 1
+        },
+        {
+          "date": "2026-08-09",
+          "sessions": 8
+        },
+        {
+          "date": "2026-08-10",
+          "sessions": 3
+        },
+        {
+          "date": "2026-08-11",
+          "sessions": 0
+        },
+        {
+          "date": "2026-08-12",
+          "sessions": 4
+        },
+        {
+          "date": "2026-08-13",
+          "sessions": 2
+        },
+        {
+          "date": "2026-08-14",
+          "sessions": 5
+        },
+        {
+          "date": "2026-08-15",
+          "sessions": 1
+        },
+        {
+          "date": "2026-08-16",
+          "sessions": 8
+        },
+        {
+          "date": "2026-08-17",
+          "sessions": 3
+        },
+        {
+          "date": "2026-08-18",
+          "sessions": 0
+        },
+        {
+          "date": "2026-08-19",
+          "sessions": 4
+        },
+        {
+          "date": "2026-08-20",
+          "sessions": 2
+        },
+        {
+          "date": "2026-08-21",
+          "sessions": 5
+        },
+        {
+          "date": "2026-08-22",
+          "sessions": 1
+        },
+        {
+          "date": "2026-08-23",
+          "sessions": 8
+        },
+        {
+          "date": "2026-08-24",
+          "sessions": 3
+        },
+        {
+          "date": "2026-08-25",
+          "sessions": 0
+        },
+        {
+          "date": "2026-08-26",
+          "sessions": 4
+        },
+        {
+          "date": "2026-08-27",
+          "sessions": 2
+        },
+        {
+          "date": "2026-08-28",
+          "sessions": 5
+        },
+        {
+          "date": "2026-08-29",
+          "sessions": 1
+        },
+        {
+          "date": "2026-08-30",
+          "sessions": 8
+        },
+        {
+          "date": "2026-08-31",
+          "sessions": 3
+        },
+        {
+          "date": "2026-09-01",
+          "sessions": 0
+        },
+        {
+          "date": "2026-09-02",
+          "sessions": 4
+        },
+        {
+          "date": "2026-09-03",
+          "sessions": 2
+        },
+        {
+          "date": "2026-09-04",
+          "sessions": 5
+        },
+        {
+          "date": "2026-09-05",
+          "sessions": 1
+        },
+        {
+          "date": "2026-09-06",
+          "sessions": 8
+        },
+        {
+          "date": "2026-09-07",
+          "sessions": 3
+        },
+        {
+          "date": "2026-09-08",
+          "sessions": 0
+        }
+      ],
+      "profiles": [
+        {
+          "profile": "medusa-dev",
+          "sessions": 42,
+          "lastUsed": "2026-09-07"
+        },
+        {
+          "profile": "medusa-vite",
+          "sessions": 40,
+          "lastUsed": "2026-08-31"
+        },
+        {
+          "profile": "medusa-next",
+          "sessions": 35,
+          "lastUsed": "2026-08-24"
+        },
+        {
+          "profile": "designer",
+          "sessions": 38,
+          "lastUsed": "2026-09-02"
+        },
+        {
+          "profile": "backend",
+          "sessions": 32,
+          "lastUsed": "2026-09-03"
+        },
+        {
+          "profile": "stripe",
+          "sessions": 34,
+          "lastUsed": "2026-09-04"
+        },
+        {
+          "profile": "marketing",
+          "sessions": 35,
+          "lastUsed": "2026-09-05"
+        },
+        {
+          "profile": "core",
+          "sessions": 39,
+          "lastUsed": "2026-09-06"
+        }
+      ]
+    }
+  },
+  "/version": {
+    "ok": true,
+    "data": {
+      "current": "demo",
+      "latest": null,
+      "updateAvailable": false,
+      "notice": null
+    }
+  },
+  "/mcps/catalog": {
+    "ok": true,
+    "data": [
+      {
+        "id": "context7",
+        "description": "Demo documentation server.",
+        "transport": "stdio",
+        "install": "cue mcp add context7",
+        "usedBy": [
+          {
+            "name": "medusa-dev",
+            "icon": null,
+            "iconImage": null
+          },
+          {
+            "name": "medusa-vite",
+            "icon": null,
+            "iconImage": null
+          },
+          {
+            "name": "medusa-next",
+            "icon": null,
+            "iconImage": null
+          },
+          {
+            "name": "designer",
+            "icon": null,
+            "iconImage": null
+          },
+          {
+            "name": "backend",
+            "icon": null,
+            "iconImage": null
+          },
+          {
+            "name": "stripe",
+            "icon": null,
+            "iconImage": null
+          },
+          {
+            "name": "marketing",
+            "icon": null,
+            "iconImage": null
+          },
+          {
+            "name": "core",
+            "icon": null,
+            "iconImage": null
+          }
+        ]
+      }
+    ]
+  },
+  "/plugins/discovered": {
+    "ok": true,
+    "data": {
+      "plugins": []
+    }
+  },
+  "/permissions": {
+    "ok": true,
+    "data": {
+      "rules": [],
+      "counts": {
+        "allow": 0,
+        "ask": 0,
+        "deny": 0
+      },
+      "defaultMode": null,
+      "sources": []
+    }
+  },
+  "/env/folders": {
+    "ok": true,
+    "data": {
+      "folders": []
+    }
+  },
+  "/market": {
+    "ok": true,
+    "data": {
+      "items": [],
+      "counts": {}
     }
   }
 }
