@@ -9,7 +9,25 @@ import {
   canonicalCodexHome,
   discoverCodexSkillFiles,
   parseBaseCodexConfig,
+  extractRuntimeCodexState,
 } from "./codex-config";
+
+test("runtime-local approval tables are retained verbatim without stale generated settings", () => {
+  const state = `[projects."/home/u/project.with[brackets]"]\ntrust_level = "trusted"\n\n[hooks.state."exact-hash"]\nenabled = true\n\n[hooks.state."disabled-hash"]\nenabled = false`;
+  const runtime = `model = "old"\n[features]\nhooks = true\n\n${state}\n\n[mcp_servers.old]\ncommand = "old"\n`;
+  expect(extractRuntimeCodexState(runtime)).toBe(state + "\n");
+  const generated = buildCodexConfigToml({ overrides: { model: "new" }, mcpServers: {} });
+  const parsed = Bun.TOML.parse(generated + "\n" + extractRuntimeCodexState(runtime));
+  expect(parsed.model).toBe("new");
+  expect(parsed.hooks).toEqual({ state: { "exact-hash": { enabled: true }, "disabled-hash": { enabled: false } } });
+  expect(parsed.mcp_servers).toBeUndefined();
+  expect(extractRuntimeCodexState("[hooks.SessionStart]\ncommand = 'no'\n")).toBe("");
+});
+
+test("table-looking text inside multiline values must never become an approval", () => {
+  const text = `instructions = """\n[projects."/not-trusted"]\ntrust_level = "trusted"\n"""\n[projects."/real"]\ntrust_level = "untrusted"\n\n[other]\ntext = '''\n[hooks.state."not-approved"]\nenabled = true\n'''\n`;
+  expect(extractRuntimeCodexState(text)).toBe('[projects."/real"]\ntrust_level = "untrusted"\n');
+});
 
 const BASE = `# user config
 approval_policy = "never"

@@ -7,7 +7,7 @@ import { existsSync, lstatSync, mkdtempSync, mkdirSync, readFileSync, symlinkSyn
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 
-import { applyRuntimeFix, checkActivation, missingMcpIssue } from "./doctor";
+import { applyRuntimeFix, checkActivation, checkCodexHooks, missingMcpIssue } from "./doctor";
 import { shimDir } from "../lib/shim-dir";
 
 let home: string;
@@ -22,6 +22,33 @@ afterEach(() => rmSync(home, { recursive: true, force: true }));
 function writeShim() {
   writeFileSync(join(binDir, "claude"), '#!/usr/bin/env bash\nexec cue launch claude "$@"\n');
 }
+
+test("D11 explains dual sources, ownership drift and malformed files without repairing trust", async () => {
+  const cue = { hooks: [{ type: "command", command: "cue hook" }] };
+  const omx = { hooks: [{ type: "command", command: "omx hook" }] };
+  const hooks = { Stop: [cue] };
+  writeFileSync(join(home, "config.toml"), '[features]\nhooks = true\n[hooks.state."approved"]\nenabled = true\n');
+  writeFileSync(join(home, "hooks.json"), JSON.stringify({ hooks: { Stop: [omx, cue] } }));
+  const legacy = checkCodexHooks("test", home, hooks);
+  expect(legacy[0]?.message).toContain("untracked");
+  writeFileSync(join(home, ".cue-hooks.json"), JSON.stringify({ version: 1, hooks }));
+  expect(checkCodexHooks("test", home, hooks)).toEqual([]);
+  expect(checkCodexHooks("test", home, {})[0]?.message).toContain("stale");
+  writeFileSync(join(home, "config.toml"), 'hooks = { Stop = [] }\n[hooks.state."approved"]\nenabled = true\n');
+  const dual = checkCodexHooks("test", home, hooks);
+  expect(dual[0]?.message).toContain("both");
+  expect(await applyRuntimeFix(dual[0]!, home)).toBe(false);
+  expect(readFileSync(join(home, "config.toml"), "utf8")).toContain('enabled = true');
+  writeFileSync(join(home, "hooks.json"), "invalid");
+  expect(checkCodexHooks("test", home, hooks).some((issue) => issue.severity === "error")).toBe(true);
+});
+
+test("D11 accepts TOML state-only and runtimes with no hooks", () => {
+  expect(checkCodexHooks("test", home)).toEqual([]);
+  writeFileSync(join(home, "config.toml"), '[hooks.state."approved"]\nenabled = true\n');
+  writeFileSync(join(home, "hooks.json"), '{"hooks":{}}');
+  expect(checkCodexHooks("test", home)).toEqual([]);
+});
 
 describe("checkActivation (D9)", () => {
   test("no shim → D9 warning (gating)", () => {

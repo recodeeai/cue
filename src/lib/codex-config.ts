@@ -120,6 +120,52 @@ const KEY_VALUE = /^\s*([A-Za-z0-9_.\-"']+)\s*=\s*(.*)$/;
 const TABLE_HEADER = /^\s*\[\[?\s*([^\]]+?)\s*\]\]?/;
 const SKILLS_CONFIG_HEADER = /^\s*\[\[\s*skills\.config\s*\]\]\s*(?:#.*)?$/;
 
+/** Preserve Codex-written approvals in this runtime only, never from the base config.
+ * Copy table blocks verbatim: do not manufacture approvals or migrate hook hashes.
+ */
+export function extractRuntimeCodexState(text: string): string {
+  const blocks: string[] = [];
+  const localTable = /^\s*\[\s*(?:projects\s*(?:\.|\])|hooks\s*\.\s*state\s*(?:\.|\]))/;
+  let block: string[] = [];
+  let copying = false;
+  let quote = "";
+  let depth = 0;
+  const flush = () => {
+    while (block.at(-1)?.trim() === "") block.pop();
+    if (block.length > 0) blocks.push(block.join("\n"));
+    block = [];
+  };
+  for (const line of text.split("\n")) {
+    if (!quote && depth === 0 && TABLE_HEADER.test(line)) {
+      flush();
+      copying = localTable.test(line);
+    }
+    if (copying) block.push(line);
+    // Lexical boundaries only, not a TOML reserializer. In particular a
+    // table-looking line inside a multiline string is never an approval.
+    for (let i = 0; i < line.length; i++) {
+      const ch = line[i]!;
+      if (quote) {
+        if (quote[0] === '"' && ch === "\\") { i++; continue; }
+        if (line.startsWith(quote, i)) {
+          i += quote.length - 1;
+          if (quote.length === 3) while (line[i + 1] === quote[0]) i++;
+          quote = "";
+        }
+      } else if (ch === "#") break;
+      else if (ch === '"' || ch === "'") {
+        quote = line.startsWith(ch.repeat(3), i) ? ch.repeat(3) : ch;
+        i += quote.length - 1;
+      } else if (ch === "[" || ch === "{") depth++;
+      else if (ch === "]" || ch === "}") depth--;
+    }
+    if (quote.length === 1 || depth < 0) throw new TypeError("Invalid runtime Codex TOML boundaries");
+  }
+  if (quote || depth !== 0) throw new TypeError("Unterminated runtime Codex TOML value");
+  flush();
+  return blocks.length > 0 ? blocks.join("\n\n") + "\n" : "";
+}
+
 /** Keep user-authored skill enablement blocks without round-tripping TOML. */
 function extractSkillsConfigBlocks(text: string): string[] {
   const lines = text.split("\n");

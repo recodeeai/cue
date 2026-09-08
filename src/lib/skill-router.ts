@@ -359,7 +359,9 @@ export function renderRouter(
 ): string {
   const heading = options.headingLevel ?? "##";
   const maxTriggers = options.maxTriggersPerSkill ?? 6;
-  const overrides = options.overrides ?? [];
+  const overrides = [...new Map((options.overrides ?? []).map((row) => [
+    JSON.stringify([row.skill, row.capability, row.phrase, row.note]), row,
+  ])).values()];
 
   // Build a zombie lookup that matches either the full id (`category/slug`)
   // or the bare slug — telemetry events can land tagged either way depending

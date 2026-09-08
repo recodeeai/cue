@@ -30,6 +30,9 @@ import { findRealClaudeBin } from "../lib/claude-binary";
 import { repoRoot } from "../lib/repo-root";
 import { cacheKey, suppressionRemainingMs } from "../lib/resolver-npx";
 import { clearFetchFailure, readFetchFailure } from "../lib/cache";
+import { reconcileCodexHooks } from "../lib/codex-hooks";
+import { parseBaseCodexConfig } from "../lib/codex-config";
+import { runtimePathKey } from "../lib/runtime-materializer";
 
 const PROFILES_DIR = process.env.CUE_PROFILES_DIR ?? join(repoRoot(), "profiles");
 const SKILLS_ROOT = join(repoRoot(), "resources", "skills", "skills");
@@ -63,6 +66,42 @@ function loadAllMcpIds(): Set<string> {
     } catch { /* skip */ }
   }
   return ids;
+}
+
+/** Read-only: diagnosing registrations never grants or rewrites hook approvals. */
+export function checkCodexHooks(profile: string, runtimeDir: string, desired: unknown = {}): Issue[] {
+  if (!existsSync(runtimeDir)) return [];
+  const issues: Issue[] = [];
+  const issue = (message: string, severity: Issue["severity"] = "warning") => {
+    issues.push({ code: "D11", severity, profile, runtimeDir, message });
+  };
+  try {
+    const readOptional = (name: string) => {
+      const path = join(runtimeDir, name);
+      return existsSync(path) ? readFileSync(path, "utf8") : undefined;
+    };
+    const config = readOptional("config.toml") ?? "";
+    const raw = readOptional("hooks.json");
+    const owned = readOptional(".cue-hooks.json");
+    // [hooks.state.*] stores decisions, not event definitions: it is allowed.
+    const inline = parseBaseCodexConfig(config).top.hooks !== undefined || /^\s*\[\[?\s*hooks\s*\.\s*(?!state(?:\s*\.|\s*\]))[A-Za-z]/m.test(config);
+    if (raw !== undefined && inline) issue(`Codex hooks load from both ${join(runtimeDir, "config.toml")} and hooks.json; keep event definitions in hooks.json (approval state may stay in TOML)`);
+    const reconciled = reconcileCodexHooks(raw, owned, desired);
+    const current = raw === undefined ? {} : (JSON.parse(raw).hooks ?? {});
+    if (JSON.stringify(current) !== JSON.stringify(reconciled.document.hooks)) {
+      issue(`Codex hook registrations are missing or stale in ${join(runtimeDir, "hooks.json")}; rebuild this profile. Ownership: .cue-hooks.json; unrelated entries are preserved`);
+    } else {
+      // A pre-existing identical definition is intentionally not claimed: its
+      // installer cannot be inferred safely during migration from older Cue.
+      const wanted = reconcileCodexHooks(undefined, undefined, desired).owned.hooks;
+      const tracked = reconciled.owned.hooks;
+      const untracked = Object.entries(wanted).some(([event, entries]) => entries.length > (tracked[event]?.length ?? 0));
+      if (untracked) issue(`Codex profile hooks in ${join(runtimeDir, "hooks.json")} are untracked legacy/shared entries; preserved rather than claimed. Ownership: .cue-hooks.json; inspect sources with Codex /hooks`);
+    }
+  } catch (error) {
+    issue(`Cannot inspect Codex hook sources in ${runtimeDir}: ${error instanceof Error ? error.message : String(error)}`, "error");
+  }
+  return issues;
 }
 
 export function missingMcpIssue(
@@ -229,6 +268,12 @@ async function checkProfile(profileName: string, allSkillIds: Set<string>, allMc
       }
     } catch { /* runtime dir unreadable */ }
   }
+
+  issues.push(...checkCodexHooks(
+    profileName,
+    join(RUNTIME_ROOT, runtimePathKey(profileName), "codex"),
+    profile.codex?.hooks ?? (profile as { codexConfig?: { hooks?: unknown } }).codexConfig?.hooks,
+  ));
 
   // D7: Incomplete skill installs (SKILL.md declares companions but they're missing)
   const incomplete = findIncompleteSkills(SKILLS_ROOT);
@@ -493,6 +538,7 @@ Checks:
   D8  Quality gate declared but the .sh under resources/quality-gates/ is missing
   D9  Activation: claude shim installed, real claude resolves, shim dir precedes it on PATH
   D10 Remote skill repo cooling down after failed fetches
+  D11 Codex hook sources, ownership and registration drift (read-only)
 
 Flags:
   --fix             Auto-repair issues
