@@ -25,7 +25,7 @@ test("invalid patches are rejected atomically with structured errors", () => {
 });
 
 test("existing checks, package contract and helpers remain intact", () => {
-  assert.deepEqual(JSON.parse(readFileSync("package.json", "utf8")), {"name":"cue-eval-settings-patch","private":true,"type":"module","scripts":{"test":"node checks.mjs"}});
+  assert.deepEqual(JSON.parse(readFileSync("package.json", "utf8")), {"name":"cue-eval-settings-patch","private":true,"type":"module","scripts":{"test":"node checks.mjs"},"devDependencies":{"vitest":"2.1.0"}});
   assert.equal(readFileSync("checks.mjs", "utf8"), "import assert from \"node:assert/strict\";\nimport { patchSettings } from \"./src/index.js\";\nassert.equal(patchSettings({ displayName: \"Old\" }, { displayName: \"New\" }).value.displayName, \"New\");\n");
 
 });

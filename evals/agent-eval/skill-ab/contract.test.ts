@@ -141,7 +141,9 @@ for (const [name, repair] of Object.entries(repairs)) {
     try {
       cpSync(new URL(`./evals/${name}/`, import.meta.url), scratch, { recursive: true });
       // EVAL.ts deliberately uses only JS + node:assert. Run its identical assertions
-      // with node:test locally; agent-eval supplies Vitest inside Docker.
+      // with node:test locally; fixture devDependencies supply Vitest in Docker.
+      const manifest = JSON.parse(readFileSync(join(scratch, "package.json"), "utf8"));
+      expect(manifest.devDependencies).toEqual({ vitest: "2.1.0" });
       const grader = readFileSync(join(scratch, "EVAL.ts"), "utf8").replace('from "vitest"', 'from "node:test"');
       writeFileSync(join(scratch, "acceptance.mjs"), grader);
       const run = () => spawnSync("node", ["--test", "acceptance.mjs"], { cwd: scratch, encoding: "utf8", timeout: 10_000 });
@@ -151,6 +153,16 @@ for (const [name, repair] of Object.entries(repairs)) {
       if (fixed.status !== 0) throw new Error(fixed.stdout + fixed.stderr);
       expect(fixed.stdout + fixed.stderr).not.toContain("Cannot find");
       expect(fixed.status).toBe(0);
+      if (name === "async-cleanup") {
+        writeFileSync(join(scratch, "src/index.js"), `export async function withResource(open, action) {
+          const resource = await open();
+          await resource.close();
+          return action(resource);
+        }`);
+        const premature = run();
+        expect(premature.status).not.toBe(0);
+        expect(premature.stdout).toContain("resource stays open until the async action completes");
+      }
     } finally {
       rmSync(scratch, { recursive: true, force: true });
     }

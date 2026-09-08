@@ -2,6 +2,9 @@
   "name": "cue-eval-settings-patch",
   "private": true,
   "type": "module",
+  "devDependencies": {
+    "vitest": "2.1.0"
+  },
   "scripts": {
     "test": "node checks.mjs"
   }

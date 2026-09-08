@@ -19,6 +19,19 @@ test("cleanup is awaited exactly once on success and both action failure modes",
     assert.equal(closed, true);
   }
 });
+test("resource stays open until the async action completes", async () => {
+  let finished = false, closed = false;
+  const resource = { close() { assert.equal(finished, true); closed = true; } };
+  const result = await withResource(async () => resource, async () => {
+    assert.equal(closed, false);
+    await new Promise((resolve) => setTimeout(resolve, 5));
+    assert.equal(closed, false);
+    finished = true;
+    return 42;
+  });
+  assert.equal(result, 42);
+  assert.equal(closed, true);
+});
 test("open and cleanup errors are not swallowed", async () => {
   const error = new Error("open");
   let calls = 0;
@@ -32,7 +45,7 @@ test("open and cleanup errors are not swallowed", async () => {
 });
 
 test("existing checks, package contract and helpers remain intact", () => {
-  assert.deepEqual(JSON.parse(readFileSync("package.json", "utf8")), {"name":"cue-eval-async-cleanup","private":true,"type":"module","scripts":{"test":"node checks.mjs"}});
+  assert.deepEqual(JSON.parse(readFileSync("package.json", "utf8")), {"name":"cue-eval-async-cleanup","private":true,"type":"module","scripts":{"test":"node checks.mjs"},"devDependencies":{"vitest":"2.1.0"}});
   assert.equal(readFileSync("checks.mjs", "utf8"), "import assert from \"node:assert/strict\";\nimport { withResource } from \"./src/index.js\";\nassert.equal(await withResource(async () => ({ close() {} }), async () => 42), 42);\n");
 
 });

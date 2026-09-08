@@ -25,7 +25,7 @@ test("empty and falsy/object keys preserve Set equality", () => {
 });
 
 test("existing checks, package contract and helpers remain intact", () => {
-  assert.deepEqual(JSON.parse(readFileSync("package.json", "utf8")), {"name":"cue-eval-stable-dedupe","private":true,"type":"module","scripts":{"test":"node checks.mjs"}});
+  assert.deepEqual(JSON.parse(readFileSync("package.json", "utf8")), {"name":"cue-eval-stable-dedupe","private":true,"type":"module","scripts":{"test":"node checks.mjs"},"devDependencies":{"vitest":"2.1.0"}});
   assert.equal(readFileSync("checks.mjs", "utf8"), "import assert from \"node:assert/strict\";\nimport { uniqueBy } from \"./src/index.js\";\nassert.deepEqual(uniqueBy([1, 2], (value) => value), [1, 2]);\n");
 
 });

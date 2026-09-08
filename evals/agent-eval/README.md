@@ -134,6 +134,8 @@ Graders execute behavior rather than search for implementation keywords. Existin
 checks and package contracts must remain intact. `EVAL.ts` is withheld from the
 agent by agent-eval. Host-only self-tests prove each grader rejects the broken
 starter and accepts a reference repair; those repairs are outside fixture folders.
+Each fixture pins Vitest 2.1.0 for Docker validation. Offline self-tests run the
+same assertions through Node's test runner, not Docker or a model invocation.
 These are synthetic starter tasks, not a representative production benchmark.
 
 ### Compare
