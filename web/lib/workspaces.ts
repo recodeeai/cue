@@ -84,7 +84,7 @@ export class Workspaces {
         const workspace = await db.query("SELECT kind FROM cue_workspace WHERE id=$1 FOR UPDATE", [id]);
         if (workspace.rows[0]?.kind !== "team") throw unavailable();
         const invite = (await db.query(
-          "SELECT i.id,i.role,m.role AS issuer_role FROM cue_workspace_invite i JOIN cue_workspace_member m ON m.workspace_id=i.workspace_id AND m.user_id=i.created_by WHERE i.token_hash=$1 AND i.consumed_at IS NULL AND i.revoked_at IS NULL AND i.expires_at>now()",
+          "SELECT i.id,i.role,m.role AS issuer_role FROM cue_workspace_invite i JOIN cue_workspace_member m ON m.workspace_id=i.workspace_id AND m.user_id=i.created_by WHERE i.token_hash=$1 AND i.consumed_at IS NULL AND i.revoked_at IS NULL AND i.expires_at>clock_timestamp()",
           [hash(input.token)],
         )).rows[0];
         if (!invite || !["owner", "admin"].includes(invite.issuer_role) || (invite.role === "admin" && invite.issuer_role !== "owner")) throw unavailable();
