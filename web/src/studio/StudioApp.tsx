@@ -297,6 +297,7 @@ function StudioWorkspace({ view, setView }: { view: View; setView: Dispatch<SetS
     <div className={"app" + (publicMode ? ` ${welcomeStyles.publicShell}` : "")}>
       {/* ── title bar ── */}
       <div className="titlebar">
+        <a href="/workspaces" className="tb-iconbtn" style={{ width: "auto", padding: "0 10px", textDecoration: "none", color: "var(--teal, #27d4b5)", fontSize: 12 }} aria-label="Personal and team workspaces">Workspaces</a>
         <div className="tb-brand" onClick={() => setView("dashboard")} title="cue studio — overview">
           <span className="tb-mark">
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none">

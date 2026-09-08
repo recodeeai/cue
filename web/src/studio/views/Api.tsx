@@ -29,7 +29,7 @@ function fmtDate(value: Date | string | null): string {
 
 /* ───────────────────────── auth gate ───────────────────────── */
 
-function AuthGate() {
+export function AuthGate({ workspace = false }: { workspace?: boolean }) {
   const [mode, setMode] = useState<"signin" | "signup">("signup");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -41,11 +41,13 @@ function AuthGate() {
     e.preventDefault();
     setBusy(true);
     setError(null);
-    const res = mode === "signup"
-      ? await signUp.email({ email, password, name: name || email.split("@")[0] })
-      : await signIn.email({ email, password });
-    setBusy(false);
-    if (res.error) setError(res.error.message ?? "Something went wrong");
+    try {
+      const res = mode === "signup"
+        ? await signUp.email({ email, password, name: name || email.split("@")[0] })
+        : await signIn.email({ email, password });
+      if (res.error) setError(res.error.message ?? "Something went wrong");
+    } catch { setError("Account service unavailable. Please retry."); }
+    finally { setBusy(false); }
     // On success the useSession hook flips the whole view to <ApiTokens>.
   };
 
@@ -54,7 +56,7 @@ function AuthGate() {
       <div className="api-auth-card">
         <div className="api-auth-head">
           <h2>{mode === "signup" ? "Create your free account" : "Welcome back"}</h2>
-          <p>{mode === "signup"
+          <p>{workspace ? "Sign in or create an account to access your private and team workspaces." : mode === "signup"
             ? "Register for cuecards.cc to create API tokens. Free, no card."
             : "Sign in to manage your API tokens."}</p>
         </div>
