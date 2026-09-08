@@ -121,8 +121,17 @@ export async function scanLocalInventory(options: ScanOptions): Promise<LocalInv
         });
       }
       for (const name of names) {
-        const id = fileId("mcp", JSON.stringify([file, name]));
+        const id = fileId("mcp", name);
         const catalog = options.catalogFiles?.includes(file);
+        const existing = items.get(id);
+        if (existing) {
+          if (!existing.sources.includes(file)) existing.sources.push(file);
+          if (!catalog) {
+            existing.state = "configured";
+            existing.description = "Configuration found · availability not probed";
+          }
+          continue;
+        }
         items.set(id, { id, kind: "mcp", name, description: catalog ? "Bundled catalog entry · not an active installation" : "Configuration found · availability not probed", state: catalog ? "available" : "configured", sources: [file], related: [] });
       }
     } catch (err) { source.state = missingState(err); }
