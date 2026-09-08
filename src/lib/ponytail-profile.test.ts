@@ -47,7 +47,7 @@ for (const baseName of ["frontend", "nextjs"]) {
   });
 }
 
-for (const name of ["core", "frontend", "nextjs+browser"]) {
+for (const name of ["core", "backend", "frontend", "nextjs+browser"]) {
   test(`Codex defaults add Ponytail to ${name} without changing its identity or settings`, async () => {
     const base = await loadProfile(name);
     base.persona = "Workspace-specific guidance";
