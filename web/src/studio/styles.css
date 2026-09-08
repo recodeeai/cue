@@ -21,7 +21,7 @@ body{background:var(--bg1);color:var(--fg);font-family:var(--ui);font-size:13px;
 .mono{font-family:var(--mono)}
 
 /* ── shell ── */
-.app{height:100%;display:grid;grid-template-rows:44px 1fr 24px}
+.app{height:100%;display:grid;grid-template-columns:minmax(0,1fr);grid-template-rows:44px 1fr 24px}
 .titlebar{background:var(--bg0);border-bottom:1px solid var(--bd);display:flex;align-items:center;gap:14px;padding:0 14px;-webkit-app-region:drag}
 .tb-logo{font-family:var(--mono);font-weight:700;letter-spacing:.5px}
 .tb-logo b{color:#fff} .tb-logo span{color:var(--violet)}
@@ -46,7 +46,7 @@ body{background:var(--bg1);color:var(--fg);font-family:var(--ui);font-size:13px;
 .view{flex:1;min-width:0;overflow:auto;background:var(--bg1)}
 .view.noscroll{overflow:hidden;display:flex}
 
-.statusbar{background:linear-gradient(180deg,#0c0d12,#080910);border-top:1px solid var(--bd);display:flex;align-items:stretch;gap:0;
+.statusbar{min-width:0;overflow:hidden;background:linear-gradient(180deg,#0c0d12,#080910);border-top:1px solid var(--bd);display:flex;align-items:stretch;gap:0;
   font-family:var(--mono);font-size:11px;color:var(--fg2)}
 .sb-seg{display:flex;align-items:center;gap:6px;padding:0 11px;height:100%;cursor:default;transition:background .12s;white-space:nowrap}
 .sb-seg:hover{background:rgba(255,255,255,.045)}
@@ -65,7 +65,7 @@ body{background:var(--bg1);color:var(--fg);font-family:var(--ui);font-size:13px;
 
 /* ════════ DASHBOARD ════════ */
 .dash{max-width:1180px;margin:0 auto;padding:26px 30px 60px}
-.bands{display:grid;grid-template-columns:1.25fr 1fr 1fr;gap:16px;margin-bottom:18px}
+.bands{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,250px),1fr));gap:16px;margin-bottom:18px}
 .band{background:var(--bg2);border:1px solid var(--bd);border-radius:14px;padding:16px 18px;display:flex;flex-direction:column}
 .band-top{display:flex;align-items:center;gap:8px;margin-bottom:14px}
 .band-ic{color:var(--fg3);display:flex}
@@ -81,7 +81,7 @@ body{background:var(--bg1);color:var(--fg);font-family:var(--ui);font-size:13px;
 .usage-main{display:flex;align-items:flex-end;justify-content:space-between;gap:14px;flex:1}
 .usage-hero .mt-n{font-size:32px}
 .mini-spark{width:130px;height:46px;flex-shrink:0}
-.usage-sub{display:flex;align-items:center;gap:9px;margin-top:14px;padding-top:13px;border-top:1px solid var(--bd);font-size:11.5px;color:var(--fg2)}
+.usage-sub{display:flex;align-items:center;flex-wrap:wrap;gap:9px;margin-top:14px;padding-top:13px;border-top:1px solid var(--bd);font-size:11.5px;color:var(--fg2)}
 .usage-sub b{color:var(--fg);font-weight:600}
 .dotsep{color:var(--fg3)}
 .health-main{display:flex;align-items:center;gap:20px;flex:1}
@@ -1185,3 +1185,31 @@ body{background:var(--bg1);color:var(--fg);font-family:var(--ui);font-size:13px;
 .api-auth-switch{margin-top:18px;text-align:center;font-size:12.5px;color:var(--fg2)}
 .api-auth-switch button{background:none;border:none;color:var(--violet);font:inherit;font-size:12.5px;font-weight:650;cursor:pointer;padding:0}
 .api-auth-switch button:hover{text-decoration:underline}
+
+/* Keep small dashboard windows usable without shrinking the whole page.
+   Wide session rows scroll within their card rather than clipping columns. */
+.dash .card-head{flex-wrap:wrap;gap:12px}
+.dash .sess-list{overflow-x:auto}
+.dash .srow,.dash .sess-head{min-width:620px}
+.dash .ap-name,.dash .ap-table td:first-child{overflow-wrap:anywhere}
+.dash > [role=status]{color:var(--fg2);margin-bottom:16px}
+.dash [role=alert]{color:var(--red)}
+.dash [role=alert] button{font:inherit;color:var(--fg);background:var(--bg3);border:1px solid var(--bd2);border-radius:6px;padding:6px 10px;cursor:pointer}
+.dash button:focus-visible{outline:2px solid var(--violet);outline-offset:3px}
+.dash .sr-stop:disabled{opacity:.45;cursor:not-allowed}
+@media (max-width:700px){
+  .titlebar{min-width:0;gap:8px;padding:0 10px}
+  .tb-crumb,.tb-host-ip,.tb-host-sep{display:none}
+  .statusbar{min-width:0;overflow:hidden}
+  .body{position:relative}
+  .rail{flex-shrink:0;overflow-y:auto}
+  .rail.open{position:absolute;inset:0 auto 0 0;z-index:30}
+  .dash{padding:18px 12px 36px}
+  .dash .card{padding:16px 12px}
+  .dash .ap-table{table-layout:fixed}
+  .dash .ap-totals{gap:20px}
+  .dash .sb-row{grid-template-columns:20px minmax(0,1fr) 40px;gap:8px}
+  .dash .sb-chip{max-width:100%;overflow-wrap:anywhere;min-width:0}
+  .dash .sb-bar{grid-column:2;grid-row:2}
+  .dash .sb-count{grid-column:3;grid-row:1}
+}

@@ -90,12 +90,12 @@ function MiniSpark({ data }: { data: number[] }) {
 
 export function Dashboard({ profile, status }: { profile: string | null; status?: StatusData }) {
   const qc = useQueryClient();
+  const demo = isDemoMode();
   const [range, setRange] = useState<7 | 30 | 90>(30);
-  // Polling pauses only on an explicit click (reduced-motion users keep live
-  // data, they just don't get the pill or the animated ping). `chartLive`
-  // gates the *animation* — off when paused or when motion is reduced.
+  // Reduced-motion users retain live data and the pause control, without animation.
   const [paused, setPaused] = useState(false);
-  const chartLive = !paused && !REDUCED_MOTION;
+  const chartLive = !demo && !paused && !REDUCED_MOTION;
+  const [stopError, setStopError] = useState<string | null>(null);
   const detail = useProfileDetail(profile ?? undefined);
   // SSE drives live updates; the poll is just a slow safety net (and the only
   // source in demo mode / if EventSource is unavailable). Frozen when paused.
@@ -132,7 +132,7 @@ export function Dashboard({ profile, status }: { profile: string | null; status?
   const labelCount = Math.min(8, daily.length);
   const dayLabels = labelCount
     ? Array.from({ length: labelCount }, (_, i) => {
-        const idx = Math.round((i / (labelCount - 1)) * (daily.length - 1));
+        const idx = labelCount === 1 ? 0 : Math.round((i / (labelCount - 1)) * (daily.length - 1));
         return daily[idx]?.date.slice(5) ?? "";
       })
     : [];
@@ -140,6 +140,9 @@ export function Dashboard({ profile, status }: { profile: string | null; status?
   const durations = status?.durations;
   const totalSessions = status?.totalSessions ?? 0;
   const windowSessions = activity.reduce((a, v) => a + v, 0);
+  const gate = status?.gates?.overall;
+  const gateColor = gate === "pass" ? "var(--green)" : gate === "fail" ? "var(--red)" : "var(--fg3)";
+  const gateMark = gate === "pass" ? "✓" : gate === "fail" ? "!" : "—";
 
   // Leaderboard: sessions-per-profile from the telemetry window, ranked.
   const leaderboard = [...(timeline.data?.profiles ?? [])].sort((a, b) => b.sessions - a.sessions).slice(0, 7);
@@ -148,12 +151,14 @@ export function Dashboard({ profile, status }: { profile: string | null; status?
   const live = sessions.data?.supported ? sessions.data.sessions : [];
 
   const stop = async (pid: number) => {
+    setStopError(null);
     try { await postJson("/sessions/kill", { pid }); await qc.invalidateQueries({ queryKey: ["active-sessions"] }); }
-    catch { /* surfaced to the user via the row staying put */ }
+    catch (error) { setStopError(error instanceof Error ? error.message : "Could not stop the session."); }
   };
 
   return (
     <div className="dash">
+      {demo && <div className="ap-note" role="status">Sample data — demo profiles and activity, not your local workspace.</div>}
       {/* top metric bands */}
       <div className="bands">
         <div className="band">
@@ -168,28 +173,28 @@ export function Dashboard({ profile, status }: { profile: string | null; status?
         <div className="band">
           <div className="band-top"><BandIco type="usage" /><span className="band-h">Usage</span><span className="band-tag">{range}d</span></div>
           <div className="usage-main">
-            <div className="usage-hero"><div className="mt-n">{abbrev(totalSessions)}</div><div className="mt-l">sessions</div></div>
+            <div className="usage-hero"><div className="mt-n">{timeline.data ? abbrev(windowSessions) : "—"}</div><div className="mt-l">sessions</div></div>
             <MiniSpark data={activity} />
           </div>
           <div className="usage-sub">
-            <span><b>{durations ? fmtDuration(durations.avgS) : "—"}</b> avg session</span><span className="dotsep">·</span>
-            <span><b>{durations ? fmtDuration(durations.totalS) : "—"}</b> tracked</span>
+            <span><b>{durations ? fmtDuration(durations.avgS) : "—"}</b> all-time avg</span><span className="dotsep">·</span>
+            <span><b>{durations ? fmtDuration(durations.totalS) : "—"}</b> all-time tracked</span>
           </div>
         </div>
         <div className="band">
-          <div className="band-top"><BandIco type="health" /><span className="band-h">Health</span><span className={"band-tag" + (status?.gates?.overall === "fail" ? "" : " ok")}>{status?.gates?.overall === "fail" ? "● fail" : "● live"}</span></div>
+          <div className="band-top"><BandIco type="health" /><span className="band-h">Health</span><span className={"band-tag" + (gate === "pass" ? " ok" : "")}>{gate === "pass" ? "● pass" : gate === "fail" ? "● fail" : "not checked"}</span></div>
           <div className="health-main">
             <div className="ring-wrap">
               <svg className="ring" viewBox="0 0 74 74">
                 <circle className="ring-bg" cx="37" cy="37" r="31" />
-                <circle className="ring-fg" cx="37" cy="37" r="31" strokeDasharray="194.8" strokeDashoffset="0" transform="rotate(-90 37 37)" style={status?.gates?.overall === "fail" ? { stroke: "var(--red)" } : undefined} />
+                <circle className="ring-fg" cx="37" cy="37" r="31" strokeDasharray="194.8" strokeDashoffset="0" transform="rotate(-90 37 37)" style={{ stroke: gateColor }} />
               </svg>
-              <div className="ring-check" style={status?.gates?.overall === "fail" ? { color: "var(--red)" } : undefined}>{status?.gates?.overall === "fail" ? "!" : "✓"}</div>
+              <div className="ring-check" style={{ color: gateColor }}>{gateMark}</div>
             </div>
             <div className="health-rows">
-              <div className="hrow"><span className="hdot ok"></span>Gates <b>{status?.gates ? (status.gates.overall === "fail" ? "failing" : "passed") : "—"}</b></div>
-              <div className="hrow"><span className="hdot ok"></span><b>{status?.warnings?.length ?? 0}</b> warnings</div>
-              <div className="hrow"><span className="hdot ok"></span>Telemetry <b>{status?.telemetryEnabled ? "on" : "off"}</b></div>
+              <div className="hrow"><span className="hdot" style={{ background: gateColor }}></span>Gates <b>{gate === "pass" ? "passed" : gate === "fail" ? "failing" : "not checked"}</b></div>
+              <div className="hrow"><span className="hdot"></span><b>{status?.warnings?.length ?? "—"}</b> warnings</div>
+              <div className="hrow"><span className="hdot"></span>Telemetry <b>{status ? (status.telemetryEnabled ? "on" : "off") : "—"}</b></div>
             </div>
           </div>
         </div>
@@ -201,23 +206,26 @@ export function Dashboard({ profile, status }: { profile: string | null; status?
           <div>
             <div className="card-title">
               Activity over time
-              {!REDUCED_MOTION && (
-                <span
+              {!demo && (
+                <button type="button"
                   className={"chart-live" + (paused ? " off" : "")}
                   onClick={() => setPaused((v) => !v)}
+                  aria-pressed={!paused}
                   title={paused ? "resume live updates" : "pause live updates"}
                 >
                   <span className="cl-dot" />{paused ? "paused" : "live"}
-                </span>
+                </button>
               )}
             </div>
-            <div className="card-sub"><b>{windowSessions}</b> sessions · last {range}d</div>
+            <div className="card-sub">{timeline.data ? <><b>{windowSessions}</b> sessions · last {range}d</> : timeline.isError ? "Activity unavailable" : "Loading activity…"}</div>
           </div>
           <div className="seg">
             {([7, 30, 90] as const).map((r) => <button key={r} className={range === r ? "on" : ""} onClick={() => setRange(r)}>{r}d</button>)}
             <span className="seg-link">cue stats</span>
           </div>
         </div>
+        {timeline.isError && <div className="ap-note" role="alert">Could not load activity: {timeline.error.message} <button type="button" onClick={() => void timeline.refetch()}>Retry activity</button></div>}
+        {timeline.data && daily.length === 0 && <div className="ap-note">No activity recorded in this period.</div>}
         <svg className="chart" viewBox={`0 0 ${W} ${H}`} preserveAspectRatio="none">
           <defs>
             <linearGradient id="g" x1="0" y1="0" x2="0" y2="1">
@@ -259,14 +267,14 @@ export function Dashboard({ profile, status }: { profile: string | null; status?
           <Stat n={counts?.plugins ?? status?.profile?.plugins ?? "—"} label="plugins" />
           <Stat n={abbrev(totalSessions)} label="sessions" />
           <Stat n={status?.warnings?.length ?? 0} label="warnings" accent="green" />
-          <Stat n={status?.gates?.overall === "fail" ? "✕" : <span className="ok-check">✓</span>} label="gates" accent="green" />
+          <Stat n={<span style={{ color: gateColor }}>{gateMark}</span>} label="gates" />
         </div>
       </div>
 
       {/* sessions */}
       <div className="card">
         <div className="card-head">
-          <div className="card-title"><span className="live-dot"></span>Active agent sessions <span className="ct-muted">({live.length})</span></div>
+          <div className="card-title"><span className="live-dot"></span>{demo ? "Sample agent sessions" : "Active agent sessions"} <span className="ct-muted">({sessions.data ? live.length : "—"})</span></div>
           <span className="seg-link">cue dashboard</span>
         </div>
         {leaderboard.length > 0 && (
@@ -288,7 +296,11 @@ export function Dashboard({ profile, status }: { profile: string | null; status?
             })}
           </div>
         )}
-        {sessions.data && !sessions.data.supported ? (
+        {stopError && <div className="ap-note" role="alert">{stopError}</div>}
+        {sessions.isError && <div className="ap-note" role="alert">Could not load sessions: {sessions.error.message} <button type="button" onClick={() => void sessions.refetch()}>Retry sessions</button></div>}
+        {!sessions.data ? (
+          !sessions.isError && <div className="ap-note" role="status">Loading sessions…</div>
+        ) : !sessions.data.supported ? (
           <div className="ap-note">Live session scan needs Linux /proc — not available on this platform.</div>
         ) : live.length === 0 ? (
           <div className="ap-note">No live cue-launched sessions right now.</div>
@@ -315,7 +327,7 @@ export function Dashboard({ profile, status }: { profile: string | null; status?
                   </div>
                   <div className="sr-pid">{s.pid}</div>
                   <div className="sr-up"><span className={"sr-upbadge" + (fresh ? " fresh" : "")}>{up}</span></div>
-                  <div className="sr-act"><button className="sr-stop" onClick={() => stop(s.pid)}>stop</button></div>
+                  <div className="sr-act"><button className="sr-stop" disabled={demo} title={demo ? "Run cue locally to manage sessions" : undefined} onClick={() => stop(s.pid)}>stop</button></div>
                 </div>
               );
             })}
