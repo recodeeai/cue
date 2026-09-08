@@ -15,6 +15,7 @@ export interface Run {
     taskSha256: string;
     guidanceSha256: string;
     instructionsSha256: string;
+    executionSha256?: string;
   };
   usage: ReturnType<typeof readTokenUsage>;
 }
@@ -32,6 +33,7 @@ export function readRuns(root: string): Run[] {
       const usage = data?.analysis?.tokenUsage ?? null;
       if (!meta || !["before", "after"].includes(meta.variant)
         || !["model", "skillSha256", "taskSha256", "guidanceSha256", "instructionsSha256"].every((key) => typeof meta[key] === "string" && meta[key])
+        || (meta.executionSha256 !== undefined && (typeof meta.executionSha256 !== "string" || !/^[a-f0-9]{64}$/.test(meta.executionSha256)))
         || !["passed", "failed"].includes(data.status) || !Number.isFinite(data.duration) || data.duration < 0
         || (data.observedModel !== undefined && typeof data.observedModel !== "string")
         || (usage !== null && (![usage.inputTokens, usage.cachedInputTokens, usage.outputTokens]
@@ -55,6 +57,7 @@ export function compareRuns(before: Run[], after: Run[]) {
     for (const run of runs) {
       if (run.metadata.variant !== variant || run.metadata.model !== first.metadata.model
         || run.metadata.skillSha256 !== first.metadata.skillSha256
+        || run.metadata.executionSha256 !== first.metadata.executionSha256
         || run.metadata.guidanceSha256 !== reference.metadata.guidanceSha256
         || run.metadata.instructionsSha256 !== reference.metadata.instructionsSha256
         || (run.observedModel !== undefined && run.observedModel !== first.metadata.model)) {

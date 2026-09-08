@@ -8,11 +8,11 @@
     "dry": "agent-eval --dry",
     "smoke": "agent-eval --smoke",
     "eval": "agent-eval",
-    "skill:dry": "bun skill-ab/experiment.ts && cd skill-ab && agent-eval run-all --dry --force ponytail-before ponytail-after",
-    "skill:smoke": "bun skill-ab/experiment.ts --require-key && cd skill-ab && agent-eval run-all --smoke --force ponytail-before ponytail-after",
-    "skill:eval": "bun skill-ab/experiment.ts --require-key && cd skill-ab && agent-eval run-all --force ponytail-before ponytail-after",
+    "skill:dry": "bun skill-ab/local.ts --dry",
+    "skill:smoke": "bun skill-ab/local.ts --smoke",
+    "skill:eval": "bun skill-ab/local.ts --full",
     "skill:report": "bun skill-ab/report.ts",
-    "skill:test": "bun test skill-ab/contract.test.ts skill-ab/report.test.ts"
+    "skill:test": "bun test skill-ab/contract.test.ts skill-ab/report.test.ts skill-ab/local.test.ts"
   },
   "devDependencies": {
     "@vercel/agent-eval": "1.2.0",

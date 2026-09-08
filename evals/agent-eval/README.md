@@ -75,7 +75,7 @@ a full run on a small task set.
 
 This is separate from the profile experiments above: `skill-ab/` compares
 the Cue guidance before and after PR #184, with the **same complete upstream
-Ponytail skill body** included directly in sandbox `AGENTS.md`. It does not
+Ponytail skill body** injected directly as Codex developer instructions. It does not
 depend on the agent discovering or opening a skill. It measures instruction
 content, not skill routing, hooks, MCPs, or the full Cue launch.
 
@@ -92,11 +92,12 @@ Only the integration guidance differs between the arms.
 
 ### Run
 
-Use the existing dependencies in this directory (agent-eval is pinned to
-1.2.0). The local contract tests and report command use Bun; grader self-tests
-also use Node. Docker and `OPENAI_API_KEY` are needed for model runs, but **not**
-for `skill:test` or `skill:dry`. Set the key privately in your environment;
-do not commit it or copy your personal Codex auth file into a sandbox.
+Use Bun, Node, and an installed Codex CLI on Linux or macOS. Model runs use
+your **existing ChatGPT Codex login**, not an API key or Docker. Check it with
+`codex login status`; sign in with `codex login` if needed.
+The runner reuses the CLI's authentication in place: it never reads or copies
+`auth.json`. API-key environment variables are not forwarded to child processes.
+Use this only locally with the bundled trusted fixtures, never in public CI.
 
 ```bash
 cd evals/agent-eval
@@ -107,18 +108,37 @@ export CUE_EVAL_SKILL="/absolute/path/to/ponytail/SKILL.md"
 
 bun run skill:test   # offline contract/grader checks, no model calls
 bun run skill:dry    # preview the two arms and five tasks, no model calls
-bun run skill:smoke  # PAID: one task per arm, only a setup check
-bun run skill:eval   # PAID: 2 arms × 5 tasks × 3 runs = 30 agent runs
+bun run skill:smoke  # existing Codex account: one task per arm, a setup check
+bun run skill:eval   # existing Codex account: 2 × 5 × 3 = 30 agent runs
 ```
 
 Both arms require the same explicit model ID; native defaults are refused.
-They use Docker, a 300-second per-run timeout, and `earlyExit: false`.
-The commands always use `--force`: agent-eval 1.2.0 cannot fingerprint setup
-function contents, so cached results must not hide a guidance change.
-See the [upstream result-reuse contract](https://github.com/vercel-labs/agent-eval#result-reuse).
-No new model runs are added to the existing profile-eval commands or CI.
-The scripts preflight both variants before invoking the CLI: in 1.2.0,
-`run-all` can otherwise print config-load errors and still exit successfully.
+They invoke the real CLI via `codex exec --json`, bypassing Cue's launch shim,
+with a 300-second per-run timeout and fixed medium reasoning effort.
+`-p` means configuration profile in Codex, not a print/prompt mode.
+Runs consume your account's Codex allowance; subscription access is not unlimited.
+See [official non-interactive authentication](https://learn.chatgpt.com/docs/non-interactive-mode#authenticate-in-automation).
+
+Each run starts in a new temporary workspace. User config is ignored, the project
+document budget is set to zero, and frozen skill plus guidance is injected
+explicitly. Installed user-level skills/instructions may still be exposed by the
+CLI: keep the same local Codex environment for both arms. This is not a hermetic
+replacement for the historical Docker experiment.
+Codex keeps its workspace-write sandbox and approval policy `never`;
+the runner does not bypass sandbox restrictions. Hidden assertions run afterward
+through Node in Codex's `:read-only` sandbox, with an empty temporary home and no
+login credentials. These are local CLI sandboxes, not Docker confidentiality
+boundaries: use trusted tasks only. Graders are withheld from the task workspace,
+not made unreadable everywhere on the host.
+
+Every invocation creates fresh results; there is no result reuse. The runner
+records a Codex-version/execution fingerprint and the report refuses mixed local
+and historical Docker results. Each full task runs all repetitions, alternating
+arm order. Auth, process, timeout, and sandbox-startup failures abort rather than
+becoming model scores. Ordinary grader failures are saved for comparison and
+produce a nonzero final exit code. No model runs are added to CI.
+For an opt-in real sandbox check without model calls:
+`CUE_EVAL_NATIVE_SANDBOX=1 bun run skill:test`.
 
 ### What is checked
 
@@ -134,8 +154,9 @@ Graders execute behavior rather than search for implementation keywords. Existin
 checks and package contracts must remain intact. `EVAL.ts` is withheld from the
 agent by agent-eval. Host-only self-tests prove each grader rejects the broken
 starter and accepts a reference repair; those repairs are outside fixture folders.
-Each fixture pins Vitest 2.1.0 for Docker validation. Offline self-tests run the
-same assertions through Node's test runner, not Docker or a model invocation.
+Each fixture retains Vitest 2.1.0 for the historical Docker configs. The native
+runner and offline self-tests use the same assertions through Node's test runner;
+the native path installs no dependencies.
 These are synthetic starter tasks, not a representative production benchmark.
 
 ### Compare
@@ -145,13 +166,14 @@ results directory:
 
 ```bash
 bun run skill:report \
-  skill-ab/results/ponytail-before/<timestamp> \
-  skill-ab/results/ponytail-after/<timestamp>
+  skill-ab/results/codex-local/<timestamp>/before \
+  skill-ab/results/codex-local/<timestamp>/after
 ```
 
 The JSON report includes overall and per-task pass rates, task-level decreases
 in passing runs, mean elapsed seconds, and mean input-plus-output tokens.
-Elapsed time is the runner's reported duration, not isolated model latency.
+Elapsed time covers the Codex process, including its tools, but not the grader.
+It is not isolated model latency.
 It refuses incomplete samples, known infrastructure-invalid summaries, and
 mismatched models, task hashes, or skill/guidance hashes. Snapshot hashes are
 saved in each run's `metadata.cueSkillAb`.

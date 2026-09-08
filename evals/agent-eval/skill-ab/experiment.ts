@@ -102,9 +102,6 @@ if (process.argv[1] && resolve(process.argv[1]) === fileURLToPath(import.meta.ur
   try {
     loadExperiment("before");
     loadExperiment("after");
-    if (process.argv.includes("--require-key") && !process.env.OPENAI_API_KEY?.trim()) {
-      throw new Error("OPENAI_API_KEY is required for paid Codex runs. No model calls were made.");
-    }
     console.log("Ponytail A/B preflight: both variants validated.");
   } catch (error) {
     console.error(error instanceof Error ? error.message : String(error));

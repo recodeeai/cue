@@ -1,13 +1,13 @@
 {
   "compilerOptions": {
     "target": "ES2022",
-    "module": "NodeNext",
-    "moduleResolution": "NodeNext",
+    "module": "ESNext",
+    "moduleResolution": "Bundler",
     "strict": true,
     "skipLibCheck": true,
     "noEmit": true,
     "lib": ["ES2022"],
     "types": ["node"]
   },
-  "include": ["experiments", "lib", "skill-ab/experiment.ts", "skill-ab/report.ts", "skill-ab/experiments"]
+  "include": ["experiments", "lib", "skill-ab/experiment.ts", "skill-ab/report.ts", "skill-ab/local.ts", "skill-ab/experiments"]
 }

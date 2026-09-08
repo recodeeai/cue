@@ -153,6 +153,18 @@ for (const [name, repair] of Object.entries(repairs)) {
       if (fixed.status !== 0) throw new Error(fixed.stdout + fixed.stderr);
       expect(fixed.stdout + fixed.stderr).not.toContain("Cannot find");
       expect(fixed.status).toBe(0);
+      if (name === "stable-dedupe") {
+        writeFileSync(join(scratch, "src/index.js"), `export function uniqueBy(items, keyOf) {
+          const seen = Object.create(null);
+          return items.filter(item => {
+            const key = keyOf(item);
+            if (seen[key]) return false;
+            seen[key] = true;
+            return true;
+          });
+        }`);
+        expect(run().status).not.toBe(0);
+      }
       if (name === "async-cleanup") {
         writeFileSync(join(scratch, "src/index.js"), `export async function withResource(open, action) {
           const resource = await open();
