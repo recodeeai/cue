@@ -192,6 +192,13 @@ description: Use when user says "a", "b", "c", "d", "e", "f", "g", "h".
 });
 
 describe("renderRouter overrides", () => {
+  test("composite duplicates collapse while distinct notes remain", () => {
+    const row = { skill: "tools/opensrc", capability: "Fetch source", phrase: "read source" };
+    const single = renderRouter([], { overrides: [row] });
+    const repeated = renderRouter([], { overrides: [row, { phrase: row.phrase, capability: row.capability, skill: row.skill }, row] });
+    expect(repeated).toBe(single);
+    expect(renderRouter([], { overrides: [row, { ...row, note: "distinct" }] })).toContain("distinct");
+  });
   test("manual phrase override appears in trigger table with ✎ marker", () => {
     const md = renderRouter(
       [parseSkillFromContent("higgsfield/higgsfield-generate", HIGGS_GEN)],

@@ -88,7 +88,7 @@ describe("materializeRuntime", () => {
       skills: { local: [], npx: [] },
       mcps: [],
       plugins: [],
-      personaIncludes: [personaPath],
+      personaIncludes: [personaPath, personaPath],
       inheritanceChain: ["test-persona-content-hash"],
     } as unknown as ResolvedProfile;
     const input = {
@@ -102,6 +102,7 @@ describe("materializeRuntime", () => {
 
     const first = await materializeRuntime(input);
     expect(first.rebuilt).toBe(true);
+    expect((await readFile(join(first.runtimeDir, "CLAUDE.md"), "utf8")).split("first persona policy")).toHaveLength(2);
     await writeFile(personaPath, "second persona policy\n");
 
     const second = await materializeRuntime(input);
@@ -490,6 +491,11 @@ describe("materializeRuntime", () => {
         hooks: { SessionStart: [omxHook, cueHook], PreToolUse: [omxHook], Stop: [cueHook] },
       });
     }
+    await materializeRuntime({ ...opts, profile: { ...profile, codex: {} } });
+    expect(JSON.parse(await readFile(hooksPath, "utf8"))).toEqual({
+      metadata: "preserve", hooks: { SessionStart: [omxHook], PreToolUse: [omxHook] },
+    });
+    expect(JSON.parse(await readFile(join(first.runtimeDir, ".cue-hooks.json"), "utf8"))).toEqual({ version: 1, hooks: {} });
     await writeFile(hooksPath, "invalid JSON");
     await expect(materializeRuntime({
       ...opts, profile: { ...profile, description: "invalid hook file" },
@@ -497,7 +503,7 @@ describe("materializeRuntime", () => {
     expect(await readFile(hooksPath, "utf8")).toBe("invalid JSON");
   });
 
-  test("codex rebuild preserves rollout and thread-store state", async () => {
+  test("codex rebuild preserves rollout, thread store and exact runtime-local approvals", async () => {
     const profile: ResolvedProfile = {
       ...sampleProfile,
       name: "test-codex-state",
@@ -526,6 +532,8 @@ describe("materializeRuntime", () => {
       join(first.runtimeDir, "thread_history_1.sqlite"),
       "thread-state",
     );
+    const state = '[projects."/runtime-only"]\ntrust_level = "trusted"\n\n[hooks.state."approved-hash"]\nenabled = true\n\n[hooks.state."disabled-hash"]\nenabled = false\n';
+    await writeFile(join(first.runtimeDir, "config.toml"), 'model = "stale-model"\n' + state);
 
     const rebuilt = await materializeRuntime({
       ...opts,
@@ -533,6 +541,12 @@ describe("materializeRuntime", () => {
     });
 
     expect(rebuilt.rebuilt).toBe(true);
+    const rebuiltConfig = await readFile(join(rebuilt.runtimeDir, "config.toml"), "utf8");
+    expect(rebuiltConfig).toContain(state);
+    expect(rebuiltConfig).not.toContain("stale-model");
+    expect(Bun.TOML.parse(rebuiltConfig).hooks).toEqual({ state: { "approved-hash": { enabled: true }, "disabled-hash": { enabled: false } } });
+    const separate = await materializeRuntime({ ...opts, profile: { ...profile, name: "other-runtime" } });
+    expect(await readFile(join(separate.runtimeDir, "config.toml"), "utf8")).not.toContain("runtime-only");
     expect(await readFile(rollout, "utf8")).toContain("response_item");
     expect(
       await readFile(

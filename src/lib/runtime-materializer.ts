@@ -35,7 +35,8 @@ import type {
   CodexProfileConfig,
   ResolvedProfile,
 } from "../../profiles/_types";
-import { buildCodexConfigToml } from "./codex-config";
+import { buildCodexConfigToml, extractRuntimeCodexState } from "./codex-config";
+import { reconcileCodexHooks } from "./codex-hooks";
 import { normalizeUvxGitServers } from "./uvx-installer";
 import { evaluateCondition } from "./conditional-skills";
 import {
@@ -254,7 +255,8 @@ function sortedJson(value: unknown): string {
 //       [features] (reasoning effort, context window, auto-compact). Same
 //       situation — generated content changed, no profile field did.
 //   v5: Codex profile hooks share hooks.json with installed runtime hooks.
-const MATERIALIZER_VERSION = 5;
+//   v6: Retain runtime approvals, track hook ownership, deduplicate instructions.
+const MATERIALIZER_VERSION = 6;
 
 function computeHash(
   profile: ResolvedProfile,
@@ -273,13 +275,17 @@ function computeHash(
 async function readPersonaIncludes(profile: ResolvedProfile): Promise<string> {
   const refs = profile.personaIncludes ?? [];
   let text = "";
+  const included = new Set<string>();
   for (const ref of refs) {
     const path = isAbsolute(ref)
       ? ref
       : join(RESOURCES_PERSONAS, ref.endsWith(".md") ? ref : `${ref}.md`);
     try {
       const content = (await readFile(path, "utf8")).trim();
-      if (content) text += content + "\n\n";
+      if (content && !included.has(content)) {
+        included.add(content);
+        text += content + "\n\n";
+      }
     } catch {
       // Missing snippet — skip silently; cue validate will surface it.
     }
@@ -816,37 +822,21 @@ async function materializeRuntimeUnlocked(
         ...(deferredSkills.length > 0 ? ["cue-deferred-skills"] : []),
       ].map((slug) => join(runtimeDir, "skills", slug, "SKILL.md")),
     });
-    if (overrides.hooks) {
-      // OMX and other installers own hooks.json. Keep their registrations and
-      // emit profile hooks there too, never in both files at the same layer.
-      const raw = await readFile(join(runtimeDir, "hooks.json"), "utf8").catch(
+    const readOptional = (name: string) => readFile(join(runtimeDir, name), "utf8").catch(
         (error: NodeJS.ErrnoException) => {
-          if (error.code === "ENOENT") return "{}";
+          if (error.code === "ENOENT") return undefined;
           throw error;
         },
       );
-      const document = JSON.parse(raw) as { hooks?: Record<string, unknown[]> };
-      if (!document || typeof document !== "object" || Array.isArray(document)) {
-        throw new TypeError("Invalid Codex hooks.json document");
-      }
-      const hooks = document.hooks ?? {};
-      if (typeof hooks !== "object" || Array.isArray(hooks)) {
-        throw new TypeError("Invalid Codex hooks.json hooks map");
-      }
-      for (const [event, entries] of Object.entries(overrides.hooks)) {
-        const existing = hooks[event] ?? [];
-        if (!Array.isArray(entries) || !Array.isArray(existing)) {
-          throw new TypeError(`Invalid Codex hook event: ${event}`);
-        }
-        hooks[event] = [...new Map(
-          [...existing, ...entries].map((entry) => [sortedJson(entry), entry]),
-        ).values()];
-      }
+    const ownedRaw = await readOptional(".cue-hooks.json");
+    if (overrides.hooks || ownedRaw !== undefined) {
+      const { document, owned } = reconcileCodexHooks(await readOptional("hooks.json"), ownedRaw, overrides.hooks);
       await writeFile(
         join(tmpDir, "hooks.json"),
-        JSON.stringify({ ...document, hooks }, null, 2) + "\n",
+        JSON.stringify(document, null, 2) + "\n",
         { mode: 0o600 },
       );
+      await writeFile(join(tmpDir, ".cue-hooks.json"), JSON.stringify(owned, null, 2) + "\n", { mode: 0o600 });
       // The builder emits profile overrides as single-line top-level values.
       config = config.replace(/^hooks = .*\n/m, "");
     }
@@ -1178,46 +1168,19 @@ async function materializeRuntimeUnlocked(
   // profile while Codex is running deletes the active rollout and transcript
   // persistence starts failing with "no rollout found for thread id".
   if (agent === "codex") {
-    const managed = new Set([
-      ".cue-hash",
-      ".cue-skills",
-      "AGENTS.md",
-      "config.toml",
-      "playbooks",
-      "rules",
-      "skills",
-    ]);
-    let oldEntries: string[] = [];
-    try {
-      oldEntries = await readdir(runtimeDir);
-    } catch {
-      /* first build */
+    // Read as late as possible, before moving any durable state. An unreadable
+    // file must not be mistaken for a first launch.
+    const oldConfig = await readFile(join(runtimeDir, "config.toml"), "utf8").catch(
+      (error: NodeJS.ErrnoException) => {
+        if (error.code === "ENOENT") return "";
+        throw error;
+      },
+    );
+    const localState = extractRuntimeCodexState(oldConfig);
+    if (localState) {
+      const configPath = join(tmpDir, "config.toml");
+      await writeFile(configPath, (await readFile(configPath, "utf8")) + "\n" + localState, { mode: 0o600 });
     }
-    for (const name of oldEntries) {
-      if (managed.has(name)) continue;
-      const oldPath = join(runtimeDir, name);
-      const newPath = join(tmpDir, name);
-      try {
-        await lstat(newPath);
-        continue; // a freshly generated entry wins
-      } catch {
-        /* absent in the new runtime — preserve the old one */
-      }
-      try {
-        await rename(oldPath, newPath);
-      } catch {
-        /* best-effort per entry */
-      }
-    }
-  }
-
-  // Codex writes durable thread state directly into CODEX_HOME (sessions/,
-  // history.jsonl, thread-store SQLite files, writer locks, etc.). Unlike
-  // Claude, it has no credentialsSource overlay, so an atomic rematerialization
-  // must carry every non-cue-managed entry forward. Otherwise changing a
-  // profile while Codex is running deletes the active rollout and transcript
-  // persistence starts failing with "no rollout found for thread id".
-  if (agent === "codex") {
     const managed = new Set([
       ".cue-hash",
       ".cue-skills",
