@@ -458,6 +458,45 @@ describe("materializeRuntime", () => {
     ).rejects.toThrow();
   });
 
+  test("codex keeps profile and installed hooks in one JSON representation across rebuilds", async () => {
+    const cueHook = { hooks: [{ type: "command", command: "cue handoff hook" }] };
+    const omxHook = { hooks: [{ type: "command", command: "omx-hook" }] };
+    const profile: ResolvedProfile = {
+      ...sampleProfile,
+      agents: ["codex"],
+      codex: { hooks: { SessionStart: [cueHook], Stop: [cueHook] } },
+    };
+    const opts = {
+      profile,
+      agent: "codex" as const,
+      runtimeRoot: join(root, "runtime"),
+      skillSourceLookup: async (id: string) => `/fake/skills/${id}`,
+      mcpRegistry: {},
+      userClaudeMd: "",
+    };
+    const first = await materializeRuntime(opts);
+    const hooksPath = join(first.runtimeDir, "hooks.json");
+    expect(JSON.parse(await readFile(hooksPath, "utf8")).hooks.SessionStart).toEqual([cueHook]);
+    await writeFile(hooksPath, JSON.stringify({
+      metadata: "preserve",
+      hooks: { SessionStart: [omxHook, cueHook], PreToolUse: [omxHook] },
+    }));
+    for (const description of ["rebuild once", "rebuild twice"]) {
+      await materializeRuntime({ ...opts, profile: { ...profile, description } });
+      const config = Bun.TOML.parse(await readFile(join(first.runtimeDir, "config.toml"), "utf8"));
+      expect(config.hooks).toBeUndefined();
+      expect(JSON.parse(await readFile(hooksPath, "utf8"))).toEqual({
+        metadata: "preserve",
+        hooks: { SessionStart: [omxHook, cueHook], PreToolUse: [omxHook], Stop: [cueHook] },
+      });
+    }
+    await writeFile(hooksPath, "invalid JSON");
+    await expect(materializeRuntime({
+      ...opts, profile: { ...profile, description: "invalid hook file" },
+    })).rejects.toThrow();
+    expect(await readFile(hooksPath, "utf8")).toBe("invalid JSON");
+  });
+
   test("codex rebuild preserves rollout and thread-store state", async () => {
     const profile: ResolvedProfile = {
       ...sampleProfile,

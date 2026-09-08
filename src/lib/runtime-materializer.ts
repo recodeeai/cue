@@ -253,7 +253,8 @@ function sortedJson(value: unknown): string {
 //   v4: Codex config.toml inherits the base config's top-level keys +
 //       [features] (reasoning effort, context window, auto-compact). Same
 //       situation — generated content changed, no profile field did.
-const MATERIALIZER_VERSION = 4;
+//   v5: Codex profile hooks share hooks.json with installed runtime hooks.
+const MATERIALIZER_VERSION = 5;
 
 function computeHash(
   profile: ResolvedProfile,
@@ -804,19 +805,52 @@ async function materializeRuntimeUnlocked(
     // config's autonomy knobs (reasoning effort, context window, auto-compact,
     // [features]) and its skill overrides or the session silently diverges from
     // the user's canonical Codex setup.
-    await writeFile(
-      join(tmpDir, "config.toml"),
-      buildCodexConfigToml({
-        baseText: codexBaseText,
-        overrides: effectiveCodexOverrides(profile),
-        mcpServers,
-        disabledSkillPaths: effectiveInput.codexExternalSkillPaths,
-        enabledSkillPaths: [
-          ...slugToSrc.keys(),
-          ...(deferredSkills.length > 0 ? ["cue-deferred-skills"] : []),
-        ].map((slug) => join(runtimeDir, "skills", slug, "SKILL.md")),
-      }),
-    );
+    const overrides = effectiveCodexOverrides(profile) ?? {};
+    let config = buildCodexConfigToml({
+      baseText: codexBaseText,
+      overrides,
+      mcpServers,
+      disabledSkillPaths: effectiveInput.codexExternalSkillPaths,
+      enabledSkillPaths: [
+        ...slugToSrc.keys(),
+        ...(deferredSkills.length > 0 ? ["cue-deferred-skills"] : []),
+      ].map((slug) => join(runtimeDir, "skills", slug, "SKILL.md")),
+    });
+    if (overrides.hooks) {
+      // OMX and other installers own hooks.json. Keep their registrations and
+      // emit profile hooks there too, never in both files at the same layer.
+      const raw = await readFile(join(runtimeDir, "hooks.json"), "utf8").catch(
+        (error: NodeJS.ErrnoException) => {
+          if (error.code === "ENOENT") return "{}";
+          throw error;
+        },
+      );
+      const document = JSON.parse(raw) as { hooks?: Record<string, unknown[]> };
+      if (!document || typeof document !== "object" || Array.isArray(document)) {
+        throw new TypeError("Invalid Codex hooks.json document");
+      }
+      const hooks = document.hooks ?? {};
+      if (typeof hooks !== "object" || Array.isArray(hooks)) {
+        throw new TypeError("Invalid Codex hooks.json hooks map");
+      }
+      for (const [event, entries] of Object.entries(overrides.hooks)) {
+        const existing = hooks[event] ?? [];
+        if (!Array.isArray(entries) || !Array.isArray(existing)) {
+          throw new TypeError(`Invalid Codex hook event: ${event}`);
+        }
+        hooks[event] = [...new Map(
+          [...existing, ...entries].map((entry) => [sortedJson(entry), entry]),
+        ).values()];
+      }
+      await writeFile(
+        join(tmpDir, "hooks.json"),
+        JSON.stringify({ ...document, hooks }, null, 2) + "\n",
+        { mode: 0o600 },
+      );
+      // The builder emits profile overrides as single-line top-level values.
+      config = config.replace(/^hooks = .*\n/m, "");
+    }
+    await writeFile(join(tmpDir, "config.toml"), config);
   }
 
   // 3. CLAUDE.md with stamp + role identity
