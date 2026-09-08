@@ -104,7 +104,7 @@ async function getValidator(): Promise<ValidateFunction> {
  * subpath. Returns the main-dir path even when nothing exists, so
  * downstream "not found" errors still point at the conventional location.
  */
-function profileYamlPath(name: string): string {
+export function profileYamlPath(name: string): string {
   const main = join(profilesDir(), name, "profile.yaml");
   // Try the shared fallback only when the name has the namespaced shape
   // (`user-repo`, no further hyphens beyond what would parse as a single
