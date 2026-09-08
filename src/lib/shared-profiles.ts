@@ -13,10 +13,13 @@
  * which already understands `CUE_SHARED_PROFILES_DIR` as an extra search path.
  */
 
-import { existsSync, mkdirSync, readdirSync, readFileSync, renameSync, rmSync, statSync, writeFileSync } from "node:fs";
+import { existsSync, lstatSync, mkdirSync, readdirSync, readFileSync, renameSync, rmSync, statSync, writeFileSync } from "node:fs";
 import { homedir } from "node:os";
 import { dirname, join } from "node:path";
+import Ajv, { type ValidateFunction } from "ajv";
+import { isMap, parse as parseYaml, parseDocument } from "yaml";
 import { cacheDir } from "./config-paths";
+import { repoRoot } from "./repo-root";
 
 export interface SharedRef {
   /** Originating GitHub user / org. */
@@ -46,7 +49,15 @@ export function sharedRoot(): string {
 
 /** Local install path for a given shared ref. */
 export function sharedProfileDir(ref: SharedRef): string {
+  if (!validShareRef(ref)) throw new Error("Invalid GitHub profile reference");
   return join(sharedRoot(), ref.user, ref.repo);
+}
+
+function validShareRef(ref: SharedRef): boolean {
+  const segment = (value: string) => /^[A-Za-z0-9_-][A-Za-z0-9_.-]*$/.test(value) && value !== "." && value !== "..";
+  const path = (value: string) => value.split("/").every(segment);
+  return /^[A-Za-z0-9][A-Za-z0-9_-]*$/.test(ref.user) && segment(ref.repo)
+    && (!ref.ref || path(ref.ref)) && (!ref.subpath || path(ref.subpath));
 }
 
 /**
@@ -77,23 +88,25 @@ export function parseShareRef(input: string): SharedRef | null {
     /^(?:https?:\/\/)?github\.com\/([^/\s]+)\/([^/\s]+?)(?:\.git)?(?:\/(?:tree|blob)\/([^/\s]+)(?:\/(.+?))?)?\/?$/,
   );
   if (urlMatch) {
-    return {
+    const ref = {
       user: urlMatch[1]!,
       repo: urlMatch[2]!,
       ref: urlMatch[3],
       subpath: urlMatch[4],
     };
+    return validShareRef(ref) ? ref : null;
   }
 
   // Shorthand `user/repo` or `user/repo@ref` or `user/repo:path`.
   const short = trimmed.match(/^([a-zA-Z0-9][\w.-]*)\/([\w.-]+?)(?:@([\w./-]+))?(?::(.+))?$/);
   if (short) {
-    return {
+    const ref = {
       user: short[1]!,
       repo: short[2]!,
       ref: short[3],
       subpath: short[4],
     };
+    return validShareRef(ref) ? ref : null;
   }
 
   return null;
@@ -104,6 +117,7 @@ export function parseShareRef(input: string): SharedRef | null {
  * with a profile.yaml wins. Empty `ref` falls through `main` → `master`.
  */
 export function candidateProfileUrls(ref: SharedRef): string[] {
+  if (!validShareRef(ref)) throw new Error("Invalid GitHub profile reference");
   const refs = ref.ref ? [ref.ref] : ["main", "master"];
   const paths: string[] = [];
   if (ref.subpath) {
@@ -172,7 +186,7 @@ export async function fetchProfileYaml(
     try {
       // Bound each request so a hung raw.githubusercontent.com response can't
       // stall the install indefinitely; a timeout throws → try the next URL.
-      res = await fetcher(url, { signal: AbortSignal.timeout(10_000) });
+      res = await fetcher(url, { signal: AbortSignal.timeout(10_000), redirect: "error" });
     } catch {
       continue;
     }
@@ -197,18 +211,42 @@ export async function fetchProfileYaml(
  * `dropSkillsFromYaml` in prune.ts.
  */
 export function namespaceProfileYaml(body: string, namespacedName: string): string {
-  const lines = body.split("\n");
-  for (let i = 0; i < lines.length; i++) {
-    const m = lines[i]!.match(/^(\s*)name\s*:\s*.+$/);
-    if (m && i < 5) {
-      // `name:` is conventionally the first key; bounding to the first
-      // few lines avoids accidentally rewriting a nested key.
-      lines[i] = `${m[1]}name: ${namespacedName}`;
-      return lines.join("\n");
+  const document = parseDocument(body);
+  if (document.errors.length) throw new Error(`Invalid profile YAML: ${document.errors[0]!.message}`);
+  if (isMap(document.contents)) {
+    const name = document.contents.get("name", true);
+    if (name?.range) {
+      return body.slice(0, name.range[0]) + namespacedName + body.slice(name.range[1]);
     }
   }
   // No `name:` line found — prepend one so the loader doesn't barf.
   return `name: ${namespacedName}\n${body}`;
+}
+
+let sharedValidator: ValidateFunction | undefined;
+
+/** Validate both fetched YAML and its local name against Cue's canonical schema. */
+function validateSharedProfile(body: string): void {
+  if (Buffer.byteLength(body, "utf8") > 1_000_000) throw new Error("Profile YAML exceeds 1 MB");
+  sharedValidator ??= new Ajv({ allErrors: true, strict: false, useDefaults: false }).compile(
+    JSON.parse(readFileSync(join(repoRoot(), "profiles", "schema.json"), "utf8")),
+  );
+  const profile: unknown = parseYaml(body);
+  if (!sharedValidator(profile)) {
+    throw new Error(`Invalid profile YAML: ${sharedValidator.errors?.map((error) => `${error.instancePath || "/"} ${error.message}`).join("; ")}`);
+  }
+}
+
+/** A downloaded profile must never write through pre-existing symlinks. */
+function assertInstallPaths(ref: SharedRef): void {
+  const dir = sharedProfileDir(ref);
+  for (const path of [join(sharedRoot(), ref.user), dir, join(dir, "profile.yaml"), join(dir, ".meta.json")]) {
+    try {
+      if (lstatSync(path).isSymbolicLink()) throw new Error(`Refusing symlink in shared profile path: ${path}`);
+    } catch (error) {
+      if ((error as NodeJS.ErrnoException).code !== "ENOENT") throw error;
+    }
+  }
 }
 
 /**
@@ -221,9 +259,12 @@ export function writeInstall(
   meta: InstalledMeta,
 ): { dir: string; namespacedName: string } {
   const dir = sharedProfileDir(ref);
-  mkdirSync(dir, { recursive: true });
+  validateSharedProfile(body);
   const namespacedName = sharedProfileName(ref);
   const namespaced = namespaceProfileYaml(body, namespacedName);
+  validateSharedProfile(namespaced);
+  assertInstallPaths(ref);
+  mkdirSync(dir, { recursive: true });
   writeFileSync(join(dir, "profile.yaml"), namespaced);
   writeFileSync(join(dir, ".meta.json"), JSON.stringify(meta, null, 2) + "\n");
   return { dir, namespacedName };
@@ -351,6 +392,7 @@ export function searchIndex(
 /** rm -rf the install directory. No-op when not installed. */
 export function removeInstall(ref: SharedRef): boolean {
   const dir = sharedProfileDir(ref);
+  assertInstallPaths(ref);
   if (!existsSync(dir)) return false;
   rmSync(dir, { recursive: true, force: true });
   // Prune empty parent directory.

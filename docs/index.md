@@ -7,6 +7,10 @@ image: https://opencue.github.io/cuecards/assets/og-card.png
 
 # Your agent reads every skill you own, on every message
 
+**New to Cue? [Start at cuecards.cc](https://cuecards.cc)** to learn how profiles
+work, browse community profiles, and try them through the Cue CLI on your machine.
+This GitHub Pages site remains the documentation and registry.
+
 **cue loads only the ones that project needs.** Per-project profiles scope which
 skills, MCP servers, and persona load — automatically, before Claude Code or
 Codex launches. Ten agents supported from one profile.

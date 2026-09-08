@@ -22,6 +22,7 @@ import { createHash } from "node:crypto";
 
 import { auth } from "./auth.js";
 import { getPool } from "./db.js";
+import { profileInstallCommand } from "./profile-source.js";
 
 // ---------------------------------------------------------------------------
 // Types
@@ -143,9 +144,10 @@ function relWhen(d: Date): string {
  * client-supplied command — that's the whole point. The shapes mirror the
  * studio's existing copy-install affordance and the `cue` CLI surface.
  */
-function deriveAdd(type: MarketType, handle: string, name: string): string {
+function deriveAdd(type: MarketType, handle: string, name: string, sourceUrl: string | null): string {
   const ref = `${handle}/${name}`;
   switch (type) {
+    case "profile": return profileInstallCommand(sourceUrl) ?? "";
     case "mcp": return `cue marketplace install-mcp ${name}`;
     case "skill": return `cue marketplace install-skill ${ref}`;
     default: return `cue add ${ref}`;
@@ -174,6 +176,12 @@ function validate(input: PublishInput): { ok: true; value: ValidInput } | { ok: 
   const tags = [...new Set(rawTags.map((t) => slug(clampStr(t, MAX.tag))).filter(Boolean))].slice(0, MAX.tags);
 
   let sourceUrl: string | null = null;
+  if (type === "profile" && (
+    typeof input.sourceUrl !== "string" || input.sourceUrl.length > MAX.url ||
+    !profileInstallCommand(input.sourceUrl.trim())
+  )) {
+    return { ok: false, error: "Profiles require a public GitHub sourceUrl: https://github.com/owner/repo or https://github.com/owner/repo/tree/ref/profile-directory" };
+  }
   const url = clampStr(input.sourceUrl, MAX.url);
   if (url) {
     if (!/^https:\/\/[^\s]+$/i.test(url)) {
@@ -203,6 +211,7 @@ interface Row {
 }
 
 function rowToItem(r: Row): MarketItem {
+  const add = deriveAdd(r.type, r.handle, r.name, r.source_url);
   return {
     id: r.id,
     type: r.type,
@@ -216,10 +225,10 @@ function rowToItem(r: Row): MarketItem {
     desc: r.description,
     tags: r.tags ?? [],
     source: "registry",
-    add: deriveAdd(r.type, r.handle, r.name),
+    add,
     addKind: r.type,
     ...(r.source_url ? { sourceUrl: r.source_url } : {}),
-    status: r.status,
+    status: r.type === "profile" && !add ? "source-required" : r.status,
   };
 }
 

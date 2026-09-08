@@ -35,6 +35,13 @@ function cue(args: string[]): { status: number; stdout: string; stderr: string }
 }
 
 describe.skipIf(!BUN_SPAWNABLE)("cue marketplace", () => {
+  test("publishing a profile requires its GitHub source before authentication or network", () => {
+    const res = cue(["marketplace", "publish", "profile", "reviewer"]);
+    expect(res.status).toBe(1);
+    expect(res.stderr).toContain("--source-url");
+    expect(res.stderr).toContain("https://github.com/");
+  });
+
   // -------------------------------------------------------------------------
   // Help
   // -------------------------------------------------------------------------

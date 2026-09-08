@@ -1,5 +1,5 @@
 import { afterEach, beforeEach, describe, expect, test } from "bun:test";
-import { mkdirSync, mkdtempSync, readFileSync, rmSync, writeFileSync } from "node:fs";
+import { existsSync, mkdirSync, mkdtempSync, readFileSync, rmSync, symlinkSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 
@@ -57,6 +57,24 @@ describe("parseShareRef", () => {
     expect(parseShareRef("")).toBeNull();
     expect(parseShareRef("not-a-ref")).toBeNull();
     expect(parseShareRef("/leading/slash/bad")).toBeNull();
+  });
+
+  test("rejects traversal, shell syntax, encoded separators, and non-GitHub URLs", () => {
+    for (const input of [
+      "jane/..", "jane/.", "../repo", "jane/repo:../outside", "jane/repo:/absolute",
+      "jane/repo:profiles//shop", "jane/repo@../main", "jane/repo:profiles/./shop",
+      "jane/repo:profiles/shop;whoami", "jane/repo:profiles\\shop",
+      "https://github.com/jane/repo/tree/main/%2e%2e/outside",
+      "https://github.com/jane/repo/tree/main/profiles%2fshop",
+      "https://github.com/jane/repo?x=1", "https://github.com/jane/repo#fragment",
+      "https://evil.example/jane/repo", "https://github.com@evil.example/jane/repo",
+    ]) expect(parseShareRef(input)).toBeNull();
+  });
+
+  test("accepts pinned subdirectory references used by community cards", () => {
+    expect(parseShareRef("jane/dotfiles@abc123:profiles/my-shop")).toEqual({
+      user: "jane", repo: "dotfiles", ref: "abc123", subpath: "profiles/my-shop",
+    });
   });
 });
 
@@ -164,6 +182,14 @@ describe("namespaceProfileYaml", () => {
     expect(out).toContain("name: jane-shop");
     expect(out).toContain("name: not-this"); // untouched
   });
+
+  test("rewrites root names after comments and nested mapping keys", () => {
+    const input = "# one\n# two\n# three\n# four\n# five\nmetadata:\n  name: nested\nname: original\n";
+    const output = namespaceProfileYaml(input, "jane-shop");
+    expect(output).toContain("  name: nested");
+    expect(output).toContain("\nname: jane-shop");
+    expect(output.match(/^name:/gm)).toHaveLength(1);
+  });
 });
 
 describe("install/list/remove round-trip", () => {
@@ -223,6 +249,31 @@ describe("install/list/remove round-trip", () => {
     const a = sharedProfileDir({ user: "x", repo: "y" });
     const b = sharedProfileDir({ user: "x", repo: "y" });
     expect(a).toBe(b);
+  });
+
+  test("invalid YAML or schema never writes a profile or overwrites an install", () => {
+    const ref = { user: "jane", repo: "shop" };
+    const meta = { source_url: "https://example/profile.yaml", installed_at: "now", sha: null };
+    for (const invalid of ["[", "null", "- one", "name: shop\n", "name: shop\ndescription: valid\nunknown: true\n", "name: shop\nname: duplicate\ndescription: x\n"]) {
+      expect(() => writeInstall(ref, invalid, meta)).toThrow();
+      expect(existsSync(sharedProfileDir(ref))).toBe(false);
+    }
+    const { dir } = writeInstall(ref, "name: shop\ndescription: valid\n", meta);
+    const before = readFileSync(join(dir, "profile.yaml"), "utf8");
+    expect(() => writeInstall(ref, "name: shop\n", meta)).toThrow();
+    expect(readFileSync(join(dir, "profile.yaml"), "utf8")).toBe(before);
+  });
+
+  test("rejects direct unsafe refs and symlinked install directories", () => {
+    expect(() => sharedProfileDir({ user: "jane", repo: ".." })).toThrow();
+    const outside = join(scratch, "outside");
+    mkdirSync(outside);
+    mkdirSync(sharedRoot(), { recursive: true });
+    symlinkSync(outside, join(sharedRoot(), "jane"));
+    expect(() => writeInstall({ user: "jane", repo: "shop" }, "name: shop\ndescription: x\n", {
+      source_url: "x", installed_at: "now", sha: null,
+    })).toThrow(/symlink/i);
+    expect(existsSync(join(outside, "shop"))).toBe(false);
   });
 
   test("orphaned directories without profile.yaml are skipped by listInstalled", () => {

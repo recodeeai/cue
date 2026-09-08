@@ -11,12 +11,14 @@
  * "yours" item and toasts that a registry PR will open later.
  */
 
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { useQueryClient } from "@tanstack/react-query";
 
 import { useMarket, useProfilesFull, installMarketItem, type MarketItem } from "../api";
 import { useCommunityMarket, publishCommunity } from "../../lib/market-client";
 import { useSession } from "../../lib/auth-client";
+import { isDemoMode } from "../../lib/fetcher";
+import { profileInstallCommand } from "../../../lib/profile-source";
 
 // A locally-published draft is a MarketItem with the extra "yours" marker. Kept
 // in localStorage and prepended to the browse list before the live catalog.
@@ -63,6 +65,7 @@ function daysAgo(when: string): number {
 }
 
 export function MarketView() {
+  const publicMode = isDemoMode();
   const qc = useQueryClient();
   const { data } = useMarket();
   const community = useCommunityMarket();
@@ -99,6 +102,15 @@ export function MarketView() {
   const starred = new Set(stars);
   const toggleStar = (id: string) => setStars((s) => (s.includes(id) ? s.filter((x) => x !== id) : [...s, id]));
   const flash = (m: string) => { setToast(m); setTimeout(() => setToast(""), 2600); };
+  async function copyCommand(command: string) {
+    if (!command) return;
+    try {
+      await navigator.clipboard.writeText(command);
+      flash("Copied — inspect the source before running this command locally.");
+    } catch {
+      flash("Clipboard unavailable. Select and copy the displayed command.");
+    }
+  }
 
   // Install an item into a real profile (edits profile.yaml server-side). A
   // bare CLI has no profile.yaml home — its `manual` command is copied instead.
@@ -137,8 +149,8 @@ export function MarketView() {
       ...i,
       mine: myHandle != null && i.handle === myHandle,
     }));
-    return [...published, ...communityItems, ...(data?.items ?? [])];
-  }, [published, community.data, data, myHandle]);
+    return [...published, ...communityItems, ...(publicMode ? [] : data?.items ?? [])];
+  }, [published, community.data, data, myHandle, publicMode]);
 
   const counts = useMemo(() => {
     const c: Record<string, number> = { all: items.length };
@@ -179,6 +191,10 @@ export function MarketView() {
   const myProfiles = profilesQ.data ?? [];
 
   function Card({ i, where }: { i: LocalMarketItem; where: string }) {
+    const draft = i.mine && i.source === "local";
+    const command = i.type === "profile" && i.source === "registry"
+      ? profileInstallCommand(i.sourceUrl) === i.add ? i.add : ""
+      : i.add;
     const t = TYPE[i.type];
     const on = starred.has(i.id);
     const key = where + ":" + i.id;
@@ -192,6 +208,10 @@ export function MarketView() {
             <div className="mk-type" style={{ color: t.color }}>{t.label}{i.featured ? " · featured" : ""}{i.mine ? " · yours" : ""}</div>
           </div>
           <div className="mk-addwrap">
+            {!command || draft ? <span className="mk-type">Source needed before install</span> : publicMode || i.source === "registry" && i.type === "profile" ? (
+              <button className="de-btn" onClick={() => void copyCommand(command)}>Copy CLI command</button>
+            ) : (
+            <>
             <div className={"mk-install" + (addFor === key ? " open" : "")}>
               <button className="mk-install-main" onClick={openMenu}>Install</button>
               <button className="mk-install-caret" onClick={openMenu}>▾</button>
@@ -217,16 +237,19 @@ export function MarketView() {
                   })}
                   {myProfiles.length === 0 && <div className="mk-addmenu-item" style={{ opacity: 0.6 }}>no profiles loaded</div>}
                 </div>
-                <div className="mk-addmenu-foot" onClick={() => {
+                <button className="mk-addmenu-foot" onClick={() => {
                   setAddFor(null);
-                  try { navigator.clipboard.writeText(i.add); } catch { /* ignore */ }
-                  flash(i.add + " — copied");
-                }}>⧉ Copy install command</div>
+                  void copyCommand(i.add);
+                }}>⧉ Copy install command</button>
               </div>
+            )}
+            </>
             )}
           </div>
         </div>
         <div className="mk-desc">{i.desc}</div>
+        {i.sourceUrl?.startsWith("https://github.com/") && <p><a href={i.sourceUrl} target="_blank" rel="noopener noreferrer">Inspect profile source ↗</a></p>}
+        {command && !draft && <code style={{ display: "block", overflowWrap: "anywhere", padding: "10px 0", fontSize: 12 }}>{command}</code>}
         <div className="mk-foot">
           <span className="mk-by">By <b>{i.handle}</b></span>
           <button className={"mk-star" + (on ? " on" : "")} onClick={() => toggleStar(i.id)} title={on ? "unstar" : "star"}>
@@ -244,10 +267,13 @@ export function MarketView() {
       <div className="mk-hero">
         <div>
           <div className="page-title">🛍 Cue Marketplace</div>
-          <div className="page-sub">Discover and share profiles, workflows, skills &amp; CLIs from the community. Star the ones you love — anyone with a cue dashboard can.</div>
+          <div className="page-sub">Discover shared agent profiles. Review their source, then run the copied command with Cue on your machine. Stars and unsigned drafts are saved only in this browser.</div>
         </div>
         <button className="mk-publish" onClick={() => setPubOpen(true)}>＋ Publish</button>
       </div>
+      <p className="page-sub">Community code is not automatically trusted. Inspect hooks, skills and MCP servers before installing. {publicMode && "This public catalog cannot install or launch anything on your computer."}</p>
+      {community.isPending && <p role="status">Loading community profiles…</p>}
+      {community.isError && <p role="alert">Community catalog unavailable. Try again later; local profiles are unchanged.</p>}
 
       <div className="mk-toolbar">
         <div className="mk-search">
@@ -290,7 +316,11 @@ export function MarketView() {
       <div className="mk-section">
         <div className="mk-sec-h">{type === "all" ? "All items" : TYPE[type].label + "s"} <span className="mk-sec-n">{shown.length}</span></div>
         <div className="mk-grid">{shown.map((i) => <Card key={i.id} i={i} where="grid" />)}</div>
-        {shown.length === 0 && <div className="mk-empty">No results for “{q}”.</div>}
+        {shown.length === 0 && !community.isPending && !community.isError && <div className="mk-empty">
+          {q ? <>No results for “{q}”.</> : publicMode && type === "all"
+            ? "No community profiles yet. Publish the first profile with its public GitHub source."
+            : "No items in this category yet."}
+        </div>}
       </div>
 
       {pubOpen && (
@@ -306,6 +336,7 @@ export function MarketView() {
                   name: draft.name,
                   description: draft.desc,
                   tags: draft.tags,
+                  sourceUrl: draft.sourceUrl || undefined,
                 });
                 await queryClient.invalidateQueries({ queryKey: ["community-market"] });
                 setPubOpen(false);
@@ -329,7 +360,7 @@ export function MarketView() {
               when: "now",
               featured: false,
               source: "local",
-              add: "cue add you/" + draft.name,
+              add: "",
               addKind: draft.type,
               mine: true,
             };
@@ -342,34 +373,49 @@ export function MarketView() {
           }}
         />
       )}
-      {toast && <div className="mk-toast">{toast}</div>}
+      {toast && <div className="mk-toast" role="status">{toast}</div>}
     </div>
   );
 }
 
 // The publish form yields just the editable fields; the view fills the rest.
-type PublishDraft = { type: MarketType; name: string; desc: string; tags: string[] };
+type PublishDraft = { type: MarketType; name: string; desc: string; tags: string[]; sourceUrl: string };
 
 function PublishModal({ signedIn, onClose, onPublish }: { signedIn: boolean; onClose: () => void; onPublish: (draft: PublishDraft) => void | Promise<void> }) {
+  const dialog = useRef<HTMLDivElement>(null);
+  useEffect(() => {
+    const previous = document.activeElement instanceof HTMLElement ? document.activeElement : null;
+    dialog.current?.querySelector<HTMLInputElement>("input")?.focus();
+    return () => previous?.focus();
+  }, []);
   const [type, setType] = useState<MarketType>("profile");
   const [name, setName] = useState("");
   const [desc, setDesc] = useState("");
   const [tags, setTags] = useState("");
+  const [sourceUrl, setSourceUrl] = useState("");
   const [busy, setBusy] = useState(false);
-  const valid = name.trim() && desc.trim();
+  const sourceValid = profileInstallCommand(sourceUrl.trim()) !== null;
+  const valid = name.trim() && desc.trim() && (type !== "profile" || sourceValid);
   const submit = async () => {
     if (!valid || busy) return;
     setBusy(true);
     try {
-      await onPublish({ type, name: name.trim(), desc: desc.trim(), tags: tags.split(",").map((t) => t.trim()).filter(Boolean).slice(0, 4) });
+      await onPublish({ type, name: name.trim(), desc: desc.trim(), sourceUrl: sourceUrl.trim(), tags: tags.split(",").map((t) => t.trim()).filter(Boolean).slice(0, 4) });
     } finally {
       setBusy(false);
     }
   };
   return (
     <div className="mk-modal-bg" onClick={onClose}>
-      <div className="mk-modal" onClick={(e) => e.stopPropagation()}>
-        <div className="mk-modal-h">Publish to marketplace <span className="mk-modal-x" onClick={onClose}>×</span></div>
+      <div ref={dialog} className="mk-modal" role="dialog" aria-modal="true" aria-labelledby="publish-title" onKeyDown={(e) => {
+        if (e.key === "Escape") onClose();
+        if (e.key !== "Tab") return;
+        const controls = dialog.current?.querySelectorAll<HTMLElement>("button:not(:disabled), input, textarea");
+        const first = controls?.[0], last = controls?.[controls.length - 1];
+        if (e.shiftKey && document.activeElement === first) { e.preventDefault(); last?.focus(); }
+        if (!e.shiftKey && document.activeElement === last) { e.preventDefault(); first?.focus(); }
+      }} onClick={(e) => e.stopPropagation()}>
+        <div className="mk-modal-h" id="publish-title">Publish to marketplace <button className="mk-modal-x" aria-label="Close publish dialog" onClick={onClose}>×</button></div>
         <div className="mk-modal-sub">{signedIn
           ? "Share a profile, workflow, skill or CLI with everyone running cue."
           : "Sign in from the API view to publish to everyone — otherwise this is saved as a local draft."}</div>
@@ -387,6 +433,7 @@ function PublishModal({ signedIn, onClose, onPublish }: { signedIn: boolean; onC
         <label className="mk-field"><span>Tags <span className="mk-hint">comma-separated</span></span>
           <input value={tags} onChange={(e) => setTags(e.target.value)} placeholder="gstack, build, review" spellCheck={false} />
         </label>
+        {type === "profile" && <label className="mk-field"><span>Public GitHub profile source (required)</span><input type="url" value={sourceUrl} onChange={(e) => setSourceUrl(e.target.value)} placeholder="https://github.com/owner/repo/tree/main/profiles/example" aria-describedby="profile-source-help" required /><span id="profile-source-help" className="mk-hint">Link to the public repository or profile folder. The server validates the source before generating an install command.</span>{sourceUrl && !sourceValid && <span role="alert">Use an HTTPS github.com repository URL.</span>}</label>}
         <div className="mk-modal-foot">
           <button className="de-btn" onClick={onClose}>Cancel</button>
           <button

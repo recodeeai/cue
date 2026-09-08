@@ -1,0 +1,38 @@
+.page { padding: clamp(24px, 5vw, 72px); overflow: auto; width: 100%; color: var(--fg); }
+.eyebrow, .number { color: #b8a8ff; font: 12px "JetBrains Mono", monospace; letter-spacing: .12em; }
+.page h1 { font-size: clamp(36px, 5vw, 68px); letter-spacing: -.045em; line-height: 1.05; margin: 22px 0; }
+.page h1 span { color: #b8a8ff; }
+.intro { max-width: 720px; font-size: 17px; line-height: 1.7; color: #b5b4c3; }
+.actions { display: flex; flex-wrap: wrap; align-items: center; gap: 24px; margin: 28px 0 44px; }
+.page a { color: #c4b6ff; text-underline-offset: 4px; }
+.steps { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 18px; }
+.steps section { padding: 24px; border: 1px solid #34323f; border-radius: 12px; background: #191820; }
+.steps h2 { font-size: 19px; margin: 18px 0 12px; }
+.steps p, .note { color: #b5b4c3; font-size: 14px; line-height: 1.7; }
+.steps code { display: block; padding: 12px 0; overflow-wrap: anywhere; }
+.steps a { display: block; margin-top: 18px; font-size: 13px; }
+.note { max-width: 880px; margin-top: 28px; }
+.page :is(a, button):focus-visible { outline: 2px solid #c4b6ff; outline-offset: 5px; }
+.publicShell { grid-template-columns: minmax(0, 1fr); width: 100%; }
+.publicShell :global(.titlebar), .publicShell :global(.statusbar) { min-width: 0; }
+.publicShell :global(.mk-grid), .publicShell :global(.mk-featgrid) { grid-template-columns: repeat(auto-fit, minmax(min(340px, 100%), 1fr)); }
+.publicShell :global(.mk-card) a { color: #c4b6ff; text-underline-offset: 3px; }
+.publicShell :is(a, button):focus-visible { outline: 2px solid #c4b6ff; outline-offset: 3px; }
+@media (max-width: 900px) { .steps { grid-template-columns: 1fr; } }
+@media (max-width: 600px) {
+  .publicShell :global(.titlebar) { padding: 0 8px; gap: 8px; }
+  .publicShell :global(.tb-crumb), .publicShell :global(.tb-vsep), .publicShell :global(.tb-update-wrap), .publicShell :global(.tb-iconbtn), .publicShell :global(.tb-acct-wrap) { display: none; }
+  .publicShell :global(.tb-right) { min-width: 0; gap: 0; }
+  .publicShell :global(.tb-host) { font-size: 10px; white-space: nowrap; }
+  .publicShell :global(.statusbar) { overflow: hidden; }
+  .publicShell :global(.statusbar) > :not(:first-child) { display: none; }
+  .publicShell :global(.marketpage) { padding: 20px 16px 48px; }
+  .publicShell :global(.mk-hero) { flex-wrap: wrap; gap: 12px; }
+  .publicShell :global(.mk-search) { min-width: 0; width: 100%; }
+  .publicShell :global(.mk-types) { flex-wrap: wrap; }
+  .publicShell :global(.mk-card) { min-width: 0; }
+  .publicShell :global(.mk-top) { flex-wrap: wrap; }
+  .page { padding: 24px 18px; }
+  .page .steps section { padding: 18px; }
+  .page .actions button { white-space: normal; text-align: left; }
+}

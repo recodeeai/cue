@@ -12,8 +12,13 @@ export type ApiEnvelope<T> = { ok: true; data: T } | { ok: false; error: string 
 
 type Mode = "local" | "demo";
 
+export function resolveCueMode(hostname: string, requested?: Mode): Mode {
+  const loopback = ["localhost", "127.0.0.1", "[::1]"].includes(hostname);
+  return loopback && requested !== "demo" ? "local" : "demo";
+}
+
 export function getCueMode(): Mode {
-  return window.__CUE_MODE__ ?? (import.meta.env.VITE_CUE_MODE === "demo" ? "demo" : "local");
+  return resolveCueMode(window.location.hostname, window.__CUE_MODE__ ?? import.meta.env.VITE_CUE_MODE);
 }
 
 /** True on the static demo deploy (no local server → no SSE / live push). */

@@ -186,6 +186,7 @@ export interface AddMcpResult {
  * command and `addKind` routes the "Add to profile" picker.
  */
 export interface MarketItem {
+  sourceUrl?: string;
   id: string;
   type: "profile" | "workflow" | "skill" | "cli" | "mcp" | "plugin";
   name: string;
